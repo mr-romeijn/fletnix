@@ -1,0 +1,26 @@
+﻿<Properties StartupConfiguration="{FE0B6375-7D76-43F8-85F2-D4B5A2196BF0}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="fletnix/Services/DebugMailService.cs">
+    <Files>
+      <File FileName="fletnix/Controllers/HomeController.cs" Line="24" Column="10" />
+      <File FileName="fletnix/Program.cs" Line="6" Column="32" />
+      <File FileName="fletnix/Startup.cs" Line="42" Column="13" />
+      <File FileName="fletnix/Views/Shared/_Layout.cshtml" Line="58" Column="3" />
+      <File FileName="fletnix/wwwroot/css/site.css" Line="145" Column="30" />
+      <File FileName="fletnix/bundleconfig.json" Line="8" Column="29" />
+      <File FileName="fletnix/Controllers/WalledGardenController.cs" Line="16" Column="1" />
+      <File FileName="fletnix/Controllers/DashboardController.cs" Line="13" Column="10" />
+      <File FileName="fletnix/Views/_ViewStart.cshtml" Line="1" Column="1" />
+      <File FileName="fletnix/ViewModels/ContactViewModel.cs" Line="8" Column="9" />
+      <File FileName="fletnix/Views/Home/Contact.cshtml" Line="13" Column="37" />
+      <File FileName="fletnix/Services/IMailService.cs" Line="9" Column="1" />
+      <File FileName="fletnix/Services/DebugMailService.cs" Line="4" Column="2" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.fletnix PreferredExecutionTarget="MonoDevelop.Default" />
+</Properties>

@@ -1,0 +1,70 @@
+﻿@model fletnix.ViewModels.ContactViewModel
+@{
+    ViewData["Title"] = "Contact";
+}
+
+@section scripts {
+	<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+	<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}
+
+<div class="container-fluid body-content" style="margin-top:30px; background-color:black; padding-bottom:50px;">
+    <div class="row" style="padding:30px;">
+        <div class="col-md-3"></div>
+        <div class="col-md-6" style="min-height:440px; padding-bottom:25px; background-color:white;">
+            <h2 class="light" style="color:black;">Contact us</h2> <hr>
+            <form method="post">
+                <span asp-validation-summary="ModelOnly"></span>
+
+                @if (ViewBag.FormNotification != null)
+                {
+                    <div class="alert alert-success">
+                        <strong>Success!</strong> @ViewBag.FormNotification
+                    </div>
+                }
+
+                <div class="row" style="margin-bottom:10px;">
+                <div class="col-md-6">
+					<div class="form-group has-success has-warning has-error">
+					   <input type="text" asp-for="FirstName" style="width:100%;" placeholder="First name" class="form-control-custom form-control"/>
+					   <span class="help-block" asp-validation-for="FirstName"></span>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group has-success has-warning has-error">
+					    <input type="text" asp-for="LastName" style="width:100%;" placeholder="Last name" class="form-control-custom form-control"/>
+						<span class="help-block" asp-validation-for="LastName"></span>
+					</div>
+				</div>	
+			</div>
+			 <div class="row"  style="margin-bottom:10px;">
+                <div class="col-md-6">
+					<div class="form-group has-success has-warning has-error">
+                       <input type="text" asp-for="Email" style="width:100%;" placeholder="Email" class="form-control-custom form-control"/>
+					   <span class="help-block" asp-validation-for="Email"></span>
+                    </div>
+				</div>
+                <div class="col-md-6">
+					<div class="form-group has-success has-warning has-error">
+                     <input type="text" asp-for="Phone" style="width:100%;" placeholder="Phone (optional)" class="form-control-custom form-control"/>
+					 <span class="help-block" asp-validation-for="Phone"></span>
+					</div>
+				</div>
+            </div>
+
+			 <div class="row">
+               <div class="col-md-12">
+					<div class="form-group has-success has-warning has-error">
+                       <textarea asp-for="Message" style="width:100%;  min-height:125px;" placeholder="Message" class="form-control-custom form-control"></textarea>
+                        <span class="help-block" asp-validation-for="Message"></span>
+					</div>
+				</div>	
+            </div>
+            
+			
+            <button style="margin-top:20px; height:55px; border:none; border-radius:0px; padding:7px 20px 7px 20px; color:white; font-size:18px;" class="pull-right fletnix-btn fletnix-red-background">Send</button>    
+            </form>
+		</div>
+        <div class="col-md-3"></div>
+    </div>
+</div>
