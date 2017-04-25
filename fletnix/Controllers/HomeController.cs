@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using fletnix.Models;
 using fletnix.Services;
 using fletnix.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -14,10 +15,12 @@ namespace fletnix.Controllers
 
         private readonly IMailService _mailService;
         private IConfigurationRoot _config;
+        private FletnixRepository _repository;
 
-        public HomeController(IMailService MailService, IConfigurationRoot Configuration){
+        public HomeController(IMailService MailService, IConfigurationRoot Configuration, FletnixRepository repository){
             _mailService = MailService;
             _config = Configuration;
+            _repository = repository;
         }
 
         public IActionResult Index()
@@ -44,7 +47,6 @@ namespace fletnix.Controllers
 
             if (ModelState.IsValid)
             {
-
                 _mailService.sendMail(_config["MailSettings:ToAddress"], model.Email, "Fletnix contact form",
                     model.Message);
 

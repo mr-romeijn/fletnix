@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using fletnix.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -39,15 +40,7 @@ namespace fletnix
 
             services.AddSingleton(Configuration);
 
-            // Add framework services.
-            //services.AddEntityFramework()
-            //	.AddSqlServer()
-            //	.AddDbContext<ApplicationDbContext>(options =>
-            //		options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]));
-
-            //services.AddIdentity<ApplicationUser, IdentityRole>()
-            //.AddEntityFrameworkStores<ApplicationDbContext>()
-            //.AddDefaultTokenProviders();
+            services.AddDbContext<FLETNIXContext>();
 
             if (_env.IsDevelopment())
             {
@@ -55,6 +48,8 @@ namespace fletnix
             } else {
                 // Implement real service
             }
+
+            services.AddScoped<IFletnixRepository, FletnixRepository>();
 
             // Add framework services.
             services.AddMvc();

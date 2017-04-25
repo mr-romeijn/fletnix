@@ -1,11 +1,13 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Configuration;
 
 namespace fletnix.Models
 {
     public partial class FLETNIXContext : DbContext
     {
+        private IConfigurationRoot _config;
         public virtual DbSet<Award> Award { get; set; }
         public virtual DbSet<AwardType> AwardType { get; set; }
         public virtual DbSet<Country> Country { get; set; }
@@ -20,10 +22,15 @@ namespace fletnix.Models
         public virtual DbSet<Person> Person { get; set; }
         public virtual DbSet<Watchhistory> Watchhistory { get; set; }
 
+        public FLETNIXContext(IConfigurationRoot config, DbContextOptions options) : base(options)
+        {
+            _config = config;
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-            optionsBuilder.UseSqlServer(@"Server=tcp:fletnix.database.windows.net,1433;Initial Catalog=FLETNIX;Persist Security Info=False;User ID=nromeijn;Password=qQopoXAVQJyqzULeafG3P;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+            optionsBuilder.UseSqlServer(_config["Database:Fletnix"]);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
