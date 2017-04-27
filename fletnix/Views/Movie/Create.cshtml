@@ -1,0 +1,134 @@
+@model fletnix.Models.Movie
+
+
+@section scripts {
+    <script>
+        function readURL(input) {
+
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#preview').attr('src', e.target.result);
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $("#imgInp").change(function() {
+            $('#sampletext').remove();
+            readURL(this);
+        });
+
+        $('#previewContainer').click(function() {
+            $("#imgInp").click();
+        })
+    </script>
+}
+
+<div class="container-fluid" style="background-color: white; padding-top: 45px; padding-bottom: 45px;">
+    <div class="row">
+        <div class="col-md-10">
+            <h3>Adding Movie</h3>
+        </div>
+        <div class="col-md-2">
+            <a asp-action="Index"> <button style="background-color: white; border: 1px solid #CCC; color: black;" class="btn fletnix-btn">Back to List</button></a>
+        </div>
+    </div>
+
+
+    <hr/>
+    <div class="row">
+        <div class="col-md-9">
+            <form asp-action="Create">
+                <div class="form-horizontal" style="padding: 25px; text-align: left;">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="MovieId" class="col-md-2 control-label"></label>
+                        <div class="col-md-10">
+                            <input asp-for="MovieId" class="form-control"/>
+                            <span asp-validation-for="MovieId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Title" class="col-md-2 control-label"></label>
+                        <div class="col-md-10">
+                            <input asp-for="Title" class="form-control"/>
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Duration" class="col-md-2 control-label"></label>
+                        <div class="col-md-10">
+                            <input asp-for="Duration" placeholder="Duration in minutes" class="form-control"/>
+                            <span asp-validation-for="Duration" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Description" class="col-md-2 control-label"></label>
+                        <div class="col-md-10">
+                            <input asp-for="Description" class="form-control"/>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PublicationYear" class="col-md-2 control-label"></label>
+                        <div class="col-md-10">
+                            <input asp-for="PublicationYear" class="form-control"/>
+                            <span asp-validation-for="PublicationYear" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CoverImage" class="col-md-2 control-label"></label>
+                        <div class="col-md-10">
+                            <input asp-for="CoverImage" id="imgInp" name="cover" type="file" class="form-control"/>
+                            <span asp-validation-for="CoverImage" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PreviousPart" class="col-md-2 control-label"></label>
+                        <div class="col-md-10">
+                            <select asp-for="PreviousPart" class="form-control" asp-items="ViewBag.PreviousPart"></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Price" class="col-md-2 control-label"></label>
+                        <div class="col-md-10">
+                            <input asp-for="Price" class="form-control"/>
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Url" class="col-md-2 control-label"></label>
+                        <div class="col-md-10">
+                            <input asp-for="Url" class="form-control"/>
+                            <span asp-validation-for="Url" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="Create" class="btn btn-default fletnix-btn fletnix-red-background" style="color: white;" />
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-3">
+            <div class="shadow" id="previewContainer" style="cursor: pointer; padding: 10px; text-align: center; width: 95%; background-color: white; min-height: 540px;">
+                <p id="sampletext" style="margin-top: 50%;">Klik hier om een cover toe te voegen</p>
+                <img width="100%" id="preview" src=""/>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="row" style="margin-top: 25px;">
+        <div class="col-md-12">
+
+        </div>
+    </div>
+
+</div>

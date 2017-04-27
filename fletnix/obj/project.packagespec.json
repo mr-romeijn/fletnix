@@ -61,8 +61,27 @@
         "Microsoft.AspNetCore.Mvc.Taghelpers": {
           "target": "Package",
           "version": "1.1.2"
+        },
+        "Microsoft.VisualStudio.Web.CodeGenerators.Mvc": {
+          "target": "Package",
+          "version": "1.1.0"
+        },
+        "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+          "target": "Package",
+          "version": "1.1.0"
         }
       }
+    }
+  },
+  "runtimes": {
+    "win": {
+      "#import": []
+    },
+    "win-x64": {
+      "#import": []
+    },
+    "win-x86": {
+      "#import": []
     }
   }
 }

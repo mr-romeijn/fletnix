@@ -49,6 +49,8 @@ namespace fletnix
                 // Implement real service
             }
 
+            services.AddLogging();
+
             services.AddScoped<IFletnixRepository, FletnixRepository>();
 
             // Add framework services.
@@ -60,7 +62,7 @@ namespace fletnix
         {
 	    
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            loggerFactory.AddDebug(LogLevel.Information);
 
             if (env.IsDevelopment())
             {

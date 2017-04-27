@@ -15,9 +15,10 @@ namespace fletnix.Controllers
 
         private readonly IMailService _mailService;
         private IConfigurationRoot _config;
-        private FletnixRepository _repository;
+        private IFletnixRepository _repository;
 
-        public HomeController(IMailService MailService, IConfigurationRoot Configuration, FletnixRepository repository){
+
+        public HomeController(IMailService MailService, IConfigurationRoot Configuration, IFletnixRepository repository){
             _mailService = MailService;
             _config = Configuration;
             _repository = repository;
