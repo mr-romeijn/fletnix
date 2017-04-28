@@ -1,0 +1,88 @@
+@model fletnix.Models.Person
+
+@{
+    Layout = "_AdminLayout";
+}
+<div class="container-fluid" style="background-color: white; padding-top: 45px; padding-bottom: 45px;">
+
+    <div class="row">
+        <div class="col-md-10">
+            <h3>Editing Person</h3>
+        </div>
+    </div>
+
+
+    <hr/>
+    <div class="row">
+
+        <div class="col-md-2">
+            <div class="shadow" id="previewContainer" style="cursor: pointer; padding: 10px; text-align: center; width: 95%; background-color: white; min-height: 225px;">
+                <img width="100%" id="preview" src="~/images/@(Model.Gender + "cast.png")"/>
+            </div>
+        </div>
+
+        <div class="col-md-9" style="padding-top: 20px;">
+            <form asp-action="Edit">
+                <div class="form-horizontal">
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="PersonId" class="col-md-2 control-label"></label>
+                        <div class="col-md-10">
+                            <input asp-for="PersonId" class="form-control"/>
+                            <span asp-validation-for="PersonId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Firstname" class="col-md-2 control-label"></label>
+                        <div class="col-md-10">
+                            <input asp-for="Firstname" class="form-control"/>
+                            <span asp-validation-for="Firstname" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Lastname" class="col-md-2 control-label"></label>
+                        <div class="col-md-10">
+                            <input asp-for="Lastname" class="form-control"/>
+                            <span asp-validation-for="Lastname" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Gender" class="col-md-2 control-label"></label>
+                        <div class="col-md-10">
+                            <select asp-for="Gender" class="form-control">
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                            </select>
+                            <span asp-validation-for="Gender" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="Save changes" class="btn btn-default fletnix-btn fletnix-red-background" style="color: white;"/>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <hr>
+            <a asp-action="Index"> <button style="background-color: white; border: 1px solid #CCC; color: black;" class="btn fletnix-btn">Back to List</button></a>
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top: 25px;">
+        <div class="col-md-12">
+
+        </div>
+    </div>
+
+</div>

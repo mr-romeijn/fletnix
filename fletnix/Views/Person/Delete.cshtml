@@ -1,0 +1,63 @@
+@model fletnix.Models.Person
+@{
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid" style="background-color: white; padding-top: 45px; padding-bottom: 45px;">
+    <h3>Are you sure you want to delete this person?</h3>
+    <div>
+        <hr />
+        <div class="row">
+            <div class="col-md-2">
+                <div class="shadow" style="cursor: pointer; padding: 10px; text-align: center; width: 95%; background-color: white;">
+                    <img width="100%" id="preview" src="~/images/@(Model.Gender + "cast.png")"/>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <dl class="dl-horizontal">
+                    <input type="hidden" asp-for="PersonId" />
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Lastname)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Lastname)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Firstname)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Firstname)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Gender)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Gender)
+                    </dd>
+                </dl>
+
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 25px;">
+            <div class="col-md-1">
+                <form asp-action="Delete" >
+
+                    <input type="submit" value="Delete" class="btn fletnix-btn fletnix-red-background" style="color: white;"></input>
+
+                </form>
+            </div>
+            <div class="col-md-1" style="padding-left: 40px;">
+                <a asp-action="Index">
+                    <button style="background-color: white; border: 1px solid #CCC; color: black;" class="btn fletnix-btn">
+                        Back to List
+                    </button>
+                </a>
+
+            </div>
+        </div>
+
+
+
+    </div>
+</div>

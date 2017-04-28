@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using fletnix.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -63,6 +64,11 @@ namespace fletnix
 	    
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug(LogLevel.Information);
+
+            Mapper.Initialize(config =>
+            {
+                config.CreateMap<MovieCastViewModel, MovieCast>().ReverseMap();
+            });
 
             if (env.IsDevelopment())
             {

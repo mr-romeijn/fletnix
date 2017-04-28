@@ -1,14 +1,21 @@
+@using fletnix.Models
 @model fletnix.Models.Movie
-
+@{
+    Layout = "_AdminLayout";
+    ViewBag.indicator = "Editting: " + Model.Title + " ("+Model.PublicationYear+")";
+}
 
 @section scripts {
+    <script src="~/js/selectize.js"></script>
     <script>
+
+       
         function readURL(input) {
 
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
 
-                reader.onload = function (e) {
+                reader.onload = function(e) {
                     $('#preview').attr('src', e.target.result);
                 }
 
@@ -20,6 +27,53 @@
             $('#sampletext').remove();
             readURL(this);
         });
+
+
+        var method = "POST";
+
+        $(document).ready(function() {
+
+            $('#submitAddCast').click(function() {
+                var person = $('#castPerson').val();
+                var movie = $('#castMovie').val();
+                var role = $('#castRole').val();
+                $.ajax
+                ({
+                    type: method,
+                    url: "/api/moviecast",
+                    beforeSend: (xhr) => { xhr.setRequestHeader('Content-Type', 'application/json') },
+                    dataType: 'json',
+                    async: true,
+                    data: JSON.stringify({ personId: person, movieId: movie, role: role }),
+                    success: function(res) {
+                        window.location = window.location.pathname;
+                    }
+                });
+            });
+
+            var urlperson = getUrlParameter("person");
+            if (urlperson) {
+                $('#castPerson').val(urlperson);
+                $("#memberModel").modal('toggle');
+            }
+
+
+        });
+
+        function newCastmember() {
+            method = "POST";
+            $("#castmemberform").trigger("reset");
+            $("#memberModel").modal('toggle');
+            console.log("setting method post");
+        }
+
+        function editCastMember(person, role) {
+            $('#castRole').val(role);
+            $('#castPerson').val(person);
+            $("#memberModel").modal('toggle');
+            method = "PATCH";
+        }
+
     </script>
 }
 
@@ -111,7 +165,7 @@
 
         <div class="col-md-3">
             <div class="shadow" style="cursor: pointer; padding: 10px; text-align: center; width: 95%; background-color: white; min-height: 540px;">
-                <img width="100%" id="preview" src=""/>
+                <img width="100%" id="preview" src="~/images/Moana.jpg"/>
             </div>
         </div>
 
@@ -119,118 +173,196 @@
 
     <div class="row">
         <div class="col-md-12">
-            <h3>Movie cast</h3>
+            <h3><i class="fa fa-users" aria-hidden="true"></i> Movie cast</h3>
             <hr>
         </div>
     </div>
     <div class="row">
+
+        @foreach (var cast in Model.MovieCast)
+        {
+            <div class="col-md-1" style="cursor: pointer;" onClick="editCastMember('@cast.PersonId','@cast.Role')">
+                <div class="row">
+                    <div class="col-md-12">
+                        <img height="105px" src="~/images/@(cast.Person.Gender + "cast.png")" width="100%"/>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 10px;">
+                    <div class="col-md-12 text-center">
+                        @cast.Person.Firstname @cast.Person.Lastname<br><span style="color: #CCCCCC; font-size:12px;">@cast.Role</span>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="col-md-1">
+            <div data-toggle="modal" data-target="#castmodel"  onclick="newCastmember()" style="border: 1px dashed #CCCCCC; cursor: pointer; min-height: 150px;">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <i style="font-size: 48px; color: #CCCCCC; padding-top: 50px;" class="fa fa-plus" aria-hidden="true"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <h3><i class="fa fa-user-secret" aria-hidden="true"></i> Movie Directors</h3>
+            <hr>
+        </div>
+    </div>
+
+
+<div class="row">
+
+    @foreach (var director in Model.MovieDirector)
+    {
         <div class="col-md-1">
             <div class="row">
                 <div class="col-md-12">
-                    <img src="http://style.anu.edu.au/_anu/4/images/placeholders/person.png" width="100%"/>
+                    <img src="~/images/@(director.Person.Gender + "cast.png")" width="100%"/>
                 </div>
             </div>
             <div class="row" style="margin-top: 10px;">
                 <div class="col-md-12 text-center">
-                    Nicky Romeijn<br>Director
+                    @director.Person.Firstname @director.Person.Lastname<br>Director
                 </div>
             </div>
         </div>
+    }
 
-        <div data-toggle="modal" data-target="#castmodel" class="col-md-1" style="border: 1px dashed #CCCCCC; cursor: pointer; min-height: 150px;">
+    <div class="col-md-1" >
+        <div data-toggle="modal" data-target="#castmodel" style="border: 1px dashed #CCCCCC; cursor: pointer; min-height: 150px;">
             <div class="row">
                 <div class="col-md-12 text-center">
-                    <i style="font-size: 48px; color:#CCCCCC; padding-top: 50px;" class="fa fa-plus" aria-hidden="true"></i>
+                    <i style="font-size: 48px; color: #CCCCCC; padding-top: 50px;" class="fa fa-plus" aria-hidden="true"></i>
                 </div>
             </div>
-
         </div>
     </div>
+
+</div>
+
+
+
+
+
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <h3><i class="fa fa-trophy" aria-hidden="true"></i> Movie Awards</h3>
+            <hr>
+        </div>
+    </div>
+
+<div class="row">
+
+    @foreach (var awards in Model.MovieAward)
+    {
+        <div class="col-md-1">
+            <div class="row">
+                <div class="col-md-12">
+                    <img src="~/images/@(awards.Person.Gender + "cast.png")" width="100%"/>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-md-12 text-center">
+                    @awards.Person.Firstname @awards.Person.Lastname<br>Director
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="col-md-1" >
+        <div data-toggle="modal" data-target="#castmodel" style="border: 1px dashed #CCCCCC; cursor: pointer; min-height: 150px;">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <i style="font-size: 48px; color: #CCCCCC; padding-top: 50px;" class="fa fa-plus" aria-hidden="true"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
 
 
 </div>
 
 
 
-<div class="modal fade" id="castmodel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+
+<div class="modal fade" id="memberModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title" id="myModalLabel">Cast</h3>
+                <h3 class="modal-title" id="myModalLabel">Cast member</h3>
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-3">
-                        <div style="padding: 10px; text-align: center; width: 95%; background-color: white;">
-                            <img src="http://style.anu.edu.au/_anu/4/images/placeholders/person.png" width="100%"/>
-                        </div>
-                    </div>
-                    <div class="col-md-9">
 
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label class="col-md-2 control-label">Role</label>
-                                    <div class="col-md-10">
-                                        <input class="form-control"/>
+                    <form method="post" id="castmemberform" action="/api/moviecast">
+                           <input type="hidden" id="castMovie" name="MovieId" value="@Model.MovieId"/>
+                        <div class="col-md-3">
+                            <div style="padding: 10px; text-align: center; width: 95%; background-color: white;">
+                                <img src="~/images/mcast.png" width="100%"/>
+                            </div>
+                        </div>
+
+                        <div class="col-md-9">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <p style="color:#CCCCCC">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse scelerisque orci eget erat dignissim suscipit. Ut sagittis mi sed leo dapibus, ut tempor enim fringilla. Quisque auctor et nisi vitae scelerisque. Curabitur feugiat lorem et augue cursus, at finibus mi dictum. Integer vulputate dui id elit venenatis ultricies.</p>
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">Person</label>
+                                        <div class="col-md-10">
+                                            <select id="castPerson" class="form-control" name="PersonId">
+                                                @foreach (var person in (List<Person>) ViewData["Persons"])
+                                                {
+                                                    <option value="@person.PersonId">@person.Firstname @person.Lastname</option>
+                                                }
+                                            </select>
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top: 15px; margin-bottom: 25px;">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">Role</label>
+                                        <div class="col-md-10">
+                                            <input id="castRole" type="text" name="Role" class="form-control"/>
+                                            <span class="text-danger"></span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row" style="margin-top: 10px;">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label class="col-md-2 control-label">Firstname</label>
-                                    <div class="col-md-10">
-                                        <input class="form-control"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
 
-                        <div class="row" style="margin-top: 10px;">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label class="col-md-2 control-label">Lastname</label>
-                                    <div class="col-md-10">
-                                        <input class="form-control"/>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row" style="margin-top: 10px;">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label class="col-md-2 control-label">Gender</label>
-                                    <div class="col-md-2">
-                                        <label style="font-weight: normal;">
-                                            Male <input type="radio" name="gender" value="M"/>
-                                        </label>
-
-                                    </div>
-                                    <div class="col-md-5">
-                                        <label style="font-weight: normal;">Female
-                                            <input type="radio" name="gender" value="F"/>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
+                    </form>
 
                 </div>
 
 
             </div>
             <div class="modal-footer">
-                <button type="button"class="btn btn-default fletnix-btn " style="color: black; border: 1px solid #CCCCCC; background-color: white;" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-default fletnix-btn fletnix-red-background" style="color: white;">Save changes</button>
+                <a asp-action="Create" asp-controller="Person" asp-route-ref="@Model.MovieId"><button type="button" class="btn btn-default fletnix-btn pull-left" style="color: black; border: 1px solid #CCCCCC; background-color: white;">Create new person</button></a>
+                <button type="button" class="btn btn-default fletnix-btn " style="color: black; border: 1px solid #CCCCCC; background-color: white;" data-dismiss="modal">Close</button>
+                <button type="button" id="submitAddCast" class="btn btn-default fletnix-btn fletnix-red-background" style="color: white;">Save changes</button>
             </div>
         </div>
     </div>

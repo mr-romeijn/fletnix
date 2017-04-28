@@ -29,35 +29,34 @@
     @RenderSection("Stylesheets", required:false)
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top" style="background-color:@ViewData["navbg"]; padding-right:20px;">
-        <!--<div class="container">-->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-            <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand"><h1 class="fletnix-red-font" style="margin-top:0px; font-size:50px;">FLETNIX</h1></a>
-            </div>
+<nav class="navbar navbar-inverse navbar-fixed-top" style="background-color:@ViewData["navbg"]; padding-right:20px;">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand"><h1 class="fletnix-red-font" style="margin-top:0px; font-size:50px;">FLETNIX</h1></a>
+    </div>
 
-			<div class="navbar-collapse collapse">
-                <!--<ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-                </ul>-->
-            </div>
+    <div class="navbar-collapse collapse">
+        <!--<ul class="nav navbar-nav">
+            <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+            <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+            <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+        </ul>-->
+    </div>
 				
-            <ul class="nav navbar-nav navbar-right" style="margin-right:15px; margin-top:-30px;">
-	      <li><a class="fletnix-red-background" asp-controller="Home" asp-action="Login" style="font-weight:400; font-size:16px; color:white; border-radius:5px; padding:7px 17px 7px 17px;">Sign in</a></li>
-	    </ul>
-				
-    <!-- </div>-->
-    </nav>
+    <ul class="nav navbar-nav navbar-right" style="margin-right:15px; margin-top:-30px;">
+        <li><a class="fletnix-red-background" asp-controller="Home" asp-action="Login" style="font-weight:400; font-size:16px; color:white; border-radius:5px; padding:7px 17px 7px 17px;">Sign in</a></li>
+    </ul>
+</nav>
+
+@RenderSection("NavSupplement",required:false)
 
 		
-        @RenderBody()
+@RenderBody()
         <footer>
 			<div class="pull-right" style="padding-left:15px;">
                 <p style="color:@ViewData["footerColor"]">&copy; 2017 - fletnix - <a asp-controller="Home" asp-action="Contact">Contact us</a></p>

@@ -1,0 +1,61 @@
+@model fletnix.Models.Person
+
+@{
+    Layout = "_AdminLayout";
+}
+<div class="container-fluid" style="background-color: white; padding-top: 45px; padding-bottom: 45px;">
+    <div>
+        <div class="row">
+            <div class="col-md-10">
+                <h3>Movie detail</h3>
+            </div>
+            <div class="col-md-2">
+                <a asp-action="Index"> <button style="background-color: white; border: 1px solid #CCC; color: black;" class="btn fletnix-btn">Back to List</button></a>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-2">
+                <div class="shadow" style="cursor: pointer; padding: 10px; text-align: center; width: 95%; background-color: white;">
+                    <img width="100%" id="preview" src="~/images/@(Model.Gender + "cast.png")"/>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Lastname)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Lastname)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Firstname)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Firstname)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Gender)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Gender)
+                    </dd>
+                </dl>
+            </div>
+            </div>
+        </div>
+
+    <div style="margin-top: 25px;">
+        <a asp-action="Edit"  asp-route-id="@Model.PersonId">
+            <button class="btn fletnix-btn fletnix-red-background" style="color: white;">
+                Edit
+            </button>
+        </a>
+
+    </div>
+
+</div>
+
+
+
+

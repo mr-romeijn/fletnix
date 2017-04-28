@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace fletnix.Models
 {
@@ -6,5 +7,10 @@ namespace fletnix.Models
     {
         IEnumerable<Movie> GetMovies();
         IEnumerable<MovieGenre> GetGenres();
+        IEnumerable<MovieCast> GetMovieCast();
+        MovieCast GetMovieCastByPersonId(int id);
+        void UpdateMovieCast(MovieCast movieCast);
+        void AddMovieCast(MovieCast movieCast);
+        Task<bool> SaveChangesAsync();
     }
 }

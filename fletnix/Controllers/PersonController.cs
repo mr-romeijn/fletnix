@@ -2,32 +2,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using fletnix.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fletnix.Models;
-using Microsoft.AspNetCore.Http;
 
 namespace fletnix
 {
-    public class MovieController : Controller
+    public class PersonController : Controller
     {
         private readonly FLETNIXContext _context;
 
-        public MovieController(FLETNIXContext context)
+        public PersonController(FLETNIXContext context)
         {
             _context = context;    
         }
 
-        // GET: Movie
+        // GET: Person
         public async Task<IActionResult> Index()
         {
-            var fLETNIXContext = _context.Movie.Include(m => m.PreviousPartNavigation);
-            return View(await fLETNIXContext.ToListAsync());
+            return View(await _context.Person.ToListAsync());
         }
 
-        // GET: Movie/Details/5
+        // GET: Person/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -35,45 +32,49 @@ namespace fletnix
                 return NotFound();
             }
 
-            var movie = await _context.Movie
-                .Include(m => m.PreviousPartNavigation)
-                .SingleOrDefaultAsync(m => m.MovieId == id);
-            if (movie == null)
+            var person = await _context.Person
+                .SingleOrDefaultAsync(m => m.PersonId == id);
+            if (person == null)
             {
                 return NotFound();
             }
 
-            return View(movie);
+            return View(person);
         }
 
-        // GET: Movie/Create
+        // GET: Person/Create
         public IActionResult Create()
         {
-            ViewData["PreviousPart"] = new SelectList(_context.Movie, "MovieId", "Title");
             return View();
         }
 
-        // POST: Movie/Create
+        // POST: Person/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MovieId,Title,Duration,Description,PublicationYear,CoverImage,PreviousPart,Price,Url")] Movie movie, List<IFormFile> files)
+        public async Task<IActionResult> Create([Bind("PersonId,Lastname,Firstname,Gender")] Person person)
         {
-
-            var t = files;
-
             if (ModelState.IsValid)
             {
-                _context.Add(movie);
+                _context.Add(person);
                 await _context.SaveChangesAsync();
+
+                if (Request.Query.ContainsKey("ref"))
+                {
+                    return RedirectToAction("Edit", "Movie", new { id = Request.Query["ref"], person = person.PersonId});
+                }
+
                 return RedirectToAction("Index");
             }
-            ViewData["PreviousPart"] = new SelectList(_context.Movie, "MovieId", "Title", movie.PreviousPart);
-            return RedirectToAction("Edit", new {id = movie.MovieId});
+
+           
+
+
+            return View(person);
         }
 
-        // GET: Movie/Edit/5
+        // GET: Person/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -81,32 +82,22 @@ namespace fletnix
                 return NotFound();
             }
 
-            var movie = await _context.Movie.SingleOrDefaultAsync(m => m.MovieId == id);
-            if (movie == null)
+            var person = await _context.Person.SingleOrDefaultAsync(m => m.PersonId == id);
+            if (person == null)
             {
                 return NotFound();
             }
-
-
-            ViewData["PreviousPart"] = new SelectList(_context.Movie, "MovieId", "Title", movie.PreviousPart);
-            ViewData["Persons"] = _context.Person.ToList();
-
-            var castMembers =  _context.MovieCast.Where(e => e.MovieId == movie.MovieId).ToList();
-            ViewData["MovieCast"] = castMembers;
-
-
-            return View(movie);
+            return View(person);
         }
 
-        // POST: Movie/Edit/5
+        // POST: Person/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MovieId,Title,Duration,Description,PublicationYear,CoverImage,PreviousPart,Price,Url")] Movie movie)
+        public async Task<IActionResult> Edit(int id, [Bind("PersonId,Lastname,Firstname,Gender")] Person person)
         {
-
-            if (id != movie.MovieId)
+            if (id != person.PersonId)
             {
                 return NotFound();
             }
@@ -115,12 +106,12 @@ namespace fletnix
             {
                 try
                 {
-                    _context.Update(movie);
+                    _context.Update(person);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MovieExists(movie.MovieId))
+                    if (!PersonExists(person.PersonId))
                     {
                         return NotFound();
                     }
@@ -131,13 +122,10 @@ namespace fletnix
                 }
                 return RedirectToAction("Index");
             }
-
-            ViewData["Persons"] = _context.Person.ToList();
-            ViewData["PreviousPart"] = new SelectList(_context.Movie, "MovieId", "Title", movie.PreviousPart);
-            return View(movie);
+            return View(person);
         }
 
-        // GET: Movie/Delete/5
+        // GET: Person/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -145,32 +133,30 @@ namespace fletnix
                 return NotFound();
             }
 
-            var movie = await _context.Movie
-                .Include(m => m.PreviousPartNavigation)
-                .SingleOrDefaultAsync(m => m.MovieId == id);
-            if (movie == null)
+            var person = await _context.Person
+                .SingleOrDefaultAsync(m => m.PersonId == id);
+            if (person == null)
             {
                 return NotFound();
             }
 
-            return View(movie);
+            return View(person);
         }
 
-        // POST: Movie/Delete/5
+        // POST: Person/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var movie = await _context.Movie.SingleOrDefaultAsync(m => m.MovieId == id);
-            _context.Movie.Remove(movie);
+            var person = await _context.Person.SingleOrDefaultAsync(m => m.PersonId == id);
+            _context.Person.Remove(person);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
-        private bool MovieExists(int id)
+        private bool PersonExists(int id)
         {
-            return _context.Movie.Any(e => e.MovieId == id);
+            return _context.Person.Any(e => e.PersonId == id);
         }
-
     }
 }

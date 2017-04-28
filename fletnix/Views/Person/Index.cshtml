@@ -1,0 +1,72 @@
+@model IEnumerable<fletnix.Models.Person>
+
+@{
+    ViewData["Title"] = "Person manager";
+    Layout = "_AdminLayout";
+}
+
+@section stylesheets {
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/jq-2.2.4/dt-1.10.15/cr-1.3.3/fh-3.1.2/r-2.1.1/sc-1.4.2/datatables.min.css"/>
+}
+
+@section scripts {
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs/jq-2.2.4/dt-1.10.15/cr-1.3.3/fh-3.1.2/r-2.1.1/sc-1.4.2/datatables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#indexTable').DataTable();
+        } );
+    </script>
+}
+
+<div class="container-fluid" style="padding-top: 45px; background-color: white; padding-bottom: 45px;">
+
+    <a style="color: white;" asp-action="Create">
+        <button class="btn fletnix-red-background  fletnix-btn" style="color: white;">Create New</button>
+    </a>
+
+    <hr>
+    <table id="indexTable" class="table table-striped table-bordered">
+        <thead>
+        <tr>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Firstname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Lastname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Gender)
+            </th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model) {
+            <tr>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Firstname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Lastname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Gender)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.PersonId">Edit</a>
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.PersonId">Details</a>
+                </td>
+                <td>
+                    <a asp-action="Delete" asp-route-id="@item.PersonId">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
