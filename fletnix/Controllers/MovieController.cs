@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using fletnix.Attributes;
+using fletnix.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -21,9 +22,34 @@ namespace fletnix
         }
 
         // GET: Movie
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string currentFilter, string searchString, int? page)
         {
-            var fLETNIXContext = _context.Movie.Include(m => m.PreviousPartNavigation);
+            ViewData["CurrentFilter"] = searchString;
+            IQueryable<Movie> fLETNIXContext;
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            System.Net.WebUtility.HtmlDecode(searchString);
+
+            //var searchParams = System.Net.WebUtility.HtmlDecode(searchString).Split(null).ToList();
+
+            var movies = _context.Movie.AsNoTracking();
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                movies = movies.Where(m => (m.Title.ToLower().Contains(searchString.ToLower()) || m.Description.ToLower().Contains(searchString.ToLower())));
+            }
+
+            int pageSize = 15;
+            return View(await PaginatedList<Movie>.CreateAsync(movies.Include(m => m.PreviousPartNavigation), page ?? 1, pageSize));
+
             return View(await fLETNIXContext.ToListAsync());
         }
 
@@ -88,11 +114,17 @@ namespace fletnix
             }
 
 
-            ViewData["PreviousPart"] = new SelectList(_context.Movie, "MovieId", "Title", movie.PreviousPart);
-            ViewData["Persons"] = _context.Person.ToList();
+            //ViewData["PreviousPart"] = new SelectList(_context.Movie, "MovieId", "Title", movie.PreviousPart);
+            //ViewData["Persons"] = _context.Person.ToList();
 
-            var castMembers =  _context.MovieCast.Where(e => e.MovieId == movie.MovieId).ToList();
-            ViewData["MovieCast"] = castMembers;
+            _context.Movie
+                .Include(director => director.MovieDirector).ThenInclude(person => person.Person)
+                .Include(cast => cast.MovieCast).ThenInclude(person => person.Person)
+                .Include(award => award.MovieAward)
+                .Include(genre => genre.MovieGenre).First(m => m.MovieId == id);
+
+
+            movie.PreviousPartNavigation = _context.Movie.FirstOrDefault(m => movie.PreviousPart == m.MovieId);
 
 
             return View(movie);
@@ -132,8 +164,7 @@ namespace fletnix
                 return RedirectToAction("Index");
             }
 
-            ViewData["Persons"] = _context.Person.ToList();
-            ViewData["PreviousPart"] = new SelectList(_context.Movie, "MovieId", "Title", movie.PreviousPart);
+            //ViewData["PreviousPart"] = new SelectList(_context.Movie, "MovieId", "Title", movie.PreviousPart);
             return View(movie);
         }
 

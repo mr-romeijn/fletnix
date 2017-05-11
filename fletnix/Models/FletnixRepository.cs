@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace fletnix.Models
@@ -22,6 +24,17 @@ namespace fletnix.Models
             return _context.Movie.ToList();
         }
 
+        public IEnumerable<Movie> SearchMoviesByTitle(string title)
+        {
+            return _context.Movie.AsNoTracking().Where(m => (m.Title.ToLower().Contains(title.ToLower())))
+                .OrderByDescending(m => m.PublicationYear);
+        }
+
+        public IEnumerable<Person> SearchPersonsByName(string name)
+        {
+            return _context.Person.AsNoTracking().Where(p=>( p.Firstname.ToLower().Contains(name.ToLower()) || p.Lastname.ToLower().Contains(name.ToLower())) ).OrderByDescending(p=>p.PersonId);
+        }
+
         public IEnumerable<MovieGenre> GetGenres()
         {
             return _context.MovieGenre.ToList();
@@ -38,23 +51,38 @@ namespace fletnix.Models
             return _context.MovieCast.FirstOrDefault(e => e.PersonId == id);
         }
 
-        public void UpdateMovieCast(MovieCast movieCast)
+        public Person GetPersonById(int id)
         {
-            _context.MovieCast.Update(movieCast);
+            return _context.Person.FirstOrDefault(e => e.PersonId == id);
         }
 
+        public void UpdateMovieCast(MovieCast movieCast)
+        {
+
+            _context.MovieCast.Remove(_context.MovieCast.FirstOrDefault(m => (m.MovieId == movieCast.MovieId && m.PersonId == movieCast.PersonId)));
+            _context.MovieCast.Add(movieCast);
+
+            /* var cast = _context.MovieCast
+                 .Where(e => e.PersonId == movieCast.PersonId)
+                 .First(e => e.MovieId == movieCast.MovieId)
+
+             cast.Role = movieCast.Role; */
+        }
+
+        public void DeleteMovieCast(MovieCast movieCast)
+        {
+            //_context.MovieCast.Remove(movieCast);
+            _context.MovieCast.Remove(_context.MovieCast.FirstOrDefault(m => (m.MovieId == movieCast.MovieId && m.PersonId == movieCast.PersonId)));
+        }
 
         public void AddMovieCast(MovieCast movieCast)
         {
-            _context.Add(movieCast);
+            _context.MovieCast.Add(movieCast);
         }
 
         public async Task<bool> SaveChangesAsync()
         {
             return (await _context.SaveChangesAsync()) > 0;
         }
-
-
-
     }
 }

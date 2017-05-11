@@ -17,16 +17,17 @@
        <h1 class="fletnix-red-font" style="margin-top:18px; margin-left: 15px; text-transform: uppercase; font-size:15px;">@ViewBag.indicator</h1>
     </div>
 
-    <div class="navbar-collapse collapse">
+    <div class="navbar-admin navbar-collapse collapse">
         <ul class="nav navbar-nav" style="margin-left: 15px;">
-            <li><a asp-area="" asp-controller="Movie" asp-action="Index">Movie</a></li>
-            <li><a asp-area="" asp-controller="Person" asp-action="Index">Person</a></li>
+            <li><a asp-area="" asp-controller="Movie" asp-action="Index">Movies</a></li>
+            <li><a asp-area="" asp-controller="Person" asp-action="Index">Persons</a></li>
             <li><a asp-area="" asp-controller="MovieAward" asp-action="Index">MovieAwards</a></li>
         </ul>
     </div>
+    <div class="crudNotification" style="display: none;">Successfully added castmember</div>
 </nav>
 
-<div style="margin-top: 50px;">
+<div id="bodyContainer" ng-app="fletnix" style="margin-top: 50px;">
 @RenderBody()
 </div>
 
@@ -36,23 +37,24 @@
 }
 
 
-
 @section scripts {
-	<script>
-	     var getUrlParameter = function getUrlParameter(sParam) {
-	            var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-	                sURLVariables = sPageURL.split('&'),
-	                sParameterName,
-	                i;
+    <script>
+        var getUrlParameter = function getUrlParameter(sParam) {
+            var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
 
-	            for (i = 0; i < sURLVariables.length; i++) {
-	                sParameterName = sURLVariables[i].split('=');
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
 
-	                if (sParameterName[0] === sParam) {
-	                    return sParameterName[1] === undefined ? true : sParameterName[1];
-	                }
-	            }
-	        };
-	</script>
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : sParameterName[1];
+                }
+            }
+        };
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
+    <script src="~/js/app.js"></script>
     @RenderSection("Scripts", required: false)
 }

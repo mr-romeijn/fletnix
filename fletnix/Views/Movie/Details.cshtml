@@ -3,6 +3,20 @@
     Layout = "_AdminLayout";
     ViewBag.indicator = "Showing: " + Model.Title;
 }
+
+@section scripts {
+    <script>
+        $(document).ready(function() {
+
+            $.get('https://api.themoviedb.org/3/search/movie?api_key=8f3879e8c91096e1e468cf6c539dc1e7&query=' +encodeURI('@(Model.Title)'), (res) => {
+                if (res.results[0].poster_path) {
+                    $('#preview').attr('src','https://image.tmdb.org/t/p/w500/' + res.results[0].poster_path);
+                }
+            });
+        });
+    </script>
+}
+
 <div class="container-fluid" style="background-color: white; padding-top: 45px; padding-bottom: 45px;">
     <div>
         <div class="row">

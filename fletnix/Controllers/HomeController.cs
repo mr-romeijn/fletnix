@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 using fletnix.Models;
 using fletnix.Services;
 using fletnix.ViewModels;
+using IdentityModel.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using fletnix.Helpers;
 
 namespace fletnix.Controllers
 {
@@ -26,6 +28,7 @@ namespace fletnix.Controllers
 
         public IActionResult Index()
         {
+            Helpers.Login.Auth();
             return View();
         }
 

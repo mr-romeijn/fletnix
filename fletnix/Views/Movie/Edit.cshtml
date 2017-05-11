@@ -5,221 +5,212 @@
     ViewBag.indicator = "Editting: " + Model.Title + " ("+Model.PublicationYear+")";
 }
 
-@section scripts {
-    <script src="~/js/selectize.js"></script>
-    <script>
-
-       
-        function readURL(input) {
-
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-
-                reader.onload = function(e) {
-                    $('#preview').attr('src', e.target.result);
-                }
-
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        $("#imgInp").change(function() {
-            $('#sampletext').remove();
-            readURL(this);
-        });
-
-
-        var method = "POST";
-
-        $(document).ready(function() {
-
-            $('#submitAddCast').click(function() {
-                var person = $('#castPerson').val();
-                var movie = $('#castMovie').val();
-                var role = $('#castRole').val();
-                $.ajax
-                ({
-                    type: method,
-                    url: "/api/moviecast",
-                    beforeSend: (xhr) => { xhr.setRequestHeader('Content-Type', 'application/json') },
-                    dataType: 'json',
-                    async: true,
-                    data: JSON.stringify({ personId: person, movieId: movie, role: role }),
-                    success: function(res) {
-                        window.location = window.location.pathname;
-                    }
-                });
-            });
-
-            var urlperson = getUrlParameter("person");
-            if (urlperson) {
-                $('#castPerson').val(urlperson);
-                $("#memberModel").modal('toggle');
-            }
-
-
-        });
-
-        function newCastmember() {
-            method = "POST";
-            $("#castmemberform").trigger("reset");
-            $("#memberModel").modal('toggle');
-            console.log("setting method post");
-        }
-
-        function editCastMember(person, role) {
-            $('#castRole').val(role);
-            $('#castPerson').val(person);
-            $("#memberModel").modal('toggle');
-            method = "PATCH";
-        }
-
-    </script>
+@section stylesheets {
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
 }
 
-<div class="container-fluid" style="background-color: white; padding-top: 45px; padding-bottom: 45px;">
-    <div class="row">
-        <div class="col-md-10">
-            <h3>Editing Movie</h3>
-        </div>
-        <div class="col-md-2">
-            <a asp-action="Index"> <button style="background-color: white; border: 1px solid #CCC; color: black;" class="btn fletnix-btn">Back to List</button></a>
-        </div>
+<div class="container-fluid" ng-controller="movie.edit.controller" style="background-color: white; padding-top: 45px; padding-bottom: 45px;">
+<div class="row">
+    <div class="col-md-10">
+        <h3>Editing Movie</h3>
     </div>
-    <hr>
-    <div class="row">
-        <div class="col-md-9">
-            <form asp-action="Edit">
-                <div class="form-horizontal" style="padding: 25px; text-align: left;">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="form-group">
-                        <label asp-for="MovieId" class="col-md-2 control-label"></label>
-                        <div class="col-md-10">
-                            <input asp-for="MovieId" class="form-control"/>
-                            <span asp-validation-for="MovieId" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Title" class="col-md-2 control-label"></label>
-                        <div class="col-md-10">
-                            <input asp-for="Title" class="form-control"/>
-                            <span asp-validation-for="Title" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Duration" class="col-md-2 control-label"></label>
-                        <div class="col-md-10">
-                            <input asp-for="Duration" placeholder="Duration in minutes" class="form-control"/>
-                            <span asp-validation-for="Duration" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Description" class="col-md-2 control-label"></label>
-                        <div class="col-md-10">
-                            <input asp-for="Description" class="form-control"/>
-                            <span asp-validation-for="Description" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="PublicationYear" class="col-md-2 control-label"></label>
-                        <div class="col-md-10">
-                            <input asp-for="PublicationYear" class="form-control"/>
-                            <span asp-validation-for="PublicationYear" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="CoverImage" class="col-md-2 control-label"></label>
-                        <div class="col-md-10">
-                            <input asp-for="CoverImage" id="imgInp" name="cover" type="file" class="form-control"/>
-                            <span asp-validation-for="CoverImage" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="PreviousPart" class="col-md-2 control-label"></label>
-                        <div class="col-md-10">
-                            <select asp-for="PreviousPart" class="form-control" asp-items="ViewBag.PreviousPart"></select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Price" class="col-md-2 control-label"></label>
-                        <div class="col-md-10">
-                            <input asp-for="Price" class="form-control"/>
-                            <span asp-validation-for="Price" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Url" class="col-md-2 control-label"></label>
-                        <div class="col-md-10">
-                            <input asp-for="Url" class="form-control"/>
-                            <span asp-validation-for="Url" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-md-offset-2 col-md-10">
-                            <input type="submit" value="Save changes" class="btn btn-default fletnix-btn fletnix-red-background" style="color: white;" />
-                        </div>
+    <div class="col-md-2">
+        <a asp-action="Index"> <button style="background-color: white; border: 1px solid #CCC; color: black;" class="btn fletnix-btn">Back to List</button></a>
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="col-md-9">
+        <form asp-action="Edit">
+            <div class="form-horizontal" style="padding: 25px; text-align: left;">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="MovieId" class="col-md-2 control-label"></label>
+                    <div class="col-md-10">
+                        <input asp-for="MovieId" class="form-control"/>
+                        <span asp-validation-for="MovieId" class="text-danger"></span>
                     </div>
                 </div>
-            </form>
-        </div>
-
-        <div class="col-md-3">
-            <div class="shadow" style="cursor: pointer; padding: 10px; text-align: center; width: 95%; background-color: white; min-height: 540px;">
-                <img width="100%" id="preview" src="~/images/Moana.jpg"/>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <h3><i class="fa fa-users" aria-hidden="true"></i> Movie cast</h3>
-            <hr>
-        </div>
-    </div>
-    <div class="row">
-
-        @foreach (var cast in Model.MovieCast)
-        {
-            <div class="col-md-1" style="cursor: pointer;" onClick="editCastMember('@cast.PersonId','@cast.Role')">
-                <div class="row">
-                    <div class="col-md-12">
-                        <img height="105px" src="~/images/@(cast.Person.Gender + "cast.png")" width="100%"/>
+                <div class="form-group">
+                    <label asp-for="Title" class="col-md-2 control-label"></label>
+                    <div class="col-md-10">
+                        <input asp-for="Title" class="form-control"/>
+                        <span asp-validation-for="Title" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="row" style="margin-top: 10px;">
-                    <div class="col-md-12 text-center">
-                        @cast.Person.Firstname @cast.Person.Lastname<br><span style="color: #CCCCCC; font-size:12px;">@cast.Role</span>
+                <div class="form-group">
+                    <label asp-for="Duration" class="col-md-2 control-label"></label>
+                    <div class="col-md-10">
+                        <input asp-for="Duration" placeholder="Duration in minutes" class="form-control"/>
+                        <span asp-validation-for="Duration" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="col-md-2 control-label"></label>
+                    <div class="col-md-10">
+                        <input asp-for="Description" class="form-control"/>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PublicationYear" class="col-md-2 control-label"></label>
+                    <div class="col-md-10">
+                        <input asp-for="PublicationYear" class="form-control"/>
+                        <span asp-validation-for="PublicationYear" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="PreviousPart" class="col-md-2 control-label"></label>
+                    <div class="col-md-10">
+                        <select asp-for="PreviousPart" class="form-control" style="width: 40%;" id="previousPart">
+                            @if (Model.PreviousPartNavigation != null)
+                            {
+                                <option selected value="@Model.PreviousPartNavigation.MovieId">@("(" + Model.PreviousPartNavigation.PublicationYear + ") " + Model.PreviousPartNavigation.Title)</option>
+                            }
+                        </select>
+                        <span asp-validation-for="PreviousPart" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Price" class="col-md-2 control-label"></label>
+                    <div class="col-md-10">
+                        <input asp-for="Price" class="form-control"/>
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Url" class="col-md-2 control-label"></label>
+                    <div class="col-md-10">
+                        <input asp-for="Url" class="form-control"/>
+                        <span asp-validation-for="Url" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">Genre</label>
+                    <div class="col-md-10">
+                        <ul>
+                        @foreach (var movieGenre in Model.MovieGenre)
+                        {
+                            <li>@movieGenre.GenreName</li>
+                        }
+                        </ul>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Save changes" class="btn btn-default fletnix-btn fletnix-red-background" style="color: white;"/>
                     </div>
                 </div>
             </div>
-        }
+        </form>
+    </div>
 
-        <div class="col-md-1">
-            <div data-toggle="modal" data-target="#castmodel"  onclick="newCastmember()" style="border: 1px dashed #CCCCCC; cursor: pointer; min-height: 150px;">
-                <div class="row">
-                    <div class="col-md-12 text-center">
-                        <i style="font-size: 48px; color: #CCCCCC; padding-top: 50px;" class="fa fa-plus" aria-hidden="true"></i>
-                    </div>
+    <div class="col-md-3">
+        <div class="shadow" style="cursor: pointer; padding: 10px; text-align: center; width: 95%; background-color: white; min-height: 540px;">
+            <div id="preview-loader">
+
+                <div style="margin-top: 55%;" class="sk-folding-cube">
+                    <div class="sk-cube1 sk-cube"></div>
+                    <div class="sk-cube2 sk-cube"></div>
+                    <div class="sk-cube4 sk-cube"></div>
+                    <div class="sk-cube3 sk-cube"></div>
+                </div>
+
+                Trying to retrieve cover...
+
+            </div>
+
+            <img width="100%" style="display: none;" id="preview">
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <h3><i class="fa fa-users" aria-hidden="true"></i> Movie cast
+        </h3>
+        <hr>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <table id="cast" class="table table-striped table-bordered">
+            <thead>
+            <th>Gender</th>
+            <th>Name</th>
+            <th>Role</th>
+            <th></th>
+            <th></th>
+            </thead>
+            @foreach (var cast in Model.MovieCast)
+            {
+                if (cast.Person.Gender == null)
+                {
+                    cast.Person.Gender = "M";
+                }
+
+                <tr>
+                    <td>
+                        (@cast.Person.Gender) <img height="30px" src="~/images/@(cast.Person.Gender + "cast.png")"/>
+                    </td>
+                    <td>
+                        @cast.Person.Firstname @cast.Person.Lastname
+                    </td>
+                    <td>
+                        @cast.Role
+                    </td>
+                    <td>
+                        <span style="cursor: pointer;" onClick="editCastMember('@cast.PersonId', '@(cast.Person.Firstname + ' ' + cast.Person.Lastname)', '@cast.Role')">Edit</span>
+                    </td>
+                    <td>
+                        <span style="cursor: pointer;" onClick="deleteCastMember(@cast.PersonId, @Model.MovieId, '@(cast.Person.Firstname + ' ' + cast.Person.Lastname)')">Delete</span>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+
+
+    <!--<div class="col-md-1">
+        <div data-toggle="modal" data-target="#castmodel" onclick="newCastmember()" style="border: 1px dashed #CCCCCC; cursor: pointer; min-height: 150px;">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <i style="font-size: 48px; color: #CCCCCC; padding-top: 50px;" class="fa fa-plus" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
+    </div>-->
+</div>
 
+<div class="row">
+    <div class="col-md-12">
+        <button class="pull-right btn btn-default fletnix-btn fletnix-red-background" onclick="newCastmember()" style="margin-top: -70px; color: white;">Add new cast member</button>
     </div>
+</div>
 
 
-    <div class="row">
-        <div class="col-md-12">
-            <h3><i class="fa fa-user-secret" aria-hidden="true"></i> Movie Directors</h3>
-            <hr>
-        </div>
+
+<div class="row">
+    <div class="col-md-12">
+        <h3><i class="fa fa-user-secret" aria-hidden="true"></i> Movie Directors
+        </h3>
+        <hr>
     </div>
+</div>
 
 
 <div class="row">
 
     @foreach (var director in Model.MovieDirector)
     {
+        if (director.Person.Gender == null)
+        {
+            director.Person.Gender = "M";
+        }
+
         <div class="col-md-1">
             <div class="row">
                 <div class="col-md-12">
@@ -234,7 +225,7 @@
         </div>
     }
 
-    <div class="col-md-1" >
+    <div class="col-md-1">
         <div data-toggle="modal" data-target="#castmodel" style="border: 1px dashed #CCCCCC; cursor: pointer; min-height: 150px;">
             <div class="row">
                 <div class="col-md-12 text-center">
@@ -246,38 +237,57 @@
 
 </div>
 
+<br><br>
 
-
-
-
-
-
-    <div class="row">
-        <div class="col-md-12">
-            <h3><i class="fa fa-trophy" aria-hidden="true"></i> Movie Awards</h3>
-            <hr>
-        </div>
+<div class="row">
+    <div class="col-md-12">
+        <h3><i class="fa fa-trophy" aria-hidden="true"></i> Movie Awards
+        </h3>
+        <hr>
     </div>
+</div>
 
 <div class="row">
 
-    @foreach (var awards in Model.MovieAward)
-    {
-        <div class="col-md-1">
-            <div class="row">
-                <div class="col-md-12">
-                    <img src="~/images/@(awards.Person.Gender + "cast.png")" width="100%"/>
-                </div>
-            </div>
-            <div class="row" style="margin-top: 10px;">
-                <div class="col-md-12 text-center">
-                    @awards.Person.Firstname @awards.Person.Lastname<br>Director
-                </div>
-            </div>
-        </div>
-    }
+    <div class="col-md-12">
+        <table id="awards" class="table table-striped table-bordered">
+            <thead>
+            <th>Award</th>
+            <th>Type</th>
+            <th>Person</th>
+            <th>Result</th>
+            </thead>
+            <tbody>
+            @foreach (var awards in Model.MovieAward)
+            {
 
-    <div class="col-md-1" >
+                if (awards.Person.Gender == null)
+                {
+                    awards.Person.Gender = "M";
+                }
+
+                <tr>
+                    <td>
+                        <img src="~/images/@(awards.Name + ".png")" width="30"/> @awards.Name
+                    </td>
+                    <td>
+                        @awards.Type
+                    </td>
+                    <td>
+                        @awards.Person.Firstname @awards.Person.Lastname
+                    </td>
+                    <td>
+                        @awards.Result
+                    </td>
+                </tr>
+
+            }
+            </tbody>
+        </table>
+    </div>
+
+
+    <!--<div class="col-md-1">
         <div data-toggle="modal" data-target="#castmodel" style="border: 1px dashed #CCCCCC; cursor: pointer; min-height: 150px;">
             <div class="row">
                 <div class="col-md-12 text-center">
@@ -285,13 +295,20 @@
                 </div>
             </div>
         </div>
+    </div>-->
+
+</div>
+
+
+
+</div>
+
+<!--
+<div class="crudfooter" style="position: fixed; bottom: 0; width: 100vw; padding: 15px;  height: 90px; background-color: white; border-top: 1px solid #cccccc">
+    <div class="pull-right">
+        <button class="btn btn-default fletnix-btn fletnix-red-background" style="color: white;"> Save changes </button>
     </div>
-
-</div>
-
-
-
-</div>
+</div>-->
 
 
 
@@ -307,7 +324,7 @@
                 <div class="row">
 
                     <form method="post" id="castmemberform" action="/api/moviecast">
-                           <input type="hidden" id="castMovie" name="MovieId" value="@Model.MovieId"/>
+                        <input type="hidden" id="castMovie" name="MovieId" value="@Model.MovieId"/>
                         <div class="col-md-3">
                             <div style="padding: 10px; text-align: center; width: 95%; background-color: white;">
                                 <img src="~/images/mcast.png" width="100%"/>
@@ -326,12 +343,7 @@
                                     <div class="form-group">
                                         <label class="col-md-2 control-label">Person</label>
                                         <div class="col-md-10">
-                                            <select id="castPerson" class="form-control" name="PersonId">
-                                                @foreach (var person in (List<Person>) ViewData["Persons"])
-                                                {
-                                                    <option value="@person.PersonId">@person.Firstname @person.Lastname</option>
-                                                }
-                                            </select>
+                                            <select class="form-control" style="width: 100%;" id="person"></select>
                                             <span class="text-danger"></span>
                                         </div>
                                     </div>
@@ -356,8 +368,6 @@
                     </form>
 
                 </div>
-
-
             </div>
             <div class="modal-footer">
                 <a asp-action="Create" asp-controller="Person" asp-route-ref="@Model.MovieId"><button type="button" class="btn btn-default fletnix-btn pull-left" style="color: black; border: 1px solid #CCCCCC; background-color: white;">Create new person</button></a>
@@ -367,3 +377,204 @@
         </div>
     </div>
 </div>
+
+
+@section scripts {
+    <script src="~/js/selectize.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+
+    <script>
+
+
+        var method = "POST";
+
+        $(document).ready(function() {
+
+            $('#cast').DataTable({
+                "order": [[1, "asc"]]
+            });
+
+            $('#awards').DataTable({
+                "order": [[3, "asc"]]
+            });
+
+            $.get('https://api.themoviedb.org/3/search/movie?api_key=8f3879e8c91096e1e468cf6c539dc1e7&query=' +
+                encodeURI('@(Model.Title)'),
+                (res) => {
+                    setTimeout(() => {
+                            if (res.results[0]) {
+                                if (res.results[0].poster_path) {
+                                    $('#preview').attr('src',
+                                        'https://image.tmdb.org/t/p/w500/' + res.results[0].poster_path);
+                                    $('#preview-loader').fadeOut('slow',() => {
+                                        $('#preview').fadeIn('slow');
+                                    });
+                                } else {
+                                    $('#preview-loader').fadeOut('slow',() => {
+                                        $('#preview').attr('src','/images/no-poster.jpg');
+                                        $('#preview').fadeIn('slow');
+                                    });
+
+                                }
+                                if (res.results[0].backdrop_path) {
+                                    //$('.container-fluid').css('background-image',"url('https://image.tmdb.org/t/p/original/"+ res.results[0].backdrop_path+"')");
+                                }
+                            } else {
+                                $('#preview-loader').fadeOut('slow', () => {
+                                    $('#preview').attr('src','/images/no-poster.jpg');
+                                    $('#preview').fadeIn('slow');
+                                });
+
+                            }
+                        },
+                        200);
+
+                });
+
+            $('#submitAddCast').click(function() {
+                var person = $('#person').val();
+                var movie = $('#castMovie').val();
+                var role = $('#castRole').val();
+                $.ajax
+                ({
+                    type: method,
+                    url: "/api/moviecast",
+                    beforeSend: (xhr) => { xhr.setRequestHeader('Content-Type', 'application/json') },
+                    dataType: 'json',
+                    async: true,
+                    data: JSON.stringify({ personId: person, movieId: movie, role: role }),
+                    success: function(res) {
+                        $("#memberModel").modal('toggle');
+                        showNotification('success', "Castmember: "+person+" succesvol toegevoegd");
+                    }
+                });
+            });
+
+            var urlperson = getUrlParameter("person");
+            if (urlperson) {
+                $.get( "/api/persons/"+urlperson, function( data ) {
+                    $('#person').append($("<option></option>")
+                        .attr("value",data.personId)
+                        .text(data.firstname+" "+data.lastname));
+                });
+                //$('#castPerson').val(urlperson);
+                $("#memberModel").modal('toggle');
+            }
+        });
+
+
+        var searchUrl = "/api/movies/";
+        $("#previousPart").select2({
+            minimumInputLength: 4,
+            ajax: {
+                delay: 250,
+                url: function() {
+                    return searchUrl;
+                },
+                dataType: "json",
+                type: "GET",
+                data: function(params) {
+                    searchUrl = "/api/movies/search/" + params.term;
+                },
+                processResults: function(data) {
+                    return {
+                        results: $.map(data,
+                            function(item) {
+                                return {
+                                    text: "(" + item.publicationYear + ") " + item.title,
+                                    id: item.movieId
+                                }
+                            })
+                    };
+                }
+            }
+        });
+
+        $.fn.modal.Constructor.prototype.enforceFocus = function() {};
+        var searchUrlPersons = "/api/persons/";
+        $("#person").select2({
+            minimumInputLength: 4,
+            ajax: {
+                delay: 250,
+                url: function() {
+                    return searchUrlPersons;
+                },
+                dataType: "json",
+                type: "GET",
+                data: function(params) {
+                    searchUrlPersons = "/api/persons/search/" + params.term;
+                },
+                processResults: function(data) {
+                    return {
+                        results: $.map(data,
+                            function(item) {
+                                return {
+                                    text: item.firstname + " " + item.lastname,
+                                    id: item.personId
+                                }
+                            })
+                    };
+                }
+            }
+        });
+
+
+        function newCastmember() {
+            method = "POST";
+            $("#castmemberform").trigger("reset");
+            $("#memberModel").modal('toggle');
+            console.log("setting method post");
+        }
+
+        function editCastMember(personId, person, role) {
+            $('#castRole').val(role);
+            $('#person').append($("<option></option>")
+                .attr("value",personId)
+                .text(person));
+            $("#memberModel").modal('toggle');
+            method = "PATCH";
+        }
+
+        function deleteCastMember(personId, movieId, name) {
+            if (confirm("Zeker weten dat je castmember: " + name + " wil verwijderen?") === true) {
+                $.ajax({
+                    type: 'DELETE',
+                    url: "/api/moviecast",
+                    beforeSend: (xhr) => { xhr.setRequestHeader('Content-Type', 'application/json') },
+                    dataType: 'json',
+                    async: true,
+                    data: JSON.stringify({ personId: personId, movieId: movieId }),
+                    success: function(res) {
+                        //window.location = window.location.pathname;
+                        showNotification('success', "Castmember: " + name + " succesvol verwijderd");
+                    },
+                    error: function(e) {
+                       showNotification('success', "Castmember: " + name + " succesvol verwijderd");
+                    }
+                });
+            }
+        }
+
+        function showNotification(type, msg, cb) {
+            $('.crudNotification').addClass(type);
+            $('.crudNotification').html(msg);
+            $('.crudNotification').slideDown('fast',
+                () => {
+                    $('#bodyContainer').css('marginTop', '78px');
+                    setTimeout(() => {
+                            $('.crudNotification').slideUp('fast',
+                                () => {
+                                    $('.crudNotification').removeClass('success');
+                                    $('#bodyContainer').css('marginTop', '50px');
+                                    window.location = window.location.pathname;
+                                });
+                        },
+                        2500);
+                })
+        }
+
+    </script>
+}
+

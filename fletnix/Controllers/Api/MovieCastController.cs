@@ -51,6 +51,19 @@ namespace fletnix.Controllers.Api
             }
         }
 
+        [HttpDelete]
+        public async Task<IActionResult> Delete([FromBody] MovieCastViewModel castMember)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            _repository.DeleteMovieCast(Mapper.Map<MovieCast>(castMember));
+            if (await _repository.SaveChangesAsync())
+            {
+                return Ok($"api/moviecast/");
+            }
+            return BadRequest("Failed to save changes to the database");
+        }
+
         [HttpPatch]
         public async Task<IActionResult> Patch([FromBody] MovieCastViewModel castMember)
         {

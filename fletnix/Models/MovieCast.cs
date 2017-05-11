@@ -5,6 +5,7 @@ namespace fletnix.Models
 {
     public partial class MovieCast
     {
+
         public int MovieId { get; set; }
         public int PersonId { get; set; }
         public string Role { get; set; }

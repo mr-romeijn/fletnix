@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using AutoMapper;
+using fletnix.Helpers;
 using fletnix.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -41,12 +43,26 @@ namespace fletnix
 
             services.AddSingleton(Configuration);
 
+            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            services.AddIdentityServer()
+                .AddTemporarySigningCredential()
+                .AddInMemoryApiResources(Config.GetApiResources())
+                .AddInMemoryClients(Config.GetClients())
+                .AddTestUsers(Config.GetUsers())
+                .AddConfigurationStore(builder =>
+                    builder.UseSqlServer(Configuration["Database:FletnixAuth"], options =>
+                        options.MigrationsAssembly(migrationsAssembly)))
+                .AddOperationalStore(builder =>
+                    builder.UseSqlServer(Configuration["Database:FletnixAuth"], options =>
+                        options.MigrationsAssembly(migrationsAssembly)));
+
             services.AddDbContext<FLETNIXContext>();
 
             if (_env.IsDevelopment())
             {
                 services.AddScoped<IMailService, DebugMailService>();
             } else {
+				services.AddScoped<IMailService, DebugMailService>();
                 // Implement real service
             }
 
@@ -61,6 +77,15 @@ namespace fletnix
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+
+            app.UseIdentityServer();
+            app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
+            {
+                Authority = "http://localhost:5000",
+                RequireHttpsMetadata = false,
+
+                ApiName = "api1"
+            });
 	    
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug(LogLevel.Information);

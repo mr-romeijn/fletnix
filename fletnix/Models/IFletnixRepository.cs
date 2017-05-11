@@ -12,5 +12,9 @@ namespace fletnix.Models
         void UpdateMovieCast(MovieCast movieCast);
         void AddMovieCast(MovieCast movieCast);
         Task<bool> SaveChangesAsync();
+        IEnumerable<Movie> SearchMoviesByTitle(string title);
+        IEnumerable<Person> SearchPersonsByName(string name);
+        void DeleteMovieCast(MovieCast movieCast);
+        Person GetPersonById(int id);
     }
 }

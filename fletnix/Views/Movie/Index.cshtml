@@ -1,4 +1,5 @@
-@model IEnumerable<fletnix.Models.Movie>
+@using fletnix.Helpers
+@model fletnix.Helpers.PaginatedList<fletnix.Models.Movie>
 @{
     ViewData["Title"] = "Movies manager";
     Layout = "_AdminLayout";
@@ -13,44 +14,70 @@
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs/jq-2.2.4/dt-1.10.15/cr-1.3.3/fh-3.1.2/r-2.1.1/sc-1.4.2/datatables.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('#indexTable').DataTable();
-        } );
+            $('#indexTable').DataTable({
+                paging: false,
+                searching: false,
+            });
+        });
     </script>
 }
 
 <div class="container-fluid" style="padding-top: 45px; background-color: white; padding-bottom: 45px;">
+    <div class="row">
+        <div class="col-md-8">
+            <a style="color: white;" asp-action="Create">
+                <button class="btn fletnix-red-background  fletnix-btn" style="color: white;">Create New</button>
+            </a>
+        </div>
+        <div class=col-md-4>
+            <form asp-action="Index" method="get">
+                <div class="form-actions no-color">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <input type="text" placeholder="Find by title..." class="form-control" name="SearchString" value="@ViewData["currentFilter"]"/>
+                                <span class="input-group-btn">
+                                    <input type="submit" value="Search" class="btn btn-default fletnix-red-background" style="border: 1px solid red; border-radius: 0px; color: white;"/>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <a class="btn btn-default" style="border: 1px solid #CCCCCC; border-radius: 0px;"asp-action="Index">Back to Full List</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 
-    <a style="color: white;" asp-action="Create">
-        <button class="btn fletnix-red-background  fletnix-btn" style="color: white;">Create New</button>
-    </a>
 
     <hr>
     <table class="table table-striped table-bordered" id="indexTable">
         <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                 Title
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Duration)
+                Duration
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                Description
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PublicationYear)
+               Publication year
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CoverImage)
+               CoverImage
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+               Price
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Url)
+               Url
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PreviousPartNavigation)
+               Previous part
             </th>
             <th>
 
@@ -103,4 +130,26 @@
         }
         </tbody>
     </table>
+    @{
+        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    }
+
+    <div class="pull-right">
+        <a asp-action="Index"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-page="@(Model.PageIndex - 1)"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           class="btn btn-default @prevDisabled">
+            Previous
+        </a>
+        <a asp-action="Index"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-page="@(Model.PageIndex + 1)"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           class="btn btn-default @nextDisabled">
+            Next
+        </a>
+    </div>
+
 </div>
