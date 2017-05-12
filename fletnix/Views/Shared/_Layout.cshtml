@@ -26,7 +26,9 @@
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
+
     @RenderSection("Stylesheets", required:false)
+
 </head>
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top" style="background-color:@ViewData["navbg"]; padding-right:20px;">
@@ -49,7 +51,31 @@
     </div>
 				
     <ul class="nav navbar-nav navbar-right" style="margin-right:15px; margin-top:-30px;">
-        <li><a class="fletnix-red-background" asp-controller="Home" asp-action="Login" style="font-weight:400; font-size:16px; color:white; border-radius:5px; padding:7px 17px 7px 17px;">Sign in</a></li>
+
+        <li>
+        @if (!User.Identity.IsAuthenticated)
+        {
+            <a class="fletnix-red-background" asp-controller="Auth" asp-action="Login" style="font-weight: 400; font-size: 16px; color: white; border-radius: 5px; padding: 7px 17px 7px 17px;">Sign in</a>
+        }
+        else
+        {
+            <div class="pull-right" >
+            <div class="row" style="margin-top: -7px; margin-left: -25px;">
+                <div class="col-md-4"></div>
+                <div class="col-md-4 text-center" style="color: white; padding-top: 15px;">
+                    <div style="margin-left: 15px;"> @User.Identity </div>
+                </div>
+                <div class="col-md-2">
+                    <img src="~/images/mcast.png" style="width: 65%"/>
+                </div>
+                <div class="col-md-1">
+                    <a asp-controller="Auth" asp-action="Logout"><button class="btn fletnix-red-background" style="margin-top: 10px; color: white; border: 0px; border-radius: 0px;">Logout</button></a>
+                </div>
+            </div>
+            </div>
+        }
+        </li>
+
     </ul>
 </nav>
 

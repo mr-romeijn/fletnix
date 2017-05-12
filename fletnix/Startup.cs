@@ -1,20 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using fletnix.Data.Seeds;
 using fletnix.Helpers;
 using fletnix.Models;
+using fletnix.Models.Auth;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using fletnix.Services;
 using fletnix.ViewModels;
+using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Mappers;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 
 namespace fletnix
 {
@@ -32,7 +35,6 @@ namespace fletnix
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
 			_env = env;
-
 		}
 
         public IConfigurationRoot Configuration { get; }
@@ -42,21 +44,35 @@ namespace fletnix
         {
 
             services.AddSingleton(Configuration);
-
-            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-            services.AddIdentityServer()
-                .AddTemporarySigningCredential()
-                .AddInMemoryApiResources(Config.GetApiResources())
-                .AddInMemoryClients(Config.GetClients())
-                .AddTestUsers(Config.GetUsers())
-                .AddConfigurationStore(builder =>
-                    builder.UseSqlServer(Configuration["Database:FletnixAuth"], options =>
-                        options.MigrationsAssembly(migrationsAssembly)))
-                .AddOperationalStore(builder =>
-                    builder.UseSqlServer(Configuration["Database:FletnixAuth"], options =>
-                        options.MigrationsAssembly(migrationsAssembly)));
-
+            //services.AddTransient<IdentitySeedData>();
             services.AddDbContext<FLETNIXContext>();
+
+            //IDENTITY INTEGRATED
+            /*services.AddIdentity<ApplicationUser, IdentityRole>(config =>
+                {
+                    config.User.RequireUniqueEmail = true;
+                    config.Password.RequiredLength = 5;
+                    config.Password.RequireNonAlphanumeric = false;
+                    config.Cookies.ApplicationCookie.LoginPath = "/Auth/Login";
+                    config.Cookies.ApplicationCookie.Events = new CookieAuthenticationEvents()
+                    {
+                        OnRedirectToLogin = async ctx =>
+                        {
+                            if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
+                            {
+                                ctx.Response.StatusCode = 401;
+                            }
+                            else
+                            {
+                                ctx.Response.Redirect(ctx.RedirectUri);
+                            }
+                            await Task.Yield();
+                        }
+                    };
+                })
+                .AddEntityFrameworkStores<FLETNIXContext>()
+                .AddDefaultTokenProviders();*/
+
 
             if (_env.IsDevelopment())
             {
@@ -71,22 +87,31 @@ namespace fletnix
             services.AddScoped<IFletnixRepository, FletnixRepository>();
 
             // Add framework services.
-            services.AddMvc();
+            services.AddMvc(config =>
+            {
+                if(_env.IsProduction()) config.Filters.Add(new RequireHttpsAttribute());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
 
-            app.UseIdentityServer();
-            app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
-            {
-                Authority = "http://localhost:5000",
-                RequireHttpsMetadata = false,
+            //app.UseIdentity();
+            //app.UseIdentityServer();
 
-                ApiName = "api1"
+            app.UseCookieAuthentication(new CookieAuthenticationOptions {
+                AuthenticationScheme = "cookie"
             });
-	    
+
+            app.UseOpenIdConnectAuthentication(new OpenIdConnectOptions {
+                ClientId = "fletnix",
+                RequireHttpsMetadata = false,
+                Authority = "http://localhost:5002/",
+                SignInScheme = "cookie",
+
+            });
+
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug(LogLevel.Information);
 
@@ -113,6 +138,13 @@ namespace fletnix
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            //seeder.EnsureSeedData().Wait();
         }
+
+
+
+
+
     }
 }

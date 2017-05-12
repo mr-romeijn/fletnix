@@ -3,10 +3,10 @@ using IdentityModel.Client;
 
 namespace fletnix.Helpers
 {
-    public class Login
+    public class Token
     {
 
-        public static async void Auth(string client = "ro.client", string secret = "secret", string username = "alice", string password = "password", string scope = "api1")
+        public static async void get(string client = "ro.client", string secret = "secret", string username = "alice", string password = "password", string scope = "api1")
         {
             var disco = await DiscoveryClient.GetAsync("http://localhost:5000");
             var tokenClient = new TokenClient(disco.TokenEndpoint, client, secret);

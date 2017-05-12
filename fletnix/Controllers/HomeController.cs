@@ -28,8 +28,7 @@ namespace fletnix.Controllers
 
         public IActionResult Index()
         {
-            Helpers.Login.Auth();
-            return View();
+           return View();
         }
 
         public IActionResult About()

@@ -1,0 +1,48 @@
+@foreach (var item in Model)
+{
+    <div class="col-md-2" style="margin-bottom: 30px;">
+        <a asp-action="Edit" asp-route-id="@item.MovieId">
+            <div style="padding: 5px;" data-id="@item.MovieId" data-title="@item.Title" class="movie shadow">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-bordered">
+                            <tr>
+                                <td style="height: 75px;">
+                                    <b> @Html.DisplayFor(modelItem => item.Title) </b>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row" style="padding-top: 0px;">
+                    <div class="col-md-12" style="text-align: center; height: 408px; max-height: 408px; max-height: 408px; padding-top: 0px; margin-top: -20px;">
+                        <img id="movie-poster-@item.MovieId" src="~/images/no-poster.jpg" width="100%"/>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-bordered">
+                            <tr>
+                                <td>
+                                    Publication
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.PublicationYear)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Previous part
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.PreviousPartNavigation.Title)
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using IdentityServer4;
 using IdentityServer4.Models;
 using IdentityServer4.Test;
 
@@ -14,22 +15,13 @@ namespace fletnix.Helpers
             };
         }
 
-        public static List<TestUser> GetUsers()
+
+        public static IEnumerable<IdentityResource> GetIdentityResources()
         {
-            return new List<TestUser>
+            return new List<IdentityResource>
             {
-                new TestUser
-                {
-                    SubjectId = "1",
-                    Username = "alice",
-                    Password = "password"
-                },
-                new TestUser
-                {
-                    SubjectId = "2",
-                    Username = "bob",
-                    Password = "password"
-                }
+                new IdentityResources.OpenId(),
+                new IdentityResources.Profile(),
             };
         }
 
@@ -37,20 +29,29 @@ namespace fletnix.Helpers
         {
             return new List<Client>
             {
-                // other clients omitted...
-
-                // resource owner password grant client
                 new Client
                 {
-                    ClientId = "ro.client",
-                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                    ClientId = "fletnix",
+                    ClientName = "Fletnix Client",
+                    AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,
+
+                    RequireConsent = false,
 
                     ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     },
 
-                    AllowedScopes = { "api1" }
+                    RedirectUris           = { "http://localhost:5002/signin-oidc" },
+                    PostLogoutRedirectUris = { "http://localhost:5002/signout-callback-oidc" },
+
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "api1"
+                    },
+                    AllowOfflineAccess = true
                 }
             };
         }

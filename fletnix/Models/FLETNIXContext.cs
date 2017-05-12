@@ -1,4 +1,6 @@
 ﻿using System;
+using fletnix.Models.Auth;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
@@ -6,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace fletnix.Models
 {
-    public partial class FLETNIXContext : DbContext
+    public partial class FLETNIXContext : IdentityDbContext<ApplicationUser>
     {
         private IConfigurationRoot _config;
         public virtual DbSet<Award> Award { get; set; }
@@ -30,12 +32,14 @@ namespace fletnix.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+            //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
             optionsBuilder.UseSqlServer(_config["Database:Fletnix"]);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Award>(entity =>
             {
                 entity.HasKey(e => e.Name)
