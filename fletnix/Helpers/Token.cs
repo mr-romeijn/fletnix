@@ -1,26 +1,37 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using IdentityModel.Client;
 
 namespace fletnix.Helpers
 {
-    public class Token
+    public static class Token
     {
-
-        public static async void get(string client = "ro.client", string secret = "secret", string username = "alice", string password = "password", string scope = "api1")
+        public class UserModel
         {
-            var disco = await DiscoveryClient.GetAsync("http://localhost:5000");
-            var tokenClient = new TokenClient(disco.TokenEndpoint, client, secret);
-            var tokenResponse = await tokenClient.RequestResourceOwnerPasswordAsync(username, password, scope);
+            public string Name { get; set; }
+            public string Role { get; set; }
+            public string Email { get; set; }
+        }
 
-            if (tokenResponse.IsError)
+        public static UserModel User(IEnumerable<Claim> userClaims)
+        {
+            var name = userClaims.Where(c => c.Type == "name")
+                .Select(c => c.Value).FirstOrDefault();
+
+            var role = userClaims.Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value).FirstOrDefault();
+
+            var email = userClaims.Where(c => c.Type == ClaimTypes.Email)
+                .Select(c => c.Value).FirstOrDefault();
+
+            return new UserModel()
             {
-                Console.WriteLine(tokenResponse.Error);
-
-            }
-
-            Console.WriteLine(tokenResponse.Json);
-            Console.WriteLine("\n\n");
-
+                Email = email,
+                Name = name,
+                Role = role
+            };
         }
     }
 }

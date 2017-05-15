@@ -17,7 +17,7 @@ namespace IdentityServer.Helpers
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Email,
                         "role",
-                        "customAPI.write"
+                        "api1"
                     },
                     RedirectUris = new List<string> {"http://localhost:5000/signin-oidc"},
                     PostLogoutRedirectUris = new List<string> {"http://localhost:5000"}

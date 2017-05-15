@@ -1,86 +1,69 @@
 ﻿@model LoginViewModel
 
-<div class="login-page">
-    <div class="page-header">
-        <h1>Login</h1>
-    </div>
+@{
+    Layout = "_FletnixLayout";
+}
 
-    @Html.Partial("_ValidationSummary")
 
-    <div class="row">
+@section scripts {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}
 
-        @if (Model.EnableLocalLogin)
-        {
-            <div class="col-sm-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Local Login</h3>
+<div class="container-fluid body-content" style="margin-top:30px; padding-bottom:150px; background-image:url('/images/thecrown.jpg'); background-size:cover;">
+    <div class="row" style="padding:30px;">
+        <div class="col-md-4"></div>
+        <div class="col-md-4" style="min-height:440px; padding-bottom:25px; background-color:white;">
+            <h2 class="light" style="color:black;">Sign in</h2> <hr>
+              <form asp-route="Login">
+				<input type="hidden" asp-for="ReturnUrl" />
+                <span asp-validation-summary="ModelOnly"></span>
+
+                @if (ViewBag.FormNotification != null)
+                {
+                    <div class="alert alert-success">
+                        <strong>Success!</strong> @ViewBag.FormNotification
                     </div>
-                    <div class="panel-body">
+                }
 
-                        <form asp-route="Login">
-                            <input type="hidden" asp-for="ReturnUrl" />
+                <div class="row" style="margin-bottom:10px;">
+                    <div class="col-md-12">
+                        <div class="form-group has-success has-warning has-error">
+                            <label asp-for="Username"></label>
+                            <input type="text" asp-for="Username" style="width: 100%;" class="form-control-custom form-control"/>
+                            <span class="help-block" asp-validation-for="Username"></span>
+                        </div>
+                    </div>
 
-                            <fieldset>
-                                <div class="form-group">
-                                    <label asp-for="Username"></label>
-                                    <input class="form-control" placeholder="Username" asp-for="Username" autofocus>
-                                </div>
-                                <div class="form-group">
-                                    <label asp-for="Password"></label>
-                                    <input type="password" class="form-control" placeholder="Password" asp-for="Password" autocomplete="off">
-                                </div>
-                                @if (Model.AllowRememberLogin)
-                                {
-                                    <div class="form-group login-remember">
-                                        <label asp-for="RememberLogin">
-                                            <input asp-for="RememberLogin">
-                                            <strong>Remember My Login</strong>
-                                        </label>
-                                    </div>
-                                }
-                                <div class="form-group">
-                                    <button class="btn btn-primary">Login</button>
-                                </div>
-                            </fieldset>
-                        </form>
+                </div>
+                <div class="row"  style="margin-bottom:10px;">
+                    <div class="col-md-12">
+                        <div class="form-group has-success has-warning has-error">
+                            <label asp-for="Password"></label>
+                            <input type="password" asp-for="Password" style="width: 100%;"  class="form-control-custom form-control"/>
+                            <span class="help-block" asp-validation-for="Password"></span>
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
 
-        @if (Model.VisibleExternalProviders.Any())
-        {
-            <div class="col-md-6 col-sm-6 external-providers">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">External Login</h3>
+                @if (Model.AllowRememberLogin)
+                {
+                    <div class="form-group login-remember">
+                        <label asp-for="RememberLogin">
+                            <input asp-for="RememberLogin">
+                            <strong>Remember My Login</strong>
+                        </label>
                     </div>
-                    <div class="panel-body">
-                        <ul class="list-inline">
-                            @foreach (var provider in Model.VisibleExternalProviders)
-                            {
-                                <li>
-                                    <a class="btn btn-default"
-                                       asp-action="ExternalLogin"
-                                       asp-route-provider="@provider.AuthenticationScheme"
-                                       asp-route-returnUrl="@Model.ReturnUrl">
-                                        @provider.DisplayName
-                                    </a>
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        }
+                }<br>
 
-        @if (!Model.EnableLocalLogin && !Model.VisibleExternalProviders.Any())
-        {
-            <div class="alert alert-warning">
-                <strong>Invalid login request</strong>
-                There are no login schemes configured for this client.
-            </div>
-        }
+                <button style="margin-top:20px; width:100%; height:55px; border:none; border-radius:0px; padding:7px 20px 7px 20px; color:white; font-size:18px;" class="fletnix-btn fletnix-red-background">Sign in</button>
+                <hr>
+            </form>
+        </div>
+        <div class="col-md-3"></div>
     </div>
+</div>
+<div class="container-fluid">
+    <br>
+    <p style="color: #777777; font-size: 16px;">Totally not copied from Netflix..</p>
 </div>

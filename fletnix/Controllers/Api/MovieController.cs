@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using fletnix.Models;
 using fletnix.ViewModels;
+using IdentityServer4.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Token = fletnix.Helpers.Token;
 
 namespace fletnix.Controllers.Api
 {
@@ -22,6 +25,39 @@ namespace fletnix.Controllers.Api
         {
             _repository = repository;
             //_logger = logger;
+        }
+
+        [HttpGet]
+        [Route("/api/token")]
+        public IActionResult GetClaims()
+        {
+
+            //Token.Set(User.Claims);
+
+            var claims = User.Claims
+                .Select(a => new
+                {
+                    AreaId = a.Type,
+                    Title = a.Value
+                });
+
+           // return new JsonResult(claims);
+
+            var name = User.Claims.Where(c => c.Type == "name")
+                .Select(c => c.Value).FirstOrDefault();
+
+            var role = User.Claims.Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value).FirstOrDefault();
+
+            var email = User.Claims.Where(c => c.Type == ClaimTypes.Email)
+                .Select(c => c.Value).FirstOrDefault();
+
+            var dict = new Dictionary<String, String>();
+            dict.Add("name", name);
+            dict.Add("role", role);
+            dict.Add("email", email);
+
+            return new JsonResult(dict);
         }
 
         [HttpGet]

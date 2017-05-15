@@ -13,11 +13,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using fletnix.Services;
 using fletnix.ViewModels;
+using IdentityModel;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace fletnix
 {
@@ -46,6 +48,7 @@ namespace fletnix
             services.AddSingleton(Configuration);
             //services.AddTransient<IdentitySeedData>();
             services.AddDbContext<FLETNIXContext>();
+
 
             //IDENTITY INTEGRATED
             /*services.AddIdentity<ApplicationUser, IdentityRole>(config =>
@@ -104,11 +107,37 @@ namespace fletnix
                 AuthenticationScheme = "cookie"
             });
 
-            app.UseOpenIdConnectAuthentication(new OpenIdConnectOptions {
+
+            /*app.UseOpenIdConnectAuthentication(new OpenIdConnectOptions {
                 ClientId = "fletnix",
                 RequireHttpsMetadata = false,
                 Authority = "http://localhost:5002/",
                 SignInScheme = "cookie",
+            });*/
+
+
+            app.UseOpenIdConnectAuthentication(new OpenIdConnectOptions
+            {
+
+                AuthenticationScheme = "oidc",
+                SignInScheme = "cookie",
+                Authority = "http://localhost:5002/",
+                RequireHttpsMetadata = false,
+                ClientId = "fletnix",
+                //ResponseType = "code id_token",
+                Scope = { "openid", "profile", "email", "role" },
+                GetClaimsFromUserInfoEndpoint = true,
+                AutomaticChallenge = true,
+                AutomaticAuthenticate = true,
+
+                //SaveTokens = true,
+
+                TokenValidationParameters = new TokenValidationParameters
+                {
+                    NameClaimType = JwtClaimTypes.Name,
+                    RoleClaimType = JwtClaimTypes.Role,
+                }
+
 
             });
 

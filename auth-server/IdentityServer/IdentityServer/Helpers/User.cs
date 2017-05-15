@@ -14,7 +14,8 @@ namespace IdentityServer.Helpers
                     Password = "password",
                     Claims = new List<Claim> {
                         new Claim(JwtClaimTypes.Email, "nromeijn@gmail.com"),
-                        new Claim(JwtClaimTypes.Role, "admin")
+                        new Claim(JwtClaimTypes.Role, "admin"),
+                        new Claim(JwtClaimTypes.Name, "nromeijn")
                     }
                 }
             };
