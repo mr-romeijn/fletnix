@@ -12,7 +12,7 @@ namespace fletnix.Controllers.Api
 {
 
     [Route("/api/persons")]
-    public class PersonController : Controller
+    public class PersonController : WalledGarden
     {
         private readonly IFletnixRepository _repository;
 

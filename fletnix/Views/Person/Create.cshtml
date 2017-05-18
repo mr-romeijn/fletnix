@@ -3,6 +3,7 @@
 @{
     Layout = "_AdminLayout";
     string referal = Context.Request.Query["ref"];
+    string editType = Context.Request.Query["editType"];
 }
 
 @section scripts {
@@ -37,7 +38,7 @@
         </div>
 
         <div class="col-md-9" style="padding-top: 20px;">
-            <form asp-action="Create" asp-route-ref="@referal">
+            <form asp-action="Create" asp-route-ref="@referal" asp-route-editType="@editType">
                 <div class="form-horizontal">
 
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using fletnix.Attributes;
+using fletnix.Controllers;
 using fletnix.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,8 +14,8 @@ using Microsoft.AspNetCore.Http;
 
 namespace fletnix
 {
-    [Authorize]
-    public class MovieController : Controller
+
+    public class MovieController : WalledGarden
     {
         private readonly FLETNIXContext _context;
 
@@ -119,15 +120,17 @@ namespace fletnix
             //ViewData["PreviousPart"] = new SelectList(_context.Movie, "MovieId", "Title", movie.PreviousPart);
             //ViewData["Persons"] = _context.Person.ToList();
 
-            _context.Movie
+            movie = _context.Movie
                 .Include(director => director.MovieDirector).ThenInclude(person => person.Person)
                 .Include(cast => cast.MovieCast).ThenInclude(person => person.Person)
                 .Include(award => award.MovieAward)
                 .Include(genre => genre.MovieGenre).First(m => m.MovieId == id);
 
-
             movie.PreviousPartNavigation = _context.Movie.FirstOrDefault(m => movie.PreviousPart == m.MovieId);
 
+            ViewData["AwardTypes"] = _context.AwardType.ToList();
+            ViewData["Genres"] = _context.Genre.ToList();
+            ViewData["AwardResults"] = new List<String>{"nominated","won"};
 
             return View(movie);
         }
@@ -163,7 +166,7 @@ namespace fletnix
                         throw;
                     }
                 }
-                return RedirectToAction("Index");
+                return RedirectToAction("Edit",new {id=movie.MovieId, save="success" });
             }
 
             //ViewData["PreviousPart"] = new SelectList(_context.Movie, "MovieId", "Title", movie.PreviousPart);

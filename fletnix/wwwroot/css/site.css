@@ -325,3 +325,23 @@ input:-ms-input-placeholder {
             opacity: 0;
         }
 }
+
+
+
+.movie-director-delete-box {
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    display: none;
+    background-color: #E40000;
+    color: white;
+}
+
+.movie-director:hover .movie-director-delete-box {
+    display: block;
+}
+
+.selectize-input .item{
+    background-color: #E40000 !important;
+    color: white !important;
+}

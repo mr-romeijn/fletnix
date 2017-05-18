@@ -11,7 +11,7 @@ namespace fletnix.Controllers.Api
 {
 
     [Route("/api/moviecast")]
-    public class MovieCastController : Controller
+    public class MovieCastController : WalledGarden
     {
         private readonly IFletnixRepository _repository;
 

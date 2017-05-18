@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using fletnix.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,7 @@ using fletnix.Models;
 
 namespace fletnix
 {
-    public class PersonController : Controller
+    public class PersonController : WalledGarden
     {
         private readonly FLETNIXContext _context;
 
@@ -62,7 +63,7 @@ namespace fletnix
 
                 if (Request.Query.ContainsKey("ref"))
                 {
-                    return RedirectToAction("Edit", "Movie", new { id = Request.Query["ref"], person = person.PersonId});
+                    return RedirectToAction("Edit", "Movie", new { id = Request.Query["ref"],  editType = Request.Query["editType"], person = person.PersonId});
                 }
 
                 return RedirectToAction("Index");

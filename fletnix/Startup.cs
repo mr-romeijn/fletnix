@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using fletnix.Data.Seeds;
@@ -49,6 +50,17 @@ namespace fletnix
             //services.AddTransient<IdentitySeedData>();
             services.AddDbContext<FLETNIXContext>();
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy =>
+                    policy.RequireClaim(ClaimTypes.Role, "admin"));
+
+                options.AddPolicy("CustomerOnly", policy =>
+                    policy.RequireClaim(ClaimTypes.Role, "customer","admin"));
+
+                options.AddPolicy("FinancialOnly", policy =>
+                    policy.RequireClaim(ClaimTypes.Role, "financial","admin"));
+            });
 
             //IDENTITY INTEGRATED
             /*services.AddIdentity<ApplicationUser, IdentityRole>(config =>
@@ -125,11 +137,11 @@ namespace fletnix
                 RequireHttpsMetadata = false,
                 ClientId = "fletnix",
                 //ResponseType = "code id_token",
-                Scope = { "openid", "profile", "email", "role" },
+                Scope = { "openid", "profile","role"},
                 GetClaimsFromUserInfoEndpoint = true,
                 AutomaticChallenge = true,
                 AutomaticAuthenticate = true,
-
+                ResponseType = "id_token",
                 //SaveTokens = true,
 
                 TokenValidationParameters = new TokenValidationParameters
@@ -147,6 +159,9 @@ namespace fletnix
             Mapper.Initialize(config =>
             {
                 config.CreateMap<MovieCastViewModel, MovieCast>().ReverseMap();
+                config.CreateMap<MovieDirectorViewModel, MovieDirector>().ReverseMap();
+                config.CreateMap<MovieAwardViewModel, MovieAward>().ReverseMap();
+                config.CreateMap<MovieGenreViewModel, MovieGenre>().ReverseMap();
             });
 
             if (env.IsDevelopment())
@@ -166,6 +181,10 @@ namespace fletnix
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapRoute(
+                    name: "admin",
+                    template: "admin/{controller=Movie}/{action=Index}/{id?}");
             });
 
             //seeder.EnsureSeedData().Wait();

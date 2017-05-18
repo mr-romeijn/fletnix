@@ -56,10 +56,45 @@ namespace fletnix.Models
             return _context.Person.FirstOrDefault(e => e.PersonId == id);
         }
 
+        public void AddDirector(MovieDirector director)
+        {
+            _context.MovieDirector.Add(director);
+        }
+
+        public void RemoveDirector(MovieDirector director)
+        {
+            _context.MovieDirector.Remove(director);
+        }
+
+        public void AddAward(MovieAward newAward)
+        {
+            _context.MovieAward.Add(newAward);
+        }
+
+        public void RemoveAward(MovieAward newAward)
+        {
+            _context.MovieAward.Remove(newAward);
+        }
+
+        public void AddGenres(int movieId, List<MovieGenre> models)
+        {
+
+            var listOfItemsToBeRemoved = _context.MovieGenre.AsNoTracking().Where(genre => genre.MovieId == movieId).ToList();
+
+            foreach (var l in listOfItemsToBeRemoved)
+            {
+                _context.MovieGenre.Remove(l);
+            }
+
+            _context.SaveChanges();
+
+            _context.MovieGenre.AddRange(models);
+        }
+
         public void UpdateMovieCast(MovieCast movieCast)
         {
 
-            _context.MovieCast.Remove(_context.MovieCast.FirstOrDefault(m => (m.MovieId == movieCast.MovieId && m.PersonId == movieCast.PersonId)));
+            _context.MovieCast.Remove(_context.MovieCast.FirstOrDefault(m => (m.MovieId == movieCast.MovieId && m.PersonId == movieCast.PersonId && movieCast.Role == m.Role)));
             _context.MovieCast.Add(movieCast);
 
             /* var cast = _context.MovieCast
