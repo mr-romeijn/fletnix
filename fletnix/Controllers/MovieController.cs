@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Http;
 
 namespace fletnix
 {
-
     public class MovieController : WalledGarden
     {
         private readonly FLETNIXContext _context;
@@ -57,6 +56,7 @@ namespace fletnix
         }
 
         // GET: Movie/Details/5
+        [Authorize(Policy = "CustomerOnly")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)

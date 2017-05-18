@@ -1,11 +1,17 @@
 ﻿@using fletnix.Helpers
 @{
-    if(String.Equals(@Context.Request.Path.ToString(), "/".ToString(), StringComparison.Ordinal)) {
-        ViewData["navbg"] = "transparent" ;
-        ViewData["footerColor"] = "white" ;
-    } else {
-        ViewData["navbg"] = "";
-        ViewData["footerColor"] = "black";
+    if (!@User.Identity.IsAuthenticated)
+    {
+        if (String.Equals(@Context.Request.Path.ToString(), "/".ToString(), StringComparison.Ordinal))
+        {
+            ViewData["navbg"] = "transparent";
+            ViewData["footerColor"] = "white";
+        }
+        else
+        {
+            ViewData["navbg"] = "";
+            ViewData["footerColor"] = "black";
+        }
     }
 }
 
@@ -31,7 +37,10 @@
     @RenderSection("Stylesheets", required:false)
 
 </head>
-<body>
+<body @if (@User.Identity.IsAuthenticated)
+      {
+          <text>style="background-color: black; overflow-x: hidden;"</text>
+      }>
 <nav class="navbar navbar-inverse navbar-fixed-top" style="background-color:@ViewData["navbg"]; padding-right:20px;">
     <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">

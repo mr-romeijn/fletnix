@@ -1,0 +1,136 @@
+@model fletnix.Models.Movie
+@{
+    Layout = "_Layout";
+}
+
+@section scripts {
+    <script>
+        $(document).ready(function() {
+            var apiKey = '8f3879e8c91096e1e468cf6c539dc1e7';
+            $.get('https://api.themoviedb.org/3/search/movie?api_key=' + apiKey + '&query=' + encodeURI('@(Model.Title)'),
+                (res) => {
+                    if (res.results[0].poster_path) {
+                        $('#preview').attr('src', 'https://image.tmdb.org/t/p/w500/' + res.results[0].poster_path);
+                        var backdrop = 'https://image.tmdb.org/t/p/w1920/' + res.results[0].backdrop_path
+                        $('.backdropfluid').css('background-image', 'url(' + backdrop + ')');
+                    }
+
+                    if (res.results[0]) {
+                        $('#descrip').text(res.results[0].overview);
+                        $('#votes').text(res.results[0].vote_average + ' / 10');
+
+                        $.get( 'https://api.themoviedb.org/3/movie/'+res.results[0].id+'/videos?api_key='+apiKey, (videos) => {
+                            var videos = videos.results[0];
+                            console.log(videos);
+                            if (videos.site === "YouTube") {
+                                $('#trailer').attr('src', 'https://www.youtube.com/embed/'+videos.key);
+                                $('#playBtn').show();
+                            }
+                        });
+                    }
+
+                    $('#playBtn').click(function() {
+                        $('#trailer').show();
+                    })
+                });
+        });
+    </script>
+}
+
+<div class="container-fluid backdropfluid" style="padding: 0px; position: relative; background-image: url('/images/moana-backdrop.jpg'); background-size: cover; background-repeat: no-repeat; min-height: 100vh; background-color: white; padding-top: 45px; padding-bottom: 45px;">
+    <div id="playBtn" style="position: absolute; display: none; left: 47%; top: 15%; border-radius:55%; opacity: .7; cursor: pointer; background-color:black; padding: 10px 18px 10px 18px;"><i style="color: white; font-size: 100px;" class="fa fa-play-circle-o" aria-hidden="true"></i></div>
+    <iframe  frameborder="0" allowfullscreen id="trailer" style="display: none; position: absolute; width: 100vw; height: 53vh; margin-top: -50px; border: 0px;"></iframe>
+    <div class="container-fluid" style="margin-top: 40vh; height: 5vh; background-color: black; opacity: .6"></div>
+    <div class="container-fluid" style="position: relative; height: 70vh; background-color: white;">
+
+        <div class="container" style="position: relative;">
+            <div style="position: absolute; width: 200px; top: -175px; padding: 10px; background-color: white;">
+                <img id="preview" src="~/images/no-poster.jpg" style="width: 100%;">
+                <button class="btn fletnix-btn fletnix-red-background" style="margin-top: 15px; color: white; font-size: 16px;">PLAY MOVIE</button><hr>
+                <div style="margin-top: 10px; text-align: center;">
+                    <h2 style="font-family: arial;" id="votes"></h2>
+                </div>
+            </div>
+
+            <div style="position: absolute; width: 800px; top: -63px; left: 230px;">
+                <h2 style="color: white; font-family: aria;">@Model.Title <span style="font-size: 14px; color: white;">@Model.Duration minutes | @Model.PublicationYear</span>
+                </h2>
+            </div>
+
+            <div style="margin-left: 225px; margin-top: 15px;">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <span style="font-size: 15px; color: #8A8A8A;">DIRECTOR </span>
+                        @foreach (var dr in Model.MovieDirector)
+                        {
+                            <text><span style="color: #E40000; font-size: 15px;">@dr.Person.Firstname @dr.Person.Lastname</span>, </text>
+                        }
+                        <br>
+                        <span style="font-size: 15px; color: #8A8A8A;">PUBLICATION YEAR</span><span style="font-size: 15px;"> @Model.PublicationYear</span><br>
+                            <span style="font-size: 15px; color: #8A8A8A;">RUNTIME</span><span style="font-size: 15px;"> @Model.Duration mins</span></br>
+                        <span style="font-size: 15px; color: #8A8A8A;">GENRES </span>
+                        @foreach (var genre in Model.MovieGenre)
+                        {
+                            <text><span style="font-size: 15px;">@genre.GenreName</span>, </text>
+                        }
+                        <br>
+                        @if (Model.PreviousPartNavigation != null)
+                        {
+                            <span style="font-size: 15px; color: #8A8A8A;">PREVIOUS PART</span>
+                            <a asp-route-id="@Model.PreviousPartNavigation.MovieId" asp-action="movie" asp-controller="home"> <span style="font-size: 15px;">@Model.PreviousPartNavigation.Title</span></a>
+                            <br>
+                        }
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-12">
+                        <p><i>@Model.Description</i><br><br><span id="descrip">Lorem" ipsum dolor sit amet, consectetur adipiscing elit. Praesent in orci dolor. Pellentesque et euismod quam. Nulla bibendum neque pulvinar elit auctor tincidunt. Nullam non sollicitudin orci. Proin eget rutrum mauris. Nam at mauris vel ante congue sagittis. Aliquam erat volutpat. Duis rhoncus condimentum dolor, quis bibendum enim rutrum vitae. Nunc dapibus neque magna, sed vulputate quam maximus sed. Integer bibendum massa in enim ultrices commodo.</span>
+                        </p>
+                    </div>
+                </div>
+                <br>
+                <span style="font-size: 17px; font-weight: bold; color: black;">Actors</span><br>
+                <div class="row">
+                    <div class="col-md-12" style="overflow-x: scroll;">
+
+                        <div style="width: 9999999px;">
+                            @foreach (var cast in Model.MovieCast)
+                            {
+                                var firstName = @cast.Person.Firstname;
+                                var lastName = @cast.Person.Lastname;
+                                var nameSubstring = (firstName + " " + lastName).Substring(0, 7);
+                                <div style="border: 1px solid #CCCCCC; float: left; width: 100px; height: 175px; margin-left: -1px; text-align: center; padding: 10px;">
+                                    <img src="~/images/@(cast.Person.Gender)cast.png" width="100%"/>
+                                    <div style="margin-top: 5px;">
+                                        <span style="color: #8A8A8A; font-size: 13px;">@nameSubstring...</span><br>
+                                        <span style="font-size: 12px;">@cast.Role</span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-12">
+                        <span style="font-size: 17px; font-weight: bold; color: black;">Awards</span><br>
+                        @foreach (var award in Model.MovieAward)
+                        {
+                            <text><span style="font-size: 15px;">@award.Name @award.Type - @award.Person.Firstname @award.Person.Lastname</span><br></text>
+                        }
+                    </div>
+                </div>
+
+            </div>
+
+
+
+        </div>
+
+    </div>
+</div>
+
+
