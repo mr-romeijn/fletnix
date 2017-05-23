@@ -10,7 +10,8 @@ namespace fletnix.Models
 {
     public partial class FLETNIXContext : IdentityDbContext<ApplicationUser>
     {
-        private IConfigurationRoot _config;
+        private static IConfigurationRoot _config;
+        private static DbContextOptions _DBOptions;
         public virtual DbSet<Award> Award { get; set; }
         public virtual DbSet<AwardType> AwardType { get; set; }
         public virtual DbSet<Country> Country { get; set; }
@@ -28,6 +29,12 @@ namespace fletnix.Models
         public FLETNIXContext(IConfigurationRoot config, DbContextOptions options) : base(options)
         {
             _config = config;
+            _DBOptions = options;
+        }
+
+        public static FLETNIXContext ContextFactory()
+        {
+            return new FLETNIXContext(_config, _DBOptions);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

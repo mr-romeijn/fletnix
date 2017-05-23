@@ -31,11 +31,15 @@ namespace fletnix.Controllers
 
         public async Task<IActionResult> Index()
         {
-            ViewData["MostPopularOfAllTime"] = _repository.GetMostPopularMoviesOfAllTime();
+            var q1 = _repository.GetMostPopularMoviesOfAllTime();
+            var q2 = _repository.GetMostPopularMoviesOfLastNDays(14);
+            var q3 = _repository.GetWatchHistoryUser(User.Identity.Name);
 
-            ViewData["MostPopularOfLastTwoWeeks"] = _repository.GetMostPopularMoviesOfLastNDays(14);
+            ViewData["MostPopularOfAllTime"] = await q1;
 
-            ViewData["WatchHistory"] = _repository.GetWatchHistoryUser(User.Identity.Name);
+            ViewData["MostPopularOfLastTwoWeeks"] = await q2;
+
+            ViewData["WatchHistory"] = await q3;
 
             return View();
         }
