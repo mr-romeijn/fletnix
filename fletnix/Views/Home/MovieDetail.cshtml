@@ -46,10 +46,17 @@
         <div class="container" style="position: relative;">
             <div style="position: absolute; width: 200px; top: -175px; padding: 10px; background-color: white;">
                 <img id="preview" src="~/images/no-poster.jpg" style="width: 100%;">
+                @if ((bool) ViewData["seen"])
+                {
+                    <br><br>
+                    <span class="label label-success">You have already seen this movie</span>
+                }
                 <button class="btn fletnix-btn fletnix-red-background" style="margin-top: 15px; color: white; font-size: 16px;">PLAY MOVIE</button><hr>
                 <div style="margin-top: 10px; text-align: center;">
                     <h2 style="font-family: arial;" id="votes"></h2>
                 </div>
+
+
             </div>
 
             <div style="position: absolute; width: 800px; top: -63px; left: 230px;">

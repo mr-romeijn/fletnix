@@ -11,6 +11,7 @@ namespace IdentityServer.Helpers
                     ClientId = "fletnix",
                     ClientName = "Fletnix totally not a copy of netflix...",
                     AllowedGrantTypes = GrantTypes.Implicit,
+                    RequireConsent = false,
                     AllowedScopes = new List<string>
                     {
                         IdentityServerConstants.StandardScopes.OpenId,

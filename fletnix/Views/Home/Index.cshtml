@@ -1,4 +1,5 @@
 ﻿@using fletnix.Models
+@using fletnix.ViewModels
 @{
     ViewData["Title"] = "Home Page";
 	Layout = "_Layout";
@@ -22,43 +23,68 @@ else
 				<div style="margin-top:28vh">
 					<h1 style="font-size: 55px; color: white;">Moana (2016)</h1>
 					<p style="color: white;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer quam neque, facilisis in egestas ut, efficitur at mi. Vestibulum vel quam quis eros congue dapibus id eget sem. Sed id dictum urna. Mauris sagittis odio mauris, eu dapibus sapien placerat ut. Duis sed elit nunc. Nullam nec ante ac dui varius posuere. Praesent a lacus aliquet, dapibus odio quis, tempus lacus. Fusce malesuada scelerisque nisl sit amet eleifend.</p>
-					<button class="btn fletnix-red-background  fletnix-btn" style="color: white;">Continue watching</button>
+					<button class="btn fletnix-red-background  fletnix-btn" style="margin-top: 25px; color: white;">Continue watching</button>
 				</div>
 			</div>
 		</div>
 	</div>
 
 
-	<div class="container-fluid" style="background-color:#141414">
-		<h2 style="color: #8E8E8E; font-family: arial;">Verder kijken voor @User.Identity.Name</h2>
-		<div style="overflow-x: scroll; white-space: nowrap;">
-			<div style="width: 999999px;">
-				@foreach (var movie in (List<Movie>) ViewData["WatchHistory"])
-				{
-					<a asp-route-id="@movie.MovieId" asp-action="movie" asp-controller="home">
-						<div style="width: 350px; float: left; margin-right: 10px; margin-bottom:30px;">
-							<div class="movie" style="position: relative; min-height: 170px; color: white; text-align: center;" data-id="@movie.MovieId" data-title="@movie.Title">
-								<div style="background-color:#141414; padding: 5px; position: absolute; z-index: 99; font-size: 16px; top: 150px; left: 10px; color:  #8E8E8E;">@movie.Title</div>
-								<img class="movie-poster-@movie.MovieId" src="~/images/no-backdrop.jpg" style="width: 100%;"/>
+	if (((List<PopularMoviesViewModel>) ViewData["WatchHistory"]).Count > 0)
+	{
+		<div class="container-fluid" style="background-color: #141414; margin-top: 50px; margin-bottom: 25px;">
+			<h2 style="color: #8E8E8E; font-size: 18px; font-family: arial;">My list</h2>
+			<div style="overflow-x: scroll; white-space: nowrap;">
+				<div style="width: 999999px;">
+					@foreach (var movie in (List<PopularMoviesViewModel>) ViewData["WatchHistory"])
+					{
+						<a asp-route-id="@movie.Movie.MovieId" asp-action="movie" asp-controller="home">
+							<div style="width: 350px; float: left; margin-right: 10px; margin-bottom: 30px;">
+								<div class="movie" style="position: relative; min-height: 170px; color: white; text-align: center;" data-id="@movie.Movie.MovieId" data-title="@movie.Movie.Title">
+									<div style="background-color: #141414; padding: 5px; position: absolute; z-index: 99; font-size: 16px; top: 150px; left: 10px; color: #8E8E8E;">@movie.Movie.Title</div>
+									<img class="movie-poster-@movie.Movie.MovieId" src="~/images/no-backdrop.jpg" style="width: 100%;"/>
+								</div>
 							</div>
-						</div>
-					</a>
-				}
+						</a>
+					}
+				</div>
 			</div>
 		</div>
-	</div>
+	}
+
+	if (((List<PopularMoviesViewModel>) ViewData["MostPopularOfLastTwoWeeks"]).Count > 0)
+	 {
+		 <div class="container-fluid" style="background-color: #141414; margin-top: 15px;">
+			 <h2 style="color: #8E8E8E; font-size: 18px; font-family: arial;">Most popular movies of the last two weeks</h2>
+			 <div style="overflow-x: scroll; white-space: nowrap;">
+				 <div style="width: 999999px;">
+					 @foreach (var movie in (List<PopularMoviesViewModel>) ViewData["MostPopularOfLastTwoWeeks"])
+					 {
+						 <a asp-route-id="@movie.Movie.MovieId" asp-action="movie" asp-controller="home">
+							 <div style="width: 350px; float: left; margin-right: 10px; margin-bottom: 30px;">
+								 <div class="movie" style="position: relative; min-height: 170px; color: white; text-align: center;" data-id="@movie.Movie.MovieId" data-title="@movie.Movie.Title">
+									 <div style="background-color: #141414; padding: 5px; position: absolute; z-index: 99; font-size: 16px; top: 150px; left: 10px; color: #8E8E8E;">@movie.Movie.Title</div>
+									 <img class="movie-poster-@movie.Movie.MovieId" src="~/images/no-backdrop.jpg" style="width: 100%;"/>
+								 </div>
+							 </div>
+						 </a>
+					 }
+				 </div>
+			 </div>
+		 </div>
+	 }
 
 	<div class="container-fluid" style="background-color: #141414; margin-top: 15px;">
-		<h2 style="color: #8E8E8E; font-family: arial;">Meest populaire films</h2>
+		<h2 style="color: #8E8E8E;  font-size: 18px; font-family: arial;">Most popular movies of all time</h2>
 		<div style="overflow-x: scroll; white-space: nowrap;">
 			<div style="width: 999999px;">
-			@foreach (var movie in (List<Movie>) ViewData["Movies"])
+			@foreach (var movie in (List<PopularMoviesViewModel>) ViewData["MostPopularOfAllTime"])
 			{
-				<a asp-route-id="@movie.MovieId" asp-action="movie" asp-controller="home">
+				<a asp-route-id="@movie.Movie.MovieId" asp-action="movie" asp-controller="home">
 				<div style="width: 350px; float: left; margin-right: 10px; margin-bottom:30px;">
-					<div class="movie" style="position: relative; min-height: 170px; color: white; text-align: center;" data-id="@movie.MovieId" data-title="@movie.Title">
-						<div style="background-color:#141414; padding: 5px; position: absolute; z-index: 99; font-size: 16px; top: 150px; left: 10px; color:  #8E8E8E;">@movie.Title</div>
-						<img class="movie-poster-@movie.MovieId" src="~/images/no-backdrop.jpg" style="width: 100%;"/>
+					<div class="movie" style="position: relative; min-height: 170px; color: white; text-align: center;" data-id="@movie.Movie.MovieId" data-title="@movie.Movie.Title">
+						<div style="background-color:#141414; padding: 5px; position: absolute; z-index: 99; font-size: 16px; top: 150px; left: 10px; color:  #8E8E8E;">@movie.Movie.Title</div>
+						<img class="movie-poster-@movie.Movie.MovieId" src="~/images/no-backdrop.jpg" style="width: 100%;"/>
 					</div>
 				</div>
 				</a>

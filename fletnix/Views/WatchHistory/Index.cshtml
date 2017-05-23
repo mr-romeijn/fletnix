@@ -1,0 +1,48 @@
+@using fletnix.ViewModels
+@{
+    ViewData["Title"] = "Home Page";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid" style="margin-top: 50px;">
+    <h2 style="color: #8E8E8E;  font-size: 18px; font-family: arial;">Your Watch history</h2>
+    <div class="row">
+        @foreach (var history in (List<PopularMoviesViewModel>) Model)
+        {
+            <div class="col-md-2" style="padding: 5px;">
+                <div style=" overflow: hidden; height: 200px; margin-bottom: 0px;">
+                    <div class="movie" style="position: relative; min-height: 170px; color: white; text-align: center;" data-id="@history.Movie.MovieId" data-title="@history.Movie.Title">
+                        <div style="background-color: #141414; padding: 5px; padding-top: 11px; position: absolute; z-index: 99; height: 48px; width: 102%; font-size: 16px; top: 150px; color: #8E8E8E;">@history.Movie.Title</div>
+                        <img class="movie-poster-@history.Movie.MovieId" src="~/images/no-backdrop.jpg" style="width: 100%;"/>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function() {
+
+            $(".movie").each(function(index) {
+                getPoster($(this).data('id'), $('.movie-poster-' + $(this).data('id')), $(this).data('title'));
+            });
+        });
+
+        function getPoster(id, element, title) {
+            $.get('https://api.themoviedb.org/3/search/movie?api_key=8f3879e8c91096e1e468cf6c539dc1e7&query=' +
+                encodeURI(title),
+                (res) => {
+                    if (res.results[0]) {
+                        if (res.results[0].backdrop_path) {
+                            //poster_path
+                            element.attr('src', 'https://image.tmdb.org/t/p/w500/' + res.results[0].backdrop_path);
+                        }
+                    } else {
+                        element.attr('src', '/images/no-backdrop.jpg');
+                    }
+                });
+        }
+    </script>
+}

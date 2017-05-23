@@ -59,34 +59,38 @@
             <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
         </ul>-->
     </div>
-				
-    <ul class="nav navbar-nav navbar-right" style="margin-right:15px; margin-top:-30px;">
 
-        <li>
+
+    <ul class="nav navbar-nav navbar-right" style="margin-right: 15px; margin-top: -30px;">
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            <li style="margin-top: -7px; width: 400px; padding-right: 25px;"><input style="border: 1px solid #141414; color: #CCCCCC; background-color: black; margin-top: 10px; width: 100%;" class="form-control" type="text" placeholder="Search..."></li>
+            <li style="margin-top: -7px;"><a style="color: white;" asp-controller="Home" asp-action="Index">Movies</a></li>
+            <li style="margin-top: -7px;"><a style="color: white;" asp-controller="watchhistory" asp-action="Index">Watch history</a></li>
+            <li>
+                <div style="margin-top: -7px; margin-left: -25px;">
+
+                    <div class="text-center" style="padding-left: 25px; padding-right: 10px; display: inline-block; color: white; padding-top: 15px;">
+                        <div style="margin-left: 15px;"> @User.Identity.Name </div>
+                    </div>
+                    <div style="padding-left: 10px; padding-right: 25px;  display: inline-block;">
+                        <img src="~/images/mcast.png" style="width: 50px"/>
+                    </div>
+                    <div style="display: inline-block;">
+                        <a asp-controller="Auth" asp-action="Logout"><button class="btn fletnix-red-background" style=" color: white; border: 0px; border-radius: 0px;">Logout</button></a>
+                    </div>
+                </div>
+            </li>
+        }
+
+
         @if (!User.Identity.IsAuthenticated)
         {
-            <a class="fletnix-red-background" asp-controller="Auth" asp-action="Login" style="font-weight: 400; font-size: 16px; color: white; border-radius: 5px; padding: 7px 17px 7px 17px;">Sign in</a>
+            <li><a class="fletnix-red-background" asp-controller="Auth" asp-action="Login" style="font-weight: 400; font-size: 16px; color: white; border-radius: 5px; padding: 7px 17px 7px 17px;">Sign in</a></li>
         }
-        else
-        {
-            <div class="pull-right" >
-            <div class="row" style="margin-top: -7px; margin-left: -25px;">
-                <div class="col-md-4"></div>
-                <div class="col-md-4 text-center" style="color: white; padding-top: 15px;">
-                    <div style="margin-left: 15px;"> @User.Identity.Name </div>
-                </div>
-                <div class="col-md-2">
-                    <img src="~/images/mcast.png" style="width: 65%"/>
-                </div>
-                <div class="col-md-1">
-                    <a asp-controller="Auth" asp-action="Logout"><button class="btn fletnix-red-background" style="margin-top: 10px; color: white; border: 0px; border-radius: 0px;">Logout</button></a>
-                </div>
-            </div>
-            </div>
-        }
-        </li>
-
     </ul>
+
 </nav>
 
 @RenderSection("NavSupplement",required:false)

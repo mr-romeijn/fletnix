@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using fletnix.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -102,6 +103,78 @@ namespace fletnix.Models
                  .First(e => e.MovieId == movieCast.MovieId)
 
              cast.Role = movieCast.Role; */
+        }
+
+        public List<PopularMoviesViewModel> GetMostPopularMoviesOfLastNDays(int nDays, int nAmount = 50)
+        {
+            var MostPopularMoviesOfLastNDays = (from w in _context.Watchhistory
+                where w.WatchDate >= Convert.ToDateTime(DateTime.Now).AddDays(-nDays)
+                join m in _context.Movie on w.MovieId equals m.MovieId
+                group m by new { m } into g
+                orderby g.Count() descending
+                select new PopularMoviesViewModel
+                {
+                    Movie = g.Key.m,
+                    TimesViewed = g.Count()
+                }).AsNoTracking().Take(nAmount);
+
+            return MostPopularMoviesOfLastNDays.ToList();
+        }
+
+        public List<PopularMoviesViewModel> GetMostPopularMoviesOfAllTime(int nAmount = 50)
+        {
+            var MostPopularOfAllTime = (from w in _context.Watchhistory
+                join m in _context.Movie on w.MovieId equals m.MovieId
+                group m by new {m}
+                into g
+                orderby g.Count() descending
+                select new PopularMoviesViewModel
+                {
+                    Movie = g.Key.m,
+                    TimesViewed = g.Count()
+                }).AsNoTracking();
+
+            return MostPopularOfAllTime.Take(nAmount).ToList();
+        }
+
+        public List<PopularMoviesViewModel> GetWatchHistoryUser(string email, int nAmount = 50)
+        {
+            var watchHistoryUser = (from w in _context.Watchhistory
+                where w.CustomerMailAddress == email
+                join m in _context.Movie on w.MovieId equals m.MovieId
+                group m by new { m } into g
+                orderby g.Count() descending
+                select new PopularMoviesViewModel
+                {
+                    Movie = g.Key.m,
+                    TimesViewed = g.Count()
+                }).AsNoTracking().Take(nAmount);
+
+            /* _context.Watchhistory.Where(h => h.CustomerMailAddress == User.Identity.Name)
+             .Include(m => m.MovieId).ToList();*/
+
+            return watchHistoryUser.ToList();
+        }
+
+        public Movie GetMovieById(int? id)
+        {
+            var movie = _context.Movie
+                .Include(director => director.MovieDirector).ThenInclude(person => person.Person)
+                .Include(cast => cast.MovieCast).ThenInclude(person => person.Person)
+                .Include(award => award.MovieAward)
+                .Include(genre => genre.MovieGenre).First(m => m.MovieId == id);
+            movie.PreviousPartNavigation = _context.Movie.FirstOrDefault(m => movie.PreviousPart == m.MovieId);
+
+            return movie;
+        }
+
+        public bool CheckIfSeenByUser(int? id, string email)
+        {
+            var seen = _context.Watchhistory
+                .Where(wh => wh.CustomerMailAddress == email)
+                .FirstOrDefault(wh => wh.MovieId == id);
+
+            return seen != null;
         }
 
         public void DeleteMovieCast(MovieCast movieCast)

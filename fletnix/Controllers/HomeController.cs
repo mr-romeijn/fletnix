@@ -31,39 +31,14 @@ namespace fletnix.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var movies = _context.Movie
-                .AsNoTracking()
-                .Join(
-                    _context.Watchhistory.Where(
-                            w => w.WatchDate >= Convert.ToDateTime(DateTime.Now).AddDays(-30000))
-                        .GroupBy(w => w.MovieId)
-                        .Select(m => new { amount = m.Count(), mID = m.Key })
-                        .OrderByDescending(a => a.amount)
-                        .Select(a => new { movieid = a.mID }),
-                    m => m.MovieId, w => w.movieid, (m, w) => m).Take(25).ToList();
+            ViewData["MostPopularOfAllTime"] = _repository.GetMostPopularMoviesOfAllTime();
 
+            ViewData["MostPopularOfLastTwoWeeks"] = _repository.GetMostPopularMoviesOfLastNDays(14);
 
-            ViewData["Movies"] = movies;
-
-            var watchHistory = _context.Movie
-                .AsNoTracking()
-                .Join(
-                    _context.Watchhistory.Where(
-                            w => w.CustomerMailAddress == User.Identity.Name)
-                        .GroupBy(w => w.MovieId)
-                        .Select(m => new { amount = m.Count(), mID = m.Key })
-                        .OrderByDescending(a => a.amount)
-                        .Select(a => new { movieid = a.mID }),
-                    m => m.MovieId, w => w.movieid, (m, w) => m).Take(25).ToList();
-
-               /* _context.Watchhistory.Where(h => h.CustomerMailAddress == User.Identity.Name)
-                .Include(m => m.MovieId).ToList();*/
-
-            ViewData["WatchHistory"] = watchHistory;
+            ViewData["WatchHistory"] = _repository.GetWatchHistoryUser(User.Identity.Name);
 
             return View();
         }
-
 
         [Authorize(Policy = "CustomerOnly")]
         [Route("/Movie/{id}")]
@@ -74,26 +49,18 @@ namespace fletnix.Controllers
                 return NotFound();
             }
 
-            /*var movie = await _context.Movie
-                .Include(m => m.PreviousPartNavigation)
-                .SingleOrDefaultAsync(m => m.MovieId == id);*/
-
-            var movie = _context.Movie
-                .Include(director => director.MovieDirector).ThenInclude(person => person.Person)
-                .Include(cast => cast.MovieCast).ThenInclude(person => person.Person)
-                .Include(award => award.MovieAward)
-                .Include(genre => genre.MovieGenre).First(m => m.MovieId == id);
-            movie.PreviousPartNavigation = _context.Movie.FirstOrDefault(m => movie.PreviousPart == m.MovieId);
+            var movie = _repository.GetMovieById(id);
+            var seen = _repository.CheckIfSeenByUser(id, User.Identity.Name);
 
             if (movie == null)
             {
                 return NotFound();
             }
 
+            ViewData["seen"] = seen;
+
             return View("~/Views/Home/MovieDetail.cshtml", movie);
         }
-
-
 
         public IActionResult About()
         {

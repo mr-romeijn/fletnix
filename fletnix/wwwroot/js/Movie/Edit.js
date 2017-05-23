@@ -128,8 +128,8 @@ function removeDirector(name, person, movie) {
 
 
 function getPoster(title) {
-    $.get('https://api.themoviedb.org/3/search/movie?api_key=8f3879e8c91096e1e468cf6c539dc1e7&query=' +
-        encodeURI(title),
+    console.log('title', title);
+    $.get('https://api.themoviedb.org/3/search/movie?api_key=8f3879e8c91096e1e468cf6c539dc1e7&query=' + encodeURI(title),
         (res) => {
             setTimeout(() => {
                     if (res.results[0]) {
