@@ -136,6 +136,7 @@ namespace fletnix
                 Authority = "http://localhost:5002/",
                 RequireHttpsMetadata = false,
                 ClientId = "fletnix",
+                ClientSecret = "secret",
                 //ResponseType = "code id_token",
                 Scope = { "openid", "profile","role"},
                 GetClaimsFromUserInfoEndpoint = true,

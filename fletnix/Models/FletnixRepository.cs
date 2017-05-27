@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using fletnix.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Remotion.Linq.Clauses;
 
 namespace fletnix.Models
 {
@@ -109,56 +110,36 @@ namespace fletnix.Models
         {
             return Task.Factory.StartNew(() =>
             {
-                var context = FLETNIXContext.ContextFactory();
-                var MostPopularMoviesOfLastNDays = (from w in context.Watchhistory
-                        where w.WatchDate >= Convert.ToDateTime(DateTime.Now).AddDays(-nDays)
-                        join m in _context.Movie on w.MovieId equals m.MovieId
-                        group m by new {m}
-                        into g
-                        orderby g.Count() descending
-                        select new PopularMoviesViewModel
-                        {
-                            Movie = g.Key.m,
-                            TimesViewed = g.Count()
-                        }).AsNoTracking()
-                    .Take(nAmount);
+                using (var context = FLETNIXContext.ContextFactory())
+                {
+                    var MostPopularMoviesOfLastNDays = (from w in context.Watchhistory
+                            where w.WatchDate >= Convert.ToDateTime(DateTime.Now).AddDays(-nDays)
+                            join m in context.Movie on w.MovieId equals m.MovieId
+                            group m by new {m}
+                            into g
+                            orderby g.Count() descending
+                            select new PopularMoviesViewModel
+                            {
+                                Movie = g.Key.m,
+                                TimesViewed = g.Count()
+                            }).AsNoTracking()
+                        .Take(nAmount);
 
-                return MostPopularMoviesOfLastNDays.ToList();
+                    return MostPopularMoviesOfLastNDays.ToList();
+                }
             });
         }
+
 
         public Task<List<PopularMoviesViewModel>> GetMostPopularMoviesOfAllTime(int nAmount = 50)
         {
             return Task.Factory.StartNew(() =>
             {
-                var context = FLETNIXContext.ContextFactory();
-                var MostPopularOfAllTime = (from w in context.Watchhistory
-                    join m in _context.Movie on w.MovieId equals m.MovieId
-                    group m by new {m}
-                    into g
-                    orderby g.Count() descending
-                    select new PopularMoviesViewModel
-                    {
-                        Movie = g.Key.m,
-                        TimesViewed = g.Count()
-                    }).AsNoTracking();
-
-                return MostPopularOfAllTime.Take(nAmount).ToList();
-            });
-        }
-
-
-
-        public Task<List<PopularMoviesViewModel>> GetWatchHistoryUser(string email, int nAmount = 50)
-        {
-
-             return Task.Factory.StartNew(() =>
-            {
-                var context = FLETNIXContext.ContextFactory();
-
-                var watchHistoryUser = (from w in context.Watchhistory
-                        where w.CustomerMailAddress == email
-                        join m in _context.Movie on w.MovieId equals m.MovieId
+                using (var context = FLETNIXContext.ContextFactory())
+                {
+                    var MostPopularOfAllTime = (
+                        from w in context.Watchhistory
+                        join m in context.Movie on w.MovieId equals m.MovieId
                         group m by new {m}
                         into g
                         orderby g.Count() descending
@@ -166,14 +147,38 @@ namespace fletnix.Models
                         {
                             Movie = g.Key.m,
                             TimesViewed = g.Count()
-                        }).AsNoTracking()
-                    .Take(nAmount);
+                        }).AsNoTracking();
 
-                /* _context.Watchhistory.Where(h => h.CustomerMailAddress == User.Identity.Name)
-                 .Include(m => m.MovieId).ToList();*/
-
-                return watchHistoryUser.ToList();
+                    return MostPopularOfAllTime.Take(nAmount).ToList();
+                }
             });
+        }
+
+        public Task<List<PopularMoviesViewModel>> GetWatchHistoryUser(string email, int nAmount = 50)
+        {
+             return Task.Factory.StartNew(() =>
+             {
+                 using (var context = FLETNIXContext.ContextFactory())
+                 {
+
+                     var watchHistoryUser = (from w in context.Watchhistory
+                             where w.CustomerMailAddress == email
+                             join m in context.Movie on w.MovieId equals m.MovieId
+                             group m by new {m,w}
+                             into g
+                             select new PopularMoviesViewModel
+                             {
+                                 Movie = g.Key.m,
+                                 WatchDate = g.Key.w.WatchDate
+                             }).AsNoTracking()
+                         .Take(nAmount);
+
+                     /* _context.Watchhistory.Where(h => h.CustomerMailAddress == User.Identity.Name)
+                      .Include(m => m.MovieId).ToList();*/
+
+                     return watchHistoryUser.OrderByDescending(p => p.WatchDate).ToList();
+                 }
+             });
         }
 
         public Movie GetMovieById(int? id)

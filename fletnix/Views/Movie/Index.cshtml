@@ -14,10 +14,10 @@
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs/jq-2.2.4/dt-1.10.15/cr-1.3.3/fh-3.1.2/r-2.1.1/sc-1.4.2/datatables.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('#indexTable').DataTable({
+           /* $('#indexTable').DataTable({
                 paging: false,
                 searching: false,
-            });
+            });*/
 
             $(".movie").each(function(index) {
                 getPoster($(this).data('id'), $('#movie-poster-' + $(this).data('id')), $(this).data('title'));
@@ -79,7 +79,7 @@
 
             </th>
             <th>
-                Title
+                <a asp-action="Index"  asp-route-currentFilter="@ViewData["CurrentFilter"]" asp-route-page="@Model.PageIndex" asp-route-sortOrder="@ViewData["TitleSortParam"]"> Title</a>
             </th>
             <th>
                 Duration
@@ -88,7 +88,7 @@
                 Description
             </th>
             <th>
-                Publication year
+                <a asp-action="Index"  asp-route-currentFilter="@ViewData["CurrentFilter"]" asp-route-page="@Model.PageIndex" asp-route-sortOrder="@ViewData["YearSortParam"]"> Publication year</a>
             </th>
 
             <th>
@@ -159,16 +159,16 @@
 
     <div class="pull-right">
         <a asp-action="Index"
-           asp-route-sortOrder="@ViewData["CurrentSort"]"
            asp-route-page="@(Model.PageIndex - 1)"
            asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
            class="btn btn-default @prevDisabled">
             Previous
         </a>
         <a asp-action="Index"
-           asp-route-sortOrder="@ViewData["CurrentSort"]"
            asp-route-page="@(Model.PageIndex + 1)"
            asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
            class="btn btn-default @nextDisabled">
             Next
         </a>

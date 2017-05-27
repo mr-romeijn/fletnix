@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using fletnix.Controllers;
+using fletnix.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -20,9 +21,31 @@ namespace fletnix
         }
 
         // GET: Person
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string currentFilter, string searchString, int? page)
         {
-            return View(await _context.Person.ToListAsync());
+            ViewData["CurrentFilter"] = searchString;
+            IQueryable<Person> fLETNIXContext;
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            System.Net.WebUtility.HtmlDecode(searchString);
+            
+            var persons = _context.Person.AsNoTracking();
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                persons = persons.Where(m => ((m.Firstname.ToLower() + " " + m.Lastname.ToLower()).Contains(searchString.ToLower())));
+            }
+
+            int pageSize = 15;
+            return View(await PaginatedList<Person>.CreateAsync(persons, page ?? 1, pageSize));
         }
 
         // GET: Person/Details/5

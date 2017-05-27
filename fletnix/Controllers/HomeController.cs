@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.IO;
 using System.Threading.Tasks;
 using fletnix.Models;
 using fletnix.Services;
@@ -9,6 +7,7 @@ using IdentityModel.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using fletnix.Helpers;
+using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,41 +30,15 @@ namespace fletnix.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var q1 = _repository.GetMostPopularMoviesOfAllTime();
-            var q2 = _repository.GetMostPopularMoviesOfLastNDays(14);
-            var q3 = _repository.GetWatchHistoryUser(User.Identity.Name);
-
-            ViewData["MostPopularOfAllTime"] = await q1;
-
-            ViewData["MostPopularOfLastTwoWeeks"] = await q2;
-
-            ViewData["WatchHistory"] = await q3;
+            if (User.IsAuthenticated())
+            {
+                return RedirectToAction("index", "Dashboard");
+            }
 
             return View();
         }
 
-        [Authorize(Policy = "CustomerOnly")]
-        [Route("/Movie/{id}")]
-        public async Task<IActionResult> Movie(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var movie = _repository.GetMovieById(id);
-            var seen = _repository.CheckIfSeenByUser(id, User.Identity.Name);
-
-            if (movie == null)
-            {
-                return NotFound();
-            }
-
-            ViewData["seen"] = seen;
-
-            return View("~/Views/Home/MovieDetail.cshtml", movie);
-        }
-
+      
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";

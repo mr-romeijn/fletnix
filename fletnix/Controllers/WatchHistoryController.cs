@@ -25,7 +25,7 @@ namespace fletnix.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(_repository.GetWatchHistoryUser(User.Identity.Name));
+            return View(await _repository.GetWatchHistoryUser(User.Identity.Name));
         }
     }
 }

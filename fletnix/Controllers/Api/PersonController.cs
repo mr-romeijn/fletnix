@@ -46,7 +46,7 @@ namespace fletnix.Controllers.Api
             {
                 try
                 {
-                    return Ok(_repository.SearchPersonsByName(name));
+                    return Ok(_repository.SearchPersonsByName(name).OrderBy(p=>p.Firstname));
                 }
                 catch (Exception e)
                 {

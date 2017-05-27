@@ -9,16 +9,19 @@ namespace IdentityServer.Helpers
             return new List<Client> {
                 new Client {
                     ClientId = "fletnix",
+                    ClientSecrets = new List<Secret>{new Secret("secret".Sha256())},
                     ClientName = "Fletnix totally not a copy of netflix...",
-                    AllowedGrantTypes = GrantTypes.Implicit,
+					AllowedGrantTypes =GrantTypes.List(
+                        GrantType.Implicit,
+						GrantType.ClientCredentials),
                     RequireConsent = false,
+                    AllowAccessTokensViaBrowser = true,
                     AllowedScopes = new List<string>
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Email,
-                        "role",
-                        "api1"
+                        "role"
                     },
                     RedirectUris = new List<string> {"http://localhost:5000/signin-oidc"},
                     PostLogoutRedirectUris = new List<string> {"http://localhost:5000"}

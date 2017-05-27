@@ -197,7 +197,7 @@ if (urlperson) {
         case 'director':
             $("#directorModal").modal('toggle');
             break;
-        case 'person':
+        case 'moviecast':
             $("#memberModel").modal('toggle');
             break;
     }

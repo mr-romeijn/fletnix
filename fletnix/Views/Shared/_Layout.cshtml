@@ -41,7 +41,9 @@
       {
           <text>style="background-color: black; overflow-x: hidden;"</text>
       }>
-<nav class="navbar navbar-inverse navbar-fixed-top" style="background-color:@ViewData["navbg"]; padding-right:20px;">
+
+<nav class="navbar navbar-inverse navbar-fixed-top" style="background-color: @ViewData["navbg"]; padding-right: 20px;">
+
     <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
@@ -49,7 +51,8 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand"><h1 class="fletnix-red-font" style="margin-top:0px; font-size:50px;">FLETNIX</h1></a>
+        <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">
+            <h1 class="fletnix-red-font" style="margin-top: 0px; font-size: 50px;">FLETNIX</h1></a>
     </div>
 
     <div class="navbar-collapse collapse">
@@ -68,17 +71,20 @@
             <li style="margin-top: -7px; width: 400px; padding-right: 25px;"><input style="border: 1px solid #141414; color: #CCCCCC; background-color: black; margin-top: 10px; width: 100%;" class="form-control" type="text" placeholder="Search..."></li>
             <li style="margin-top: -7px;"><a style="color: white;" asp-controller="Home" asp-action="Index">Movies</a></li>
             <li style="margin-top: -7px;"><a style="color: white;" asp-controller="watchhistory" asp-action="Index">Watch history</a></li>
+           
+                 
+  
             <li>
                 <div style="margin-top: -7px; margin-left: -25px;">
 
                     <div class="text-center" style="padding-left: 25px; padding-right: 10px; display: inline-block; color: white; padding-top: 15px;">
                         <div style="margin-left: 15px;"> @User.Identity.Name </div>
                     </div>
-                    <div style="padding-left: 10px; padding-right: 25px;  display: inline-block;">
+                    <div style="padding-left: 10px; padding-right: 25px; display: inline-block;">
                         <img src="~/images/mcast.png" style="width: 50px"/>
                     </div>
                     <div style="display: inline-block;">
-                        <a asp-controller="Auth" asp-action="Logout"><button class="btn fletnix-red-background" style=" color: white; border: 0px; border-radius: 0px;">Logout</button></a>
+                        <a asp-controller="Auth" asp-action="Logout"><button class="btn fletnix-red-background" style="color: white; border: 0px; border-radius: 0px;">Logout</button></a>
                     </div>
                 </div>
             </li>
@@ -87,44 +93,45 @@
 
         @if (!User.Identity.IsAuthenticated)
         {
-            <li><a class="fletnix-red-background" asp-controller="Auth" asp-action="Login" style="font-weight: 400; font-size: 16px; color: white; border-radius: 5px; padding: 7px 17px 7px 17px;">Sign in</a></li>
+            <li><a class="fletnix-red-background" asp-controller="dashboard" asp-action="index" style="font-weight: 400; font-size: 16px; color: white; border-radius: 5px; padding: 7px 17px 7px 17px;">Sign in</a></li>
         }
     </ul>
 
 </nav>
 
-@RenderSection("NavSupplement",required:false)
+@RenderSection("NavSupplement", required: false)
 
-		
+
 @RenderBody()
-        <footer>
-			<div class="pull-right" style="padding-left:15px;">
-                <p style="color:@ViewData["footerColor"]">&copy; 2017 - fletnix - <a asp-controller="Home" asp-action="Contact">Contact us</a></p>
-			</div>
-        </footer>
+<footer>
+    <div class="pull-right" style="padding-left: 15px;">
+        <p style="color: @ViewData["footerColor"]">&copy; 2017 - fletnix - <a asp-controller="Home" asp-action="Contact">Contact us</a>
+        </p>
+    </div>
+</footer>
 
 
-    <environment names="Development">
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-    </environment>
-    <environment names="Staging,Production">
-        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
-                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                asp-fallback-test="window.jQuery"
-                crossorigin="anonymous"
-                integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
-        </script>
-        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
-                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                crossorigin="anonymous"
-                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
-        </script>
-        <script src="~/js/site.min.js" asp-append-version="true"></script>
-    </environment>
+<environment names="Development">
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</environment>
+<environment names="Staging,Production">
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
+            asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+            asp-fallback-test="window.jQuery"
+            crossorigin="anonymous"
+            integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
+    </script>
+    <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+            asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+            asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+            crossorigin="anonymous"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+    </script>
+    <script src="~/js/site.min.js" asp-append-version="true"></script>
+</environment>
 
-    @RenderSection("Scripts", required: false)
+@RenderSection("Scripts", required: false)
 </body>
 </html>

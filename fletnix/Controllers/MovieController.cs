@@ -24,9 +24,13 @@ namespace fletnix
         }
 
         // GET: Movie
-        public async Task<IActionResult> Index(string currentFilter, string searchString, int? page)
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
             ViewData["CurrentFilter"] = searchString;
+            ViewData["TitleSortParam"] = String.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
+            ViewData["YearSortParam"] = sortOrder == "Year" ? "year_desc" : "Year";
+            
+          
             IQueryable<Movie> fLETNIXContext;
 
             if (searchString != null)
@@ -43,7 +47,25 @@ namespace fletnix
             //var searchParams = System.Net.WebUtility.HtmlDecode(searchString).Split(null).ToList();
 
             var movies = _context.Movie.AsNoTracking();
+           
+            switch (sortOrder)
+            {
+                case "title_desc":
+                    movies = movies.OrderByDescending(m => m.Title);
+                    break;
+                case "Year":
+                    movies = movies.OrderBy(m => m.PublicationYear);
+                    break;
+                case "year_desc":
+                    movies = movies.OrderByDescending(m => m.PublicationYear);
+                    break;
+                default:
+                    movies = movies.OrderBy(m => m.Title);
+                    break;
+            }
 
+            ViewData["CurrentSort"] = sortOrder;
+            
             if (!String.IsNullOrEmpty(searchString))
             {
                 movies = movies.Where(m => (m.Title.ToLower().Contains(searchString.ToLower()) || m.Description.ToLower().Contains(searchString.ToLower())));
@@ -96,9 +118,9 @@ namespace fletnix
             {
                 _context.Add(movie);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                return RedirectToAction("Edit", new {id = movie.MovieId});
             }
-            ViewData["PreviousPart"] = new SelectList(_context.Movie, "MovieId", "Title", movie.PreviousPart);
+           
             return RedirectToAction("Edit", new {id = movie.MovieId});
         }
 
