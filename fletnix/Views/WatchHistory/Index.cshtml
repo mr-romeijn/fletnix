@@ -12,9 +12,25 @@
             <div class="col-md-2" style="padding: 5px;">
                 <div style="overflow: hidden; height: 200px; margin-bottom: 0px;">
                     <div class="movie watchhistory-movie" style="position: relative; min-height: 170px; color: white; text-align: center;" data-id="@history.Movie.MovieId" data-title="@history.Movie.Title">
-                        <div style="background-color: #141414; padding: 5px; padding-top: 11px; position: absolute; z-index: 99; height: 48px; width: 102%; font-size: 16px; top: 150px; color: #8E8E8E;">@history.Movie.Title</div>
+                       
+                        <a asp-route-id="@history.Movie.MovieId" asp-action="movie" asp-controller="dashboard">
+                            <div style="background-color: #141414; padding: 5px; padding-top: 11px; position: absolute; z-index: 99; height: 48px; width: 102%; font-size: 16px; top: 150px; color: #8E8E8E;">
+                                @history.Movie.Title 
+                            </div>
+                        </a>
+                       
                         <img class="movie-poster-@history.Movie.MovieId" src="~/images/no-backdrop.jpg" style="width: 100%;"/>
-                        <div data-title="@history.Movie.Title" data-id="@history.Movie.MovieId" data-year="@history.Movie.PublicationYear" style="position: absolute; top: 107px; left: 3px; z-index: 999; padding: 10px; color: white;" class="feedback-box">Leave feedback <i class="fa fa-commenting" aria-hidden="true"></i></div>
+                        @if (history.Review != null)
+                        {
+                            <div style="cursor: pointer; position: absolute; top: 110px; padding: 10px; background-color: green; color: white;">Reviewed</div>
+                            <div data-method="patch" data-year="@history.Movie.PublicationYear" data-id="@history.Movie.MovieId" data-title="@history.Movie.Title" data-review="@history.Review.Review" data-rating="@history.Review.Rating" class="feedback-box" style="position: absolute; top: 110px; padding: 10px; left: 80px; background-color: #b8860b; color: white;">Edit</div>
+                            <div class="feedback-box" style="position: absolute; top: 110px; padding: 10px; left: 124px; background-color: red; color: white;">Delete</div>
+                        }
+                        else
+                        {
+                            <div data-method="post" data-title="@history.Movie.Title" data-id="@history.Movie.MovieId" data-year="@history.Movie.PublicationYear" style="position: absolute; top: 107px; left: 3px; z-index: 999; padding: 10px; color: white;" class="feedback-box">Leave a review <i class="fa fa-commenting" aria-hidden="true"></i>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -39,16 +55,16 @@
                     </div>
                     <div class="col-md-9">
                         <label style="color: white;">What did you think of it?</label><br>
-                        <textarea style="color: white; width: 100%; min-height: 230px; background-color: #141414;"></textarea><br><br>
+                        <textarea id="feedbacktext" style="color: white; width: 100%; min-height: 230px; background-color: #141414;"></textarea><br><br>
                         <label style="color: white;">Rate it!</label>
                         <select id="movie-rating" name="rating" autocomplete="off" style="display: none;">
                             <option value="1">Shit</option>
                             <option value="2">Very bad</option>
                             <option value="3">Bad</option>
                             <option value="4">Meh</option>
-                            <option value="5" selected>Mediocre</option>
+                            <option value="5">Mediocre</option>
                             <option value="6">Alright</option>
-                            <option value="7">Good</option>
+                            <option value="7" selected>Good</option>
                             <option value="8">Better than good</option>
                             <option value="9">Awesome</option>
                             <option value="10">Fucking awesome</option>
@@ -59,7 +75,7 @@
             </div>
             <div class="modal-footer" style="border-top: 0px solid #8E8E8E;">
                 <button type="button" class="btn fletnix-btn" style="padding: 10px; font-size: 16px; background-color: white;  color: black;" data-dismiss="modal">Close</button>
-                <button type="button" class="btn fletnix-btn fletnix-red-background" style="padding: 10px; font-size: 16px; color: white;">Leave feedback</button>
+                <button type="button" id="feedbackBtn" class="btn fletnix-btn fletnix-red-background" style="padding: 10px; font-size: 16px; color: white;">Leave feedback</button>
             </div>
         </div>
     </div>
@@ -74,17 +90,53 @@
                 getPoster($(this).data('id'), $('.movie-poster-' + $(this).data('id')), $(this).data('title'));
             });
 
+            var currentlyLeavingFeedbackFor = 0;
+            var apiMethod = "post";
             $('.feedback-box').click(function() {
-                console.log($('.movie-poster-' + $(this).data('id')).attr('src'));
                 getPoster(null, $('#feedbackposterimage'), $(this).data('title'), true);
+                var method = $(this).data('method');
+                if (method == 'patch') {
+                    $('#movie-rating').barrating('set', $(this).data('rating'));
+                    $('#feedbacktext').val($(this).data('review'));
+                    apiMethod = "patch";
+                    $('#feedbackBtn').text('Update review');
+                } else {
+                    apiMethod = "post";
+                    $('#feedbackBtn').text('Leave review');
+                }
                 $('#mtitlefeedback').text($(this).data('title')+' ('+$(this).data('year')+')');
                 $('#feedbackmodal').modal('toggle');
+                currentlyLeavingFeedbackFor = $(this).data('id');
             });
             
             $(function() {
                 $('#movie-rating').barrating({
                     theme: 'bars-movie'
                 });
+            });
+
+            $('#feedbackBtn').click(function() {
+               
+                var feedback = $('#feedbacktext').val();
+                var rating = $("#movie-rating").val();
+                console.log('leaving feedback');
+                $.ajax
+                ({
+                    type: apiMethod,
+                    url: "/api/movies/" + currentlyLeavingFeedbackFor + "/feedback",
+                    beforeSend: (xhr) => { xhr.setRequestHeader('Content-Type', 'application/json') },
+                    dataType: 'json',
+                    async: true,
+                    data: JSON.stringify({
+                        movieId: currentlyLeavingFeedbackFor,
+                        review: feedback,
+                        rating: rating
+                    }),
+                    success: function(res) {
+                        console.log(res);
+                    }
+                });
+
             });
         });
 

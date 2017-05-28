@@ -123,9 +123,9 @@ namespace fletnix.Models
                                 Movie = g.Key.m,
                                 TimesViewed = g.Count()
                             }).AsNoTracking()
-                        .Take(nAmount);
-
-                    return MostPopularMoviesOfLastNDays.ToList();
+                        .Take(nAmount).ToList();
+                    context.Database.CloseConnection();
+                    return MostPopularMoviesOfLastNDays;
                 }
             });
         }
@@ -147,9 +147,10 @@ namespace fletnix.Models
                         {
                             Movie = g.Key.m,
                             TimesViewed = g.Count()
-                        }).AsNoTracking();
+                        }).AsNoTracking().Take(nAmount).ToList();
 
-                    return MostPopularOfAllTime.Take(nAmount).ToList();
+                    context.Database.CloseConnection();
+                    return MostPopularOfAllTime;
                 }
             });
         }
@@ -163,20 +164,23 @@ namespace fletnix.Models
 
                      var watchHistoryUser = (from w in context.Watchhistory
                              where w.CustomerMailAddress == email
+                             from review in context.MovieReview
+                             .Where(r => r.MovieId == w.MovieId).Where(r=>r.CustomerMailAddress == email).DefaultIfEmpty()
                              join m in context.Movie on w.MovieId equals m.MovieId
-                             group m by new {m,w}
+                             group m by new {m,w,review}
                              into g
                              select new PopularMoviesViewModel
                              {
                                  Movie = g.Key.m,
-                                 WatchDate = g.Key.w.WatchDate
+                                 WatchDate = g.Key.w.WatchDate,
+                                 Review = g.Key.review
                              }).AsNoTracking()
-                         .Take(nAmount);
+                         .Take(nAmount).OrderByDescending(p => p.WatchDate).ToList();
 
                      /* _context.Watchhistory.Where(h => h.CustomerMailAddress == User.Identity.Name)
                       .Include(m => m.MovieId).ToList();*/
-
-                     return watchHistoryUser.OrderByDescending(p => p.WatchDate).ToList();
+                     context.Database.CloseConnection();
+                     return watchHistoryUser;
                  }
              });
         }
@@ -211,6 +215,11 @@ namespace fletnix.Models
         public void AddMovieCast(MovieCast movieCast)
         {
             _context.MovieCast.Add(movieCast);
+        }
+
+        public void AddReviewToMovie(MovieReview review)
+        {
+            _context.MovieReview.Add(review);
         }
 
         public async Task<bool> SaveChangesAsync()

@@ -9,5 +9,6 @@ namespace fletnix.ViewModels
         public int TimesViewed;
         public DateTime WatchDate { get; set; }
         public Customer Customer { get; set; }
+        public MovieReview Review { get; set; }
     }
 }

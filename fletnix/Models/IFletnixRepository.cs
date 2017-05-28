@@ -27,5 +27,6 @@ namespace fletnix.Models
         Task<List<PopularMoviesViewModel>> GetMostPopularMoviesOfAllTime(int nAmount = 50);
         Movie GetMovieById(int? id);
         bool CheckIfSeenByUser(int? id, string email);
+        void AddReviewToMovie(MovieReview review);
     }
 }

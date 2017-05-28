@@ -25,6 +25,7 @@ namespace fletnix.Models
         public virtual DbSet<MovieGenre> MovieGenre { get; set; }
         public virtual DbSet<Person> Person { get; set; }
         public virtual DbSet<Watchhistory> Watchhistory { get; set; }
+        public virtual DbSet<MovieReview> MovieReview { get; set; }
 
         public FLETNIXContext(IConfigurationRoot config, DbContextOptions options) : base(options)
         {
@@ -47,6 +48,31 @@ namespace fletnix.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            
+            modelBuilder.Entity<MovieReview>(entity =>
+            {
+                modelBuilder.Entity<MovieReview>().ToTable("Movie_Review");
+                
+                entity.HasKey(e => new {e.MovieId, e.CustomerMailAddress}).HasName("PK__Movie_Re__EEF4C2D2989A55B2");
+
+                entity.Property(e => e.MovieId).HasColumnName("movie_id").HasColumnType("int");
+
+                entity.Property(e => e.CustomerMailAddress)
+                    .HasColumnName("customer_mail_address")
+                    .HasColumnType("varchar(255)");
+                         
+                entity.Property(e => e.Review)
+                    .HasColumnName("review")
+                    .HasColumnType("varchar(500)");
+                
+                entity.Property(e => e.Rating)
+                    .HasColumnName("rating")
+                    .HasColumnType("int");
+                
+                entity.Property(e => e.ReviewDate)
+                    .HasColumnName("review_date")
+                    .HasColumnType("datetime");
+            });
 
             modelBuilder.Entity<Award>(entity =>
             {
@@ -381,6 +407,8 @@ namespace fletnix.Models
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK4_movie_id");
             });
+            
+           
         }
     }
 }

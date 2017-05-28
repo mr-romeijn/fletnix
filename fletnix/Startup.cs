@@ -163,6 +163,7 @@ namespace fletnix
                 config.CreateMap<MovieDirectorViewModel, MovieDirector>().ReverseMap();
                 config.CreateMap<MovieAwardViewModel, MovieAward>().ReverseMap();
                 config.CreateMap<MovieGenreViewModel, MovieGenre>().ReverseMap();
+                config.CreateMap<MovieReviewViewModel, MovieReview>().ReverseMap();
             });
 
             if (env.IsDevelopment())

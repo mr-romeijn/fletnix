@@ -68,7 +68,16 @@ namespace fletnix
             
             if (!String.IsNullOrEmpty(searchString))
             {
-                movies = movies.Where(m => (m.Title.ToLower().Contains(searchString.ToLower()) || m.Description.ToLower().Contains(searchString.ToLower())));
+                int movieid = 0;
+                if (Int32.TryParse(searchString, out movieid))
+                {
+                    movies = movies.Where(m => m.MovieId == movieid);
+                }
+                else
+                {
+                    movies = movies.Where(m => (m.Title.ToLower().Contains(searchString.ToLower()) ||
+                                                m.Description.ToLower().Contains(searchString.ToLower())));
+                }
             }
 
             int pageSize = 15;

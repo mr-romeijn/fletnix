@@ -16,7 +16,7 @@ namespace fletnix.Controllers.Api
 {
 
     [Route("/api/movies")]
-    public class MovieController : WalledGarden
+    public class MovieController : Controller
     {
         private readonly IFletnixRepository _repository;
 
@@ -27,6 +27,27 @@ namespace fletnix.Controllers.Api
             //_logger = logger;
         }
 
+        [HttpPost]
+        [Authorize(Policy = "CustomerOnly")]
+        [Route("/api/movies/{id}/feedback")]
+        public async Task<IActionResult> LeaveFeedback([FromBody] MovieReviewViewModel review)
+        {
+            
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+ 
+            var newReview = Mapper.Map<MovieReview>(review);
+            newReview.CustomerMailAddress = User.Identity.Name;
+            _repository.AddReviewToMovie(newReview);
+            if (await _repository.SaveChangesAsync())
+            {
+                return Created($"/api/movies/{review.MovieId}/feedback", Mapper.Map<MovieReviewViewModel>(newReview));
+            }
+
+            return BadRequest("Failed to save changes to the database");
+
+        }
+
+        [Authorize(Policy = "AdminOnly")]
         [HttpGet]
         [Route("/api/token")]
         public IActionResult GetClaims()
@@ -64,7 +85,9 @@ namespace fletnix.Controllers.Api
             return new JsonResult(roles);
         }
 
+        
         [HttpPatch]
+        [Authorize(Policy = "AdminOnly")]
         [Route("/api/movie/genres")]
         public async Task<IActionResult>  UpdateGenres([FromBody] MovieGenrePostModel genres)
         {
@@ -91,6 +114,7 @@ namespace fletnix.Controllers.Api
         }
 
         [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
         [Route("/api/movie/director")]
         public async Task<IActionResult>  AddDirector([FromBody] MovieDirectorViewModel director)
         {
@@ -108,6 +132,7 @@ namespace fletnix.Controllers.Api
         }
 
         [HttpDelete]
+        [Authorize(Policy = "AdminOnly")]
         [Route("/api/movie/director")]
         public async Task<IActionResult>  RemoveDirector([FromBody] MovieDirectorViewModel director)
         {
@@ -126,6 +151,7 @@ namespace fletnix.Controllers.Api
 
 
         [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
         [Route("/api/movie/award")]
         public async Task<IActionResult>  AddAward([FromBody] MovieAwardViewModel award)
         {
@@ -143,6 +169,7 @@ namespace fletnix.Controllers.Api
         }
 
         [HttpDelete]
+        [Authorize(Policy = "AdminOnly")]
         [Route("/api/movie/award")]
         public async Task<IActionResult>  RemoveAward([FromBody] MovieAwardViewModel award)
         {
@@ -161,6 +188,7 @@ namespace fletnix.Controllers.Api
 
 
         [HttpGet]
+        [Authorize(Policy = "AdminOnly")]
         [Route("/api/movies/search/{title}")]
         public IActionResult Get(string title)
         {
