@@ -28,5 +28,9 @@ namespace fletnix.Models
         Movie GetMovieById(int? id);
         bool CheckIfSeenByUser(int? id, string email);
         void AddReviewToMovie(MovieReview review);
+        void UpdateMovieReview(MovieReview review);
+        void DeleteMovieReview(MovieReview review);
+        Task<List<PopularMoviesViewModel>> GetLatestMoviesAdded();
+        void AddToWatchHistory(Watchhistory wh);
     }
 }

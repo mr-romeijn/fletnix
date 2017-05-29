@@ -75,8 +75,7 @@ namespace fletnix
                 }
                 else
                 {
-                    movies = movies.Where(m => (m.Title.ToLower().Contains(searchString.ToLower()) ||
-                                                m.Description.ToLower().Contains(searchString.ToLower())));
+                    movies = movies.Where(m => (m.Title.ToLower().Contains(searchString.ToLower())));
                 }
             }
 

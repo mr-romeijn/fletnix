@@ -184,6 +184,24 @@ namespace fletnix.Models
                  }
              });
         }
+        
+        public Task<List<PopularMoviesViewModel>> GetLatestMoviesAdded()
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                using (var context = FLETNIXContext.ContextFactory())
+                {
+
+                    var latestmovies = (from m in context.Movie select new PopularMoviesViewModel {Movie = m}).OrderByDescending(m=>m.Movie.PublicationYear)
+                        .AsNoTracking().Take(50).ToList();
+
+                    /* _context.Watchhistory.Where(h => h.CustomerMailAddress == User.Identity.Name)
+                     .Include(m => m.MovieId).ToList();*/
+                    context.Database.CloseConnection();
+                    return latestmovies;
+                }
+            });
+        }
 
         public Movie GetMovieById(int? id)
         {
@@ -212,6 +230,11 @@ namespace fletnix.Models
             _context.MovieCast.Remove(_context.MovieCast.FirstOrDefault(m => (m.MovieId == movieCast.MovieId && m.PersonId == movieCast.PersonId)));
         }
 
+        public void AddToWatchHistory(Watchhistory wh)
+        {
+            _context.Watchhistory.Add(wh);
+        }
+
         public void AddMovieCast(MovieCast movieCast)
         {
             _context.MovieCast.Add(movieCast);
@@ -220,6 +243,16 @@ namespace fletnix.Models
         public void AddReviewToMovie(MovieReview review)
         {
             _context.MovieReview.Add(review);
+        }
+
+        public void DeleteMovieReview(MovieReview review)
+        {
+            _context.MovieReview.Remove(review);
+        }
+
+        public void UpdateMovieReview(MovieReview review)
+        {
+            _context.MovieReview.Update(review);
         }
 
         public async Task<bool> SaveChangesAsync()

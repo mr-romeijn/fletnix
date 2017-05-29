@@ -30,8 +30,33 @@
                     }
 
                     $('#playBtn').click(function() {
+                        play();
+                    });
+
+                    $('#playMovie').click(function() {
+                        play();
+                    });
+                    
+                    function play() {
                         $('#trailer').show();
-                    })
+                        $.ajax
+                        ({
+                            type: "POST",
+                            url: "/api/movies/@Model.MovieId/watch",
+                            beforeSend: (xhr) => { xhr.setRequestHeader('Content-Type', 'application/json') },
+                            dataType: 'json',
+                            async: true,
+                            data: JSON.stringify({
+                                id: @Model.MovieId
+                            }),
+                            success: function(res) {
+                                alert('Movie has been added to your watchhistory');
+                                location.reload();
+                            }, error: function(res) {
+                                
+                            }
+                        });
+                    } 
                 });
         });
     </script>
@@ -48,7 +73,7 @@
                 <img id="preview" src="~/images/no-poster.jpg" style="border: 10px solid white; width: 100%;">
                 <div style="padding: 10px;">
                     
-                <button class="btn fletnix-btn fletnix-red-background" style="margin-top: 15px; color: white; font-size: 16px;">PLAY MOVIE</button><hr>
+                <button id="playMovie" class="btn fletnix-btn fletnix-red-background" style="margin-top: 15px; color: white; font-size: 16px;">PLAY MOVIE</button><hr>
                     <div style="margin-top: 10px; text-align: center;">
                         <h2 style="font-family: arial; color: white;" id="votes"></h2>
                     </div>
@@ -58,7 +83,13 @@
             </div>
 
             <div style="position: absolute; width: 800px; top: -63px; left: 230px;">
-                <h2 style="color: white; font-family: arial;">@Model.Title <span style="font-family: arial; font-size: 14px; color: white;">@Model.Duration minutes | @Model.PublicationYear</span>
+                <h2 style="color: white; font-family: arial;">@Model.Title 
+                    <span style="font-family: arial; font-size: 14px; color: white;">@Model.Duration minutes | @Model.PublicationYear 
+                       @if ((bool) ViewData["seen"])
+                       {
+                           <span class="label label-success">Watched</span>
+                       }
+                    </span>
                 </h2>
             </div>
 

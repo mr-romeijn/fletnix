@@ -127,16 +127,15 @@ namespace fletnix
                 SignInScheme = "cookie",
             });*/
 
-
+           
             app.UseOpenIdConnectAuthentication(new OpenIdConnectOptions
             {
 
                 AuthenticationScheme = "oidc",
                 SignInScheme = "cookie",
-                Authority = "http://localhost:5002/",
-                RequireHttpsMetadata = false,
+                Authority = Configuration["AuthServer"],
+                RequireHttpsMetadata = _env.IsDevelopment() ? false : true,
                 ClientId = "fletnix",
-                ClientSecret = "secret",
                 //ResponseType = "code id_token",
                 Scope = { "openid", "profile","role"},
                 GetClaimsFromUserInfoEndpoint = true,

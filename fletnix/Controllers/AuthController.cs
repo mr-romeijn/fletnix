@@ -9,6 +9,7 @@ using IdentityServer4;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -20,12 +21,14 @@ namespace fletnix.Controllers
     public class AuthController : Controller
     {
         private IConfigurationRoot _config;
+        private IHostingEnvironment _env;
 
         //private SignInManager<ApplicationUser> _signInManager;
 
-        public AuthController(IConfigurationRoot config)
+        public AuthController(IConfigurationRoot config, IHostingEnvironment env)
         {
             _config = config;
+            _env = env;
             //_signInManager = signInManager;
         }
 
@@ -108,7 +111,8 @@ namespace fletnix.Controllers
                 //await HttpContext.Authentication.SignOutAsync(IdentityServerConstants.DefaultCookieAuthenticationScheme);
 
                 await HttpContext.Authentication.SignOutAsync("cookie");
-                return Redirect(_config["AuthServer"]+"/connect/endsession?logoutId=1337&postLogoutRedirectUri=http://localhost:5000");
+                var redirectUri = _config["AuthServerRedirect"];
+                return Redirect(_config["AuthServer"]+"/connect/endsession?logoutId=1337&postLogoutRedirectUri="+redirectUri);
             }
 
             return RedirectToAction("Index", "Home");

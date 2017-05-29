@@ -9,19 +9,37 @@
         Layout = "_Layout";
     }
     var watchHistory = (List<PopularMoviesViewModel>) ViewData["WatchHistory"];
+    var MostPopularOfLastTwoWeeks = (List<PopularMoviesViewModel>) ViewData["MostPopularOfLastTwoWeeks"];
+    var MostPopularOfAllTime =  (List<PopularMoviesViewModel>) ViewData["MostPopularOfAllTime"];
+    var LatestMovies =  (List<PopularMoviesViewModel>) ViewData["LatestMovies"];
+    PopularMoviesViewModel bigdisplay = null;
+    if (watchHistory.Count > 0)
+    {
+        bigdisplay = watchHistory[0];
+    } else if (MostPopularOfLastTwoWeeks.Count > 0)
+    {
+        bigdisplay = MostPopularOfLastTwoWeeks[0];
+    }  else if (MostPopularOfAllTime.Count > 0)
+    {
+        bigdisplay = MostPopularOfAllTime[0];
+    } else if (LatestMovies.Count > 0)
+    {
+        bigdisplay = LatestMovies[0];
+    }
+ 
 }
 
 @using fletnix.Helpers
 @using fletnix.ViewModels
-@if (watchHistory.Count > 0)
+@if (bigdisplay != null)
 {
     <div class="container-fluid" id="mainbackdropcontainer" style="height: 55vh; width: 100%; position: relative; background-color: black; background-position: right 20px top -100px; background-size: cover; background-repeat: no-repeat; background-image: url('/images/no-backdrop.jpg')">
         <div class="row">
-            <div class="col-md-5">
+            <div class="col-md-9">
                 <div style="margin-top: 28vh">
-                    <h1 style="font-size: 55px; color: white;">@watchHistory[0].Movie.Title (@watchHistory[0].Movie.PublicationYear) </h1>
-                    <p style="color: white;">@watchHistory[0].Movie.Description</p>
-                    <a asp-action="movie" asp-controller="dashboard" asp-route-id="@watchHistory[0].Movie.MovieId"> <button class="btn fletnix-red-background  fletnix-btn" style="margin-top: 25px; color: white;">Continue watching</button></a>
+                    <h1 style="font-size: 55px; color: white;">@bigdisplay.Movie.Title (@bigdisplay.Movie.PublicationYear) </h1>
+                    <p style="color: white;">@bigdisplay.Movie.Description</p>
+                    <a asp-action="movie" asp-controller="dashboard" asp-route-id="@bigdisplay.Movie.MovieId"> <button class="btn fletnix-red-background  fletnix-btn" style="margin-top: 25px; color: white;">Continue watching</button></a>
                 </div>
             </div>
         </div>
@@ -91,6 +109,27 @@
         </div>
     </div>
 </div>
+
+
+<div class="container-fluid" style="background-color: #141414; margin-top: 15px;">
+    <h2 style="color: #8E8E8E;  font-size: 18px; font-family: arial;">Latest movies</h2>
+    <div style="overflow-x: scroll; white-space: nowrap;">
+        <div style="width: 999999px;">
+            @foreach (var movie in (List<PopularMoviesViewModel>) ViewData["LatestMovies"])
+            {
+                <a asp-route-id="@movie.Movie.MovieId" asp-action="movie" asp-controller="dashboard">
+                    <div style="width: 350px; float: left; margin-right: 10px; margin-bottom:30px;">
+                        <div class="movie" style="position: relative; min-height: 170px; color: white; text-align: center;" data-id="@movie.Movie.MovieId" data-title="@movie.Movie.Title">
+                            <div style="background-color:#141414; padding: 5px; position: absolute; z-index: 99; font-size: 16px; top: 150px; left: 10px; color:  #8E8E8E;">@movie.Movie.Title</div>
+                            <img class="movie-poster-@movie.Movie.MovieId" src="~/images/no-backdrop.jpg" style="width: 100%;"/>
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+    </div>
+</div>
+
 @section scripts {
     <script>
         $(document).ready(function() {
@@ -99,10 +138,10 @@
                 getPoster($(this).data('id'), $('.movie-poster-' + $(this).data('id')), $(this).data('title'));
             });
             
-            @if (watchHistory.Count > 0)
+            @if (bigdisplay != null)
             {
                 <Text>
-                getPoster(null,null,'@watchHistory[0].Movie.Title',function(path) {
+                getPoster(null,null,'@bigdisplay.Movie.Title',function(path) {
                     $('#mainbackdropcontainer').css('background-image', 'url(https://image.tmdb.org/t/p/w1920/' + path + ')');
                 });
                 </Text>

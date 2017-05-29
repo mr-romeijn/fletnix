@@ -19,10 +19,12 @@ namespace fletnix.Controllers.Api
     public class MovieController : Controller
     {
         private readonly IFletnixRepository _repository;
+        private FLETNIXContext _context;
 
 
-        public MovieController(IFletnixRepository repository)
+        public MovieController(IFletnixRepository repository, FLETNIXContext context)
         {
+            _context = context;
             _repository = repository;
             //_logger = logger;
         }
@@ -32,20 +34,105 @@ namespace fletnix.Controllers.Api
         [Route("/api/movies/{id}/feedback")]
         public async Task<IActionResult> LeaveFeedback([FromBody] MovieReviewViewModel review)
         {
+            var hasSeen = _context.Watchhistory.Where(r=>r.CustomerMailAddress == User.Identity.Name).FirstOrDefault(r => r.MovieId == review.MovieId);
+            if (!ModelState.IsValid && hasSeen != null) return BadRequest(ModelState);
             
-            if (!ModelState.IsValid) return BadRequest(ModelState);
- 
             var newReview = Mapper.Map<MovieReview>(review);
             newReview.CustomerMailAddress = User.Identity.Name;
-            _repository.AddReviewToMovie(newReview);
-            if (await _repository.SaveChangesAsync())
+            try
             {
-                return Created($"/api/movies/{review.MovieId}/feedback", Mapper.Map<MovieReviewViewModel>(newReview));
+                _repository.AddReviewToMovie(newReview);
+                if (await _repository.SaveChangesAsync())
+                {
+                    return Created($"/api/movies/{review.MovieId}/feedback",
+                        Mapper.Map<MovieReviewViewModel>(newReview));
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
             }
 
             return BadRequest("Failed to save changes to the database");
-
         }
+        
+        [HttpPatch]
+        [Authorize(Policy = "CustomerOnly")]
+        [Route("/api/movies/{id}/feedback")]
+        public async Task<IActionResult> UpdateFeedback([FromBody] MovieReviewViewModel review)
+        {
+            var hasSeen = _context.Watchhistory.Where(r=>r.CustomerMailAddress == User.Identity.Name).FirstOrDefault(r => r.MovieId == review.MovieId);
+            if (!ModelState.IsValid && hasSeen != null) return BadRequest(ModelState);
+            var newReview = Mapper.Map<MovieReview>(review);
+            newReview.CustomerMailAddress = User.Identity.Name;
+            try{
+                _repository.UpdateMovieReview(newReview);
+                if (await _repository.SaveChangesAsync())
+                {
+                    return Json($"/api/movies/{review.MovieId}/feedback");
+                }
+                
+                
+            } catch (Exception e){
+                return BadRequest(e.Message);
+            }
+
+            return BadRequest("Failed to save changes to the database");
+        }
+        
+        
+        [HttpDelete]
+        [Authorize(Policy = "CustomerOnly")]
+        [Route("/api/movies/{id}/feedback")]
+        public async Task<IActionResult> DeleteFeedback([FromBody] MovieReviewViewModel review)
+        {
+            var hasSeen = _context.Watchhistory.Where(r=>r.CustomerMailAddress == User.Identity.Name).FirstOrDefault(r => r.MovieId == review.MovieId);
+            if (!ModelState.IsValid && hasSeen != null) return BadRequest(ModelState);
+            var newReview = Mapper.Map<MovieReview>(review);
+            newReview.CustomerMailAddress = User.Identity.Name;
+            try
+            {
+                _repository.DeleteMovieReview(newReview);
+                if (await _repository.SaveChangesAsync())
+                {
+                    return Json($"/api/movies/{review.MovieId}/feedback");
+                }
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+
+            return BadRequest("Failed to save changes to the database");
+        }
+        
+        [HttpPost]
+        [Authorize(Policy = "CustomerOnly")]
+        [Route("/api/movies/{id}/watch")]
+        public async Task<IActionResult> AddToWatchHistory(int id)
+        {
+            var hasSeen = _context.Watchhistory.Where(r=>r.CustomerMailAddress == User.Identity.Name).FirstOrDefault(r => r.MovieId == id);
+            if (!ModelState.IsValid && hasSeen == null) return BadRequest(ModelState);
+           
+                _repository.AddToWatchHistory(new Watchhistory()
+                {
+                    CustomerMailAddress = User.Identity.Name,
+                    Invoiced = true,
+                    MovieId = id,
+                    Price = 2,
+                    WatchDate = DateTime.Now
+                });
+                if (await _repository.SaveChangesAsync())
+                {
+                    return Json($"/api/movies/{id}/watch");
+                }
+           
+
+            return BadRequest("Failed to save changes to the database");
+        }
+        
+        
 
         [Authorize(Policy = "AdminOnly")]
         [HttpGet]

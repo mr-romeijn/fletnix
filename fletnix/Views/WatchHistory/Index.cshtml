@@ -24,7 +24,7 @@
                         {
                             <div style="cursor: pointer; position: absolute; top: 110px; padding: 10px; background-color: green; color: white;">Reviewed</div>
                             <div data-method="patch" data-year="@history.Movie.PublicationYear" data-id="@history.Movie.MovieId" data-title="@history.Movie.Title" data-review="@history.Review.Review" data-rating="@history.Review.Rating" class="feedback-box" style="position: absolute; top: 110px; padding: 10px; left: 80px; background-color: #b8860b; color: white;">Edit</div>
-                            <div class="feedback-box" style="position: absolute; top: 110px; padding: 10px; left: 124px; background-color: red; color: white;">Delete</div>
+                            <div data-method="delete" data-year="@history.Movie.PublicationYear" class="feedback-box" id="deleteFeedback" data-rating="@history.Review.Rating" data-title="@history.Movie.Title" data-id="@history.Movie.MovieId" style="position: absolute; top: 110px; padding: 10px; left: 124px; background-color: red; color: white;">Delete</div>
                         }
                         else
                         {
@@ -47,9 +47,10 @@
                 <h4 class="modal-title" id="mtitlefeedback" style="color: white;" id="myModalLabel">We appreciate you giving us feedback!</h4>
             </div>
             <div class="modal-body">
+                <div class="crudNotification" id="feedbacknotification" style="background-color: green; display: none;"></div>
                 <div class="row">
                     <div class="col-md-3 text-center">
-                       
+
                         <img id="feedbackposterimage" style="margin-top: 10px; width: 100%;"></img>
 
                     </div>
@@ -71,7 +72,7 @@
                         </select><br><br>
                     </div>
                 </div>
-               
+
             </div>
             <div class="modal-footer" style="border-top: 0px solid #8E8E8E;">
                 <button type="button" class="btn fletnix-btn" style="padding: 10px; font-size: 16px; background-color: white;  color: black;" data-dismiss="modal">Close</button>
@@ -94,29 +95,46 @@
             var apiMethod = "post";
             $('.feedback-box').click(function() {
                 getPoster(null, $('#feedbackposterimage'), $(this).data('title'), true);
+                $('#mtitlefeedback').text($(this).data('title') + ' (' + $(this).data('year') + ')');
+                currentlyLeavingFeedbackFor = $(this).data('id');
+
                 var method = $(this).data('method');
+                var toggle = true;
                 if (method == 'patch') {
                     $('#movie-rating').barrating('set', $(this).data('rating'));
                     $('#feedbacktext').val($(this).data('review'));
                     apiMethod = "patch";
                     $('#feedbackBtn').text('Update review');
-                } else {
+                } else if (method == 'post') {
                     apiMethod = "post";
+                    $('#movie-rating').barrating('set', 6);
+                    $('#feedbacktext').val('');
                     $('#feedbackBtn').text('Leave review');
+                } else if (method == 'delete') {
+                    if (confirm("Are you sure you want to delete your review for: " + $(this).data('title') + " (" + $(this).data('year') + ")")) {
+                        toggle = false;
+                        apiMethod = 'delete';
+                        doReq(false);
+                    }
                 }
-                $('#mtitlefeedback').text($(this).data('title')+' ('+$(this).data('year')+')');
-                $('#feedbackmodal').modal('toggle');
-                currentlyLeavingFeedbackFor = $(this).data('id');
+
+                if (toggle) $('#feedbackmodal').modal('toggle');
+
             });
-            
+
             $(function() {
                 $('#movie-rating').barrating({
                     theme: 'bars-movie'
                 });
             });
 
+
             $('#feedbackBtn').click(function() {
-               
+                doReq();
+            });
+
+            function doReq(toggle) {
+                if (toggle == undefined) toggle = true;
                 var feedback = $('#feedbacktext').val();
                 var rating = $("#movie-rating").val();
                 console.log('leaving feedback');
@@ -133,11 +151,39 @@
                         rating: rating
                     }),
                     success: function(res) {
-                        console.log(res);
+                        
+                        var noti = $('#feedbacknotification');
+                        switch (apiMethod) {
+                        case 'post':
+                            noti.text('Thanks for leaving your review');
+                            break;
+                        case 'patch':
+                            noti.text('Your review has been updated');
+                            break;
+                        case 'delete':
+                            alert('Your review has been removed');
+                            location.reload();
+                            break;
+                        }
+                        noti.slideDown('fast',
+                            function() {
+                                setTimeout(function() {
+                                        if (apiMethod != 'patch') {
+                                            location.reload();
+                                        } else {
+                                            noti.slideUp('fast');
+                                            if (toggle) $('#feedbackmodal').modal('toggle');
+                                            setTimeout(function() {
+                                                    location.reload();
+                                                },
+                                                500);
+                                        }
+                                    },
+                                    2000);
+                            });
                     }
                 });
-
-            });
+            }
         });
 
         function getPoster(id, element, title, poster) {

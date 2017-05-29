@@ -20,6 +20,7 @@ using IdentityServer4.Events;
 using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Hosting;
 
 namespace IdentityServer4.Quickstart.UI
 {
@@ -35,15 +36,17 @@ namespace IdentityServer4.Quickstart.UI
 		private readonly IIdentityServerInteractionService _interaction;
 		private readonly IEventService _events;
 		private readonly AccountService _account;
+        private IHostingEnvironment _env;
 
 		public AccountController(
 			IIdentityServerInteractionService interaction,
 			IClientStore clientStore,
 			IHttpContextAccessor httpContextAccessor,
 			IEventService events,
-			UserManager<IdentityUser> userManager)
+			UserManager<IdentityUser> userManager,
+            IHostingEnvironment env)
 		{
-
+            _env = env;
 			_userManager = userManager;
 			_interaction = interaction;
 			_events = events;
@@ -365,7 +368,8 @@ namespace IdentityServer4.Quickstart.UI
                 Response.Cookies.Delete(cookie);
 			}
 
-			return Redirect("http://localhost:5000");
+            if(_env.IsDevelopment()) return Redirect("http://localhost:5000");
+            if (_env.IsProduction()) return Redirect("https://fletnix.azurewebsites.net");
 
 
 			var vm = await _account.BuildLogoutViewModelAsync(logoutId);
