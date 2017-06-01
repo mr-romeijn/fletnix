@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿﻿﻿using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -15,10 +15,6 @@ using Microsoft.Extensions.Logging;
 using fletnix.Services;
 using fletnix.ViewModels;
 using IdentityModel;
-using IdentityServer4.EntityFramework.DbContexts;
-using IdentityServer4.EntityFramework.Mappers;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -62,40 +58,25 @@ namespace fletnix
                     policy.RequireClaim(ClaimTypes.Role, "financial","admin"));
             });
 
-            //IDENTITY INTEGRATED
-            /*services.AddIdentity<ApplicationUser, IdentityRole>(config =>
-                {
-                    config.User.RequireUniqueEmail = true;
-                    config.Password.RequiredLength = 5;
-                    config.Password.RequireNonAlphanumeric = false;
-                    config.Cookies.ApplicationCookie.LoginPath = "/Auth/Login";
-                    config.Cookies.ApplicationCookie.Events = new CookieAuthenticationEvents()
-                    {
-                        OnRedirectToLogin = async ctx =>
-                        {
-                            if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
-                            {
-                                ctx.Response.StatusCode = 401;
-                            }
-                            else
-                            {
-                                ctx.Response.Redirect(ctx.RedirectUri);
-                            }
-                            await Task.Yield();
-                        }
-                    };
-                })
-                .AddEntityFrameworkStores<FLETNIXContext>()
-                .AddDefaultTokenProviders();*/
-
-
+           
             if (_env.IsDevelopment())
             {
+              
+                services.AddDistributedRedisCache(options =>
+                {
+                    options.InstanceName = "Fletnix";
+                    options.Configuration = "127.0.0.1";
+                });
+
                 services.AddScoped<IMailService, DebugMailService>();
+                services.AddSingleton<IRedisCache, RedisCache>();
             } else {
 				services.AddScoped<IMailService, DebugMailService>();
+                services.AddSingleton<IRedisCache, MemoryCache>();
                 // Implement real service
             }
+            
+            services.AddSession();
 
             services.AddLogging();
 
@@ -115,6 +96,8 @@ namespace fletnix
             //app.UseIdentity();
             //app.UseIdentityServer();
 
+            app.UseSession();
+            
             app.UseCookieAuthentication(new CookieAuthenticationOptions {
                 AuthenticationScheme = "cookie"
             });

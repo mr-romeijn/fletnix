@@ -1,0 +1,4 @@
+Label,# Samples,Average,Min,Max,Std. Dev.,Error %,Throughput,Received KB/sec,Sent KB/sec,Avg. Bytes
+[API] Search movies,15,3686,947,5288,"1575,55","0,000%",",82713","0,93","3,18","1157,0"
+[API] Search persons,15,16705,7757,21786,"3878,53","0,000%",",51083","0,33","1,95","667,0"
+TOTAL,30,10196,947,21786,"7151,09","0,000%",",98974","0,88","3,79","912,0"

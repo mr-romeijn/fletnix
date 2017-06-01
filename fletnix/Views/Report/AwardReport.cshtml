@@ -1,0 +1,124 @@
+@using fletnix.Helpers
+@using fletnix.Models
+@using fletnix.ViewModels
+@model fletnix.Helpers.PaginatedList<AwardReportViewModel>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_AdminLayout";
+    var _report = (Dictionary<int?, Dictionary<string, AwardReportViewModel>>) ViewData["Report"];
+}
+
+<div class="container-fluid" style="padding-top: 45px; padding-left: 40px; background-color: white; padding-bottom: 45px;">
+    <div class="row">
+        <div class="col-md-8">
+            <h1>@ViewData["header"]</h1>
+        </div>
+        <div class="col-md-4">
+            <div class="row">
+                <form method="get" action="/admin/report/AwardReport" style="margin-top: 20px;">
+                    <div class="col-md-3 col-md-offset-3" style="margin-top: -22px;">
+                        <label>From</label>
+                        <select class="form-control yearSelectorFrom" name="fromYear"></select>
+                    </div>
+                    <div class="col-md-3" style="margin-top: -22px;">
+                        <label>Till</label>
+                        <select class="yearSelectorTill form-control" name="tillYear"></select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="fletnix-btn fletnix-red-background" style="border: 0px; margin-top: -6px; color: white; padding: 10px; font-size: 15px;">Generate</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <hr>
+    
+    @{
+        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    }
+
+    <div class="pull-right" style="margin-bottom:15px;">
+        <a asp-action="AwardReport"
+           asp-route-page="@(Model.PageIndex - 1)"
+           asp-route-fromyear="@ViewData["from"]"
+           asp-route-tillyear="@ViewData["till"]"
+           style="color: white; padding: 10px; font-size: 14px;"
+           class="fletnix-btn fletnix-red-background btn btn-default @prevDisabled">
+            Previous
+        </a>
+        <a asp-action="AwardReport"
+           asp-route-page="@(Model.PageIndex + 1)"
+           asp-route-fromyear="@ViewData["from"]"
+           asp-route-tillyear="@ViewData["till"]"
+           style="color: white; padding: 10px; font-size: 14px;"
+           class="fletnix-btn fletnix-red-background btn btn-default @nextDisabled">
+            Next
+        </a>
+    </div>
+
+    <div class="" style="margin-top: 10px;">
+        @foreach (KeyValuePair<int?, Dictionary<string, AwardReportViewModel>> entry in _report)
+        {
+           
+            <table class="table table-bordered">
+                <thead>
+                <th>
+                    <h3 style="padding: 0px; margin: 0px;">@entry.Key</h3>
+                </th>
+                <th>Awards</th>
+                <th>
+                    number of nominations
+                </th>
+                <th>number of won awards</th>
+                </thead>
+                @foreach (KeyValuePair<string, AwardReportViewModel> m in entry.Value)
+                {
+                    <tr>
+                        <td style="width: 30vw"><a target="_BLANK" asp-action="edit" asp-route-id="@m.Value.Movie.MovieId" asp-controller="Movie"> (@m.Value.Movie.MovieId)</a> @m.Key</td>
+                        <td style="width:20vw">
+                            <table class="">
+                                @foreach (MovieAward ma in m.Value.MovieAwardList)
+                                {
+                                    <tr>
+                                        @if (ma != null)
+                                        {
+                                            <td>
+                                                (@ma.Year)  @ma.Name<span> </span> @ma.Type 
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            </table>
+                        </td>
+                        <td>
+                            @m.Value.Nominated
+                        </td>
+                        <td>
+                            @m.Value.Won
+                        </td>
+                    </tr>
+                }
+            </table>
+           
+        }
+    </div>
+</div>
+
+
+
+@section scripts {
+
+    <script>
+        for (i = new Date().getFullYear()+1; i > 1920; i--) {
+            var isSelectedFrom = '';
+            if (@ViewData["from"] == i) isSelectedFrom = 'selected'; 
+            $('.yearSelectorFrom').append($('<option '+isSelectedFrom+' />').val(i).html(i));
+            
+            var isSelectedTill = '';
+            if (@ViewData["till"] == i) isSelectedTill = 'selected'; 
+            $('.yearSelectorTill').append($('<option '+isSelectedTill+' />').val(i).html(i));
+        }
+    </script>
+}

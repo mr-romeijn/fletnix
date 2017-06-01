@@ -4,11 +4,13 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using fletnix.Helpers;
 using fletnix.Models;
 using fletnix.ViewModels;
 using IdentityServer4.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Token = fletnix.Helpers.Token;
 
@@ -20,10 +22,12 @@ namespace fletnix.Controllers.Api
     {
         private readonly IFletnixRepository _repository;
         private FLETNIXContext _context;
+        private IRedisCache _cache;
 
 
-        public MovieController(IFletnixRepository repository, FLETNIXContext context)
+        public MovieController(IFletnixRepository repository, FLETNIXContext context, IRedisCache cache)
         {
+            _cache = cache;
             _context = context;
             _repository = repository;
             //_logger = logger;
@@ -113,7 +117,8 @@ namespace fletnix.Controllers.Api
         public async Task<IActionResult> AddToWatchHistory(int id)
         {
             var hasSeen = _context.Watchhistory.Where(r=>r.CustomerMailAddress == User.Identity.Name).FirstOrDefault(r => r.MovieId == id);
-            if (!ModelState.IsValid && hasSeen == null) return BadRequest(ModelState);
+            
+            if (!ModelState.IsValid && hasSeen != null || hasSeen.CustomerMailAddress == User.Identity.Name ) return BadRequest(ModelState);
            
                 _repository.AddToWatchHistory(new Watchhistory()
                 {
@@ -137,7 +142,7 @@ namespace fletnix.Controllers.Api
         [Authorize(Policy = "AdminOnly")]
         [HttpGet]
         [Route("/api/token")]
-        public IActionResult GetClaims()
+        public async Task<IActionResult> GetClaims()
         {
 
             //Token.Set(User.Claims);
@@ -273,11 +278,10 @@ namespace fletnix.Controllers.Api
 
         }
 
-
         [HttpGet]
         [Authorize(Policy = "AdminOnly")]
         [Route("/api/movies/search/{title}")]
-        public IActionResult Get(string title)
+        public async Task<IActionResult> Get(string title)
         {
             if (title.Length > 4)
             {

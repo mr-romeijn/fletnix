@@ -24,8 +24,6 @@ namespace fletnix.Data.Seeds
         public async Task EnsureSeedData()
         {
 
-
-
             foreach (var customer in _context.Customer.ToList())
             {
                 if (await _userManager.FindByEmailAsync(customer.CustomerMailAddress) == null)

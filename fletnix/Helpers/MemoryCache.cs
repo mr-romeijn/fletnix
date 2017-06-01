@@ -3,21 +3,26 @@ using System.Collections.Generic;
 
 namespace fletnix.Helpers
 {
-    public static class MemoryCache
+    public class MemoryCache : IRedisCache
     {
         private static Dictionary<String, String> _Cache = new Dictionary<string, string>();
 
-        public static void Add(String key, String value)
+        public void Add(String key, String value)
         {
             _Cache.Add(key,value);
         }
 
-        public static bool Exists(string key)
+        public void Remove(string key)
+        {
+            _Cache.Remove(key);
+        }
+
+        public bool Exists(string key)
         {
             return _Cache.ContainsKey(key);
         }
         
-        public static string Retrieve(String key)
+        public string Retrieve(String key)
         {
             return _Cache[key];
         }

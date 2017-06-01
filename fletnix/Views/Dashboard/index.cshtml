@@ -12,7 +12,9 @@
     var MostPopularOfLastTwoWeeks = (List<PopularMoviesViewModel>) ViewData["MostPopularOfLastTwoWeeks"];
     var MostPopularOfAllTime =  (List<PopularMoviesViewModel>) ViewData["MostPopularOfAllTime"];
     var LatestMovies =  (List<PopularMoviesViewModel>) ViewData["LatestMovies"];
+    
     PopularMoviesViewModel bigdisplay = null;
+    
     if (watchHistory.Count > 0)
     {
         bigdisplay = watchHistory[0];
@@ -26,6 +28,7 @@
     {
         bigdisplay = LatestMovies[0];
     }
+    
  
 }
 
@@ -47,7 +50,7 @@
 }
 
 
-@if (((List<PopularMoviesViewModel>) ViewData["WatchHistory"]).Count > 0)
+@if (watchHistory.Count > 0)
 {
 <div class="container-fluid" style="background-color: #141414; margin-top: 50px; margin-bottom: 25px;">
     <h2 style="color: #8E8E8E; font-size: 18px; font-family: arial;">My list</h2>
@@ -69,13 +72,13 @@
 </div>
 }
 
-@if (((List<PopularMoviesViewModel>) ViewData["MostPopularOfLastTwoWeeks"]).Count > 0)
+@if (MostPopularOfLastTwoWeeks.Count > 0)
 {
 <div class="container-fluid" style="background-color: #141414; margin-top: 15px;">
     <h2 style="color: #8E8E8E; font-size: 18px; font-family: arial;">Most popular movies of the last two weeks</h2>
     <div style="overflow-x: scroll; white-space: nowrap;">
         <div style="width: 999999px;">
-            @foreach (var movie in (List<PopularMoviesViewModel>) ViewData["MostPopularOfLastTwoWeeks"])
+            @foreach (var movie in MostPopularOfLastTwoWeeks)
             {
                 <a asp-route-id="@movie.Movie.MovieId" asp-action="movie" asp-controller="dashboard">
                     <div style="width: 350px; float: left; margin-right: 10px; margin-bottom: 30px;">
@@ -95,7 +98,7 @@
     <h2 style="color: #8E8E8E;  font-size: 18px; font-family: arial;">Most popular movies of all time</h2>
     <div style="overflow-x: scroll; white-space: nowrap;">
         <div style="width: 999999px;">
-            @foreach (var movie in (List<PopularMoviesViewModel>) ViewData["MostPopularOfAllTime"])
+            @foreach (var movie in MostPopularOfAllTime)
             {
                 <a asp-route-id="@movie.Movie.MovieId" asp-action="movie" asp-controller="dashboard">
                     <div style="width: 350px; float: left; margin-right: 10px; margin-bottom:30px;">
@@ -115,7 +118,7 @@
     <h2 style="color: #8E8E8E;  font-size: 18px; font-family: arial;">Latest movies</h2>
     <div style="overflow-x: scroll; white-space: nowrap;">
         <div style="width: 999999px;">
-            @foreach (var movie in (List<PopularMoviesViewModel>) ViewData["LatestMovies"])
+            @foreach (var movie in LatestMovies)
             {
                 <a asp-route-id="@movie.Movie.MovieId" asp-action="movie" asp-controller="dashboard">
                     <div style="width: 350px; float: left; margin-right: 10px; margin-bottom:30px;">

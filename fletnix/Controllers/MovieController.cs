@@ -17,9 +17,11 @@ namespace fletnix
     public class MovieController : WalledGarden
     {
         private readonly FLETNIXContext _context;
+        private IRedisCache _cache;
 
-        public MovieController(FLETNIXContext context)
+        public MovieController(FLETNIXContext context, IRedisCache cache)
         {
+            _cache = cache;
             _context = context;    
         }
 
@@ -29,8 +31,7 @@ namespace fletnix
             ViewData["CurrentFilter"] = searchString;
             ViewData["TitleSortParam"] = String.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
             ViewData["YearSortParam"] = sortOrder == "Year" ? "year_desc" : "Year";
-            
-          
+
             IQueryable<Movie> fLETNIXContext;
 
             if (searchString != null)
@@ -80,7 +81,7 @@ namespace fletnix
             }
 
             int pageSize = 15;
-            return View(await PaginatedList<Movie>.CreateAsync(movies.Include(m => m.PreviousPartNavigation), page ?? 1, pageSize));
+            return View(await PaginatedList<Movie>.CreateAsync(movies.AsNoTracking().Include(m => m.PreviousPartNavigation), page ?? 1, pageSize));
 
             return View(await fLETNIXContext.ToListAsync());
         }
@@ -126,6 +127,7 @@ namespace fletnix
             {
                 _context.Add(movie);
                 await _context.SaveChangesAsync();
+                _cache.Remove("LatestMovies");
                 return RedirectToAction("Edit", new {id = movie.MovieId});
             }
            

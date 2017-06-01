@@ -1,0 +1,4 @@
+Label,# Samples,Average,Min,Max,Std. Dev.,Error %,Throughput,Received KB/sec,Sent KB/sec,Avg. Bytes
+[ADMIN] Request movie overview,400,11094,130,44133,"11687,35","0,500%","6,93445","190,82","26,38","28178,1"
+[ADMIN] Edit movie,400,14961,45,43385,"17141,64","0,250%","6,93217","237,52","26,42","35086,3"
+TOTAL,800,13027,45,44133,"14797,09","0,375%","13,83006","427,22","52,66","31632,2"

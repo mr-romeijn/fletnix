@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
+using fletnix.Helpers;
 using fletnix.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -13,9 +15,11 @@ namespace fletnix.Models
     {
         private FLETNIXContext _context;
         private ILogger<FLETNIXContext> _logger;
+        private IRedisCache _cache;
 
-        public FletnixRepository(FLETNIXContext context, ILogger<FLETNIXContext> logger)
+        public FletnixRepository(FLETNIXContext context, ILogger<FLETNIXContext> logger, IRedisCache cache)
         {
+            _cache = cache;
             _context = context;
             _logger = logger;
         }
@@ -28,13 +32,13 @@ namespace fletnix.Models
 
         public IEnumerable<Movie> SearchMoviesByTitle(string title)
         {
-            return _context.Movie.AsNoTracking().Where(m => (m.Title.ToLower().Contains(title.ToLower())))
-                .OrderByDescending(m => m.PublicationYear);
+            return _context.Movie.Where(m => (m.Title.ToLower().Contains(title.ToLower())))
+                .OrderByDescending(m => m.PublicationYear).AsNoTracking();
         }
 
         public IEnumerable<Person> SearchPersonsByName(string name)
         {
-            return _context.Person.AsNoTracking().Where(p=>( p.Firstname.ToLower().Contains(name.ToLower()) || p.Lastname.ToLower().Contains(name.ToLower())) ).OrderByDescending(p=>p.PersonId);
+            return _context.Person.Where(p=>( p.Firstname.ToLower().Contains(name.ToLower()) || p.Lastname.ToLower().Contains(name.ToLower())) ).OrderByDescending(p=>p.PersonId).AsNoTracking();
         }
 
         public IEnumerable<MovieGenre> GetGenres()
@@ -108,26 +112,35 @@ namespace fletnix.Models
 
         public Task<List<PopularMoviesViewModel>> GetMostPopularMoviesOfLastNDays(int nDays, int nAmount = 50)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                using (var context = FLETNIXContext.ContextFactory())
+            
+
+                return Task.Factory.StartNew(() =>
                 {
-                    var MostPopularMoviesOfLastNDays = (from w in context.Watchhistory
-                            where w.WatchDate >= Convert.ToDateTime(DateTime.Now).AddDays(-nDays)
-                            join m in context.Movie on w.MovieId equals m.MovieId
-                            group m by new {m}
-                            into g
-                            orderby g.Count() descending
-                            select new PopularMoviesViewModel
-                            {
-                                Movie = g.Key.m,
-                                TimesViewed = g.Count()
-                            }).AsNoTracking()
-                        .Take(nAmount).ToList();
-                    context.Database.CloseConnection();
-                    return MostPopularMoviesOfLastNDays;
-                }
-            });
+                    if (nDays > 0 && nDays < 30)
+                    {
+                        using (var context = FLETNIXContext.ContextFactory())
+                        {
+                            var MostPopularMoviesOfLastNDays = (from w in context.Watchhistory
+                                    where w.WatchDate >= Convert.ToDateTime(DateTime.Now).AddDays(-nDays)
+                                    join m in context.Movie on w.MovieId equals m.MovieId
+                                    group m by new {m}
+                                    into g
+                                    orderby g.Count() descending
+                                    select new PopularMoviesViewModel
+                                    {
+                                        Movie = g.Key.m,
+                                        TimesViewed = g.Count()
+                                    }).AsNoTracking()
+                                .Take(nAmount).ToList();
+                            //context.Database.CloseConnection();
+                            return MostPopularMoviesOfLastNDays;
+                        }
+                    } else
+                    {
+                        return new List<PopularMoviesViewModel>();
+                    }
+                });
+   
         }
 
 
@@ -149,7 +162,7 @@ namespace fletnix.Models
                             TimesViewed = g.Count()
                         }).AsNoTracking().Take(nAmount).ToList();
 
-                    context.Database.CloseConnection();
+                    //context.Database.CloseConnection();
                     return MostPopularOfAllTime;
                 }
             });
@@ -179,7 +192,7 @@ namespace fletnix.Models
 
                      /* _context.Watchhistory.Where(h => h.CustomerMailAddress == User.Identity.Name)
                       .Include(m => m.MovieId).ToList();*/
-                     context.Database.CloseConnection();
+                     //context.Database.CloseConnection();
                      return watchHistoryUser;
                  }
              });
@@ -192,15 +205,99 @@ namespace fletnix.Models
                 using (var context = FLETNIXContext.ContextFactory())
                 {
 
-                    var latestmovies = (from m in context.Movie select new PopularMoviesViewModel {Movie = m}).OrderByDescending(m=>m.Movie.PublicationYear)
-                        .AsNoTracking().Take(50).ToList();
+                    var latestmovies = (from m in context.Movie select new PopularMoviesViewModel {Movie = m}).OrderByDescending(m=>m.Movie.PublicationYear).Take(50)
+                        .AsNoTracking().ToList();
 
-                    /* _context.Watchhistory.Where(h => h.CustomerMailAddress == User.Identity.Name)
-                     .Include(m => m.MovieId).ToList();*/
-                    context.Database.CloseConnection();
                     return latestmovies;
                 }
             });
+        }
+        //Dictionary<int?, Dictionary<string, AwardReportViewModel>> 
+        
+        public async Task<PaginatedList<AwardReportViewModel>> GetAwardReport(int? fromYear, int? tillYear, int pageSize = 15, int? page = 1)
+        {
+            
+              var mAward = (from m in _context.Movie
+                where m.PublicationYear >= fromYear && m.PublicationYear <= tillYear
+                from ma in _context.MovieAward
+                    .Where(ma => m.MovieId == ma.MovieId).DefaultIfEmpty()
+                group m by new {m, ma}
+                into g
+                select new AwardReportViewModel
+                {
+                    Movie = g.Key.m,
+                    MovieAward = g.Key.ma
+                }).OrderByDescending(m=>m.Movie.PublicationYear).AsNoTracking();
+
+            return await PaginatedList<AwardReportViewModel>.CreateAsync(mAward, page ?? 1, pageSize);  
+        }
+
+        public List<PriceRatingIndexViewModel> HighestAverageRatingReport()
+        {
+            var result = (from movie in _context.Movie
+                join customerFeedback in _context.MovieReview on movie.MovieId equals customerFeedback.MovieId
+                group customerFeedback by new {T1 = movie}
+                into g
+                orderby g.Average(t2 => t2.Rating) descending
+                select new PriceRatingIndexViewModel
+                {
+                    Movie = g.Key.T1,
+                    AverageRating = g.Average(t2 => t2.Rating),
+                    PrRating = g.Average(t2 => t2.Rating) / (double) g.Key.T1.Price
+                }).OrderByDescending(m => m.AverageRating).Take(10).ToList();
+
+            return result;
+        }
+        
+        public List<PriceRatingIndexViewModel> LowestAverageRatingReport()
+        {
+            var result = (from movie in _context.Movie
+                join customerFeedback in _context.MovieReview on movie.MovieId equals customerFeedback.MovieId
+                group customerFeedback by new {T1 = movie}
+                into g
+                orderby g.Average(t2 => t2.Rating) descending
+                select new PriceRatingIndexViewModel
+                {
+                    Movie = g.Key.T1,
+                    AverageRating = g.Average(t2 => t2.Rating),
+                    PrRating = g.Average(t2 => t2.Rating) / (double) g.Key.T1.Price
+                }).OrderBy(m => m.AverageRating).Take(10).ToList();
+
+            return result;
+        }
+        
+        public List<PriceRatingIndexViewModel> HighestAveragePriceIndexRatingReport()
+        {
+            var result = (from movie in _context.Movie
+                join customerFeedback in _context.MovieReview on movie.MovieId equals customerFeedback.MovieId
+                group customerFeedback by new {T1 = movie}
+                into g
+                orderby g.Average(t2 => t2.Rating) descending
+                select new PriceRatingIndexViewModel
+                {
+                    Movie = g.Key.T1,
+                    AverageRating = g.Average(t2 => t2.Rating),
+                    PrRating = g.Average(t2 => t2.Rating) / (double) g.Key.T1.Price
+                }).OrderByDescending(m => m.PrRating).Take(10).ToList();
+
+            return result;
+        }
+        
+        public List<PriceRatingIndexViewModel> LowestAveragePriceIndexRatingReport()
+        {
+            var result = (from movie in _context.Movie
+                join customerFeedback in _context.MovieReview on movie.MovieId equals customerFeedback.MovieId
+                group customerFeedback by new {T1 = movie}
+                into g
+                orderby g.Average(t2 => t2.Rating) descending
+                select new PriceRatingIndexViewModel
+                {
+                    Movie = g.Key.T1,
+                    AverageRating = g.Average(t2 => t2.Rating),
+                    PrRating = g.Average(t2 => t2.Rating) / (double) g.Key.T1.Price
+                }).OrderBy(m => m.PrRating).Take(10).ToList();
+
+            return result;
         }
 
         public Movie GetMovieById(int? id)

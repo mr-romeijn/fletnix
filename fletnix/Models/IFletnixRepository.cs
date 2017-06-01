@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using fletnix.Helpers;
 using fletnix.ViewModels;
 
 namespace fletnix.Models
@@ -32,5 +33,10 @@ namespace fletnix.Models
         void DeleteMovieReview(MovieReview review);
         Task<List<PopularMoviesViewModel>> GetLatestMoviesAdded();
         void AddToWatchHistory(Watchhistory wh);
+        Task<PaginatedList<AwardReportViewModel>> GetAwardReport(int? fromYear, int? tillYear, int pageSize = 15, int? page = 1);
+        List<PriceRatingIndexViewModel> HighestAverageRatingReport();
+        List<PriceRatingIndexViewModel> LowestAverageRatingReport();
+        List<PriceRatingIndexViewModel> HighestAveragePriceIndexRatingReport();
+        List<PriceRatingIndexViewModel> LowestAveragePriceIndexRatingReport();
     }
 }

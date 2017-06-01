@@ -1,0 +1,3 @@
+Label,# Samples,Average,Min,Max,Std. Dev.,Error %,Throughput,Received KB/sec,Sent KB/sec,Avg. Bytes
+Homepage (logged in),50,11893,2778,21462,"7863,76","0,000%","1,91454","131,90","14,54","70547,3"
+TOTAL,50,11893,2778,21462,"7863,76","0,000%","1,91454","131,90","14,54","70547,3"

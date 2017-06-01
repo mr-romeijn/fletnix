@@ -1,0 +1,45 @@
+@model System.Collections.Generic.List<fletnix.ViewModels.PriceRatingIndexViewModel>
+
+@{
+    ViewBag.Title = "title";
+  Layout = "_AdminLayout";
+}
+
+
+<div class="container-fluid" style="padding-top: 45px; padding-left: 40px; background-color: white; padding-bottom: 45px;">
+  <h1>Average rating report</h1>
+  <a asp-action="AverageRating" asp-controller="Report" asp-route-type="highestAverage">Highest average rating</a><br>
+  <a asp-action="AverageRating" asp-controller="Report" asp-route-type="lowestAverage">Lowest average rating</a><br>
+  <a asp-action="AverageRating" asp-controller="Report" asp-route-type="highestAveragePriceIndex">Highest average prince index rating</a><br>
+  <a asp-action="AverageRating" asp-controller="Report" asp-route-type="lowestAveragePriceIndex">lowest average price index rating</a><br><br>
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table table-bordered">
+        <thead>
+        <th>Movie id</th>
+        <th>Title</th>
+        <th>PriceIndexRating</th>
+        <th>Average rating</th>
+        </thead>
+        <tbody>
+        @foreach (var p in Model)
+        {
+          <tr>
+            <td><a target="_BLANK" asp-action="edit" asp-route-id="@p.Movie.MovieId" asp-controller="Movie"> @p.Movie.MovieId</a></td>
+            <td>
+              @p.Movie.Title
+            </td>
+            <td>
+              @p.PrRating
+            </td>
+            <td>
+              @p.AverageRating
+            </td>
+          </tr>
+        }
+        
+        </tbody>
+        </table>
+    </div>
+  </div>
+</div>
