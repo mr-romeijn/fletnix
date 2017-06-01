@@ -21,9 +21,9 @@ namespace fletnix.Controllers
         private IConfigurationRoot _config;
         private IFletnixRepository _repository;
         private FLETNIXContext _context;
-        private IRedisCache _cache;
+        private ICache _cache;
 
-        public DashboardController(FLETNIXContext context, IMailService MailService, IConfigurationRoot Configuration, IFletnixRepository repository, IRedisCache cache){
+        public DashboardController(FLETNIXContext context, IMailService MailService, IConfigurationRoot Configuration, IFletnixRepository repository, ICache cache){
             _mailService = MailService;
             _config = Configuration;
             _repository = repository;
@@ -36,6 +36,25 @@ namespace fletnix.Controllers
             if (User.IsAuthenticated())
             {
                 
+                /******* NO CACHING + ASYNC *******/ 
+                //var q1 = _repository.GetMostPopularMoviesOfAllTime();
+                //var q2 = _repository.GetMostPopularMoviesOfLastNDays(14);
+                //var q3 = _repository.GetWatchHistoryUser(User.Identity.Name);
+                //var q4 = _repository.GetLatestMoviesAdded();
+                //ViewData["WatchHistory"] = await q3;
+                //ViewData["LatestMovies"] = await q4;
+                //ViewData["MostPopularOfAllTime"] = await q1;
+                //ViewData["MostPopularOfLastTwoWeeks"] = await q2;
+                /******* END NO CACHING = ASYNC *******/
+                
+                
+                /******* NO CACHING + SEQ *******/
+                //ViewData["WatchHistory"] = await _repository.GetWatchHistoryUser(User.Identity.Name);
+                //ViewData["LatestMovies"] = await _repository.GetLatestMoviesAdded();
+                //ViewData["MostPopularOfAllTime"] = await _repository.GetMostPopularMoviesOfAllTime();
+                //ViewData["MostPopularOfLastTwoWeeks"] = await _repository.GetMostPopularMoviesOfLastNDays(14);
+                /******* END NO CACHING + SEQ *******/
+                
                 var q3 = _repository.GetWatchHistoryUser(User.Identity.Name);
                 
                 if (!_cache.Exists("MostPopularOfLastTwoWeeks"))
@@ -46,18 +65,18 @@ namespace fletnix.Controllers
                 }
                 else
                 {
-                    ViewData["MostPopularOfLastTwoWeeks"] = JsonConvert.DeserializeObject<List<PopularMoviesViewModel>>(_cache.Retrieve("MostPopularOfLastTwoWeeks"));
+                    ViewData["MostPopularOfLastTwoWeeks"] = JsonConvert.DeserializeObject<List<PopularMoviesViewModel>>(await _cache.Retrieve("MostPopularOfLastTwoWeeks"));
                 }
                 
                 if (!_cache.Exists("MostPopularOfAllTime"))
                 {
-                    var q1 = _repository.GetMostPopularMoviesOfAllTime(14);
+                    var q1 = _repository.GetMostPopularMoviesOfAllTime();
                     ViewData["MostPopularOfAllTime"] = await q1;
                     _cache.Add("MostPopularOfAllTime", JsonConvert.SerializeObject(ViewData["MostPopularOfAllTime"]));
                 }
                 else
                 {
-                    ViewData["MostPopularOfAllTime"] = JsonConvert.DeserializeObject<List<PopularMoviesViewModel>>(_cache.Retrieve("MostPopularOfAllTime"));
+                    ViewData["MostPopularOfAllTime"] = JsonConvert.DeserializeObject<List<PopularMoviesViewModel>>(await _cache.Retrieve("MostPopularOfAllTime"));
                 }
                 
                 if (!_cache.Exists("LatestMovies"))
@@ -68,12 +87,11 @@ namespace fletnix.Controllers
                 }
                 else
                 {
-                    ViewData["LatestMovies"] = JsonConvert.DeserializeObject<List<PopularMoviesViewModel>>(_cache.Retrieve("LatestMovies"));
+                    ViewData["LatestMovies"] = JsonConvert.DeserializeObject<List<PopularMoviesViewModel>>(await _cache.Retrieve("LatestMovies"));
                 }
                 
                 
                 ViewData["WatchHistory"] = await q3;
-                //ViewData["LatestMovies"] = await q4;
                 
                 //ViewData["MostPopularOfAllTime"] = new List<PopularMoviesViewModel>();
                 //ViewData["MostPopularOfLastTwoWeeks"] = new List<PopularMoviesViewModel>();

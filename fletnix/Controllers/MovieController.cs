@@ -17,9 +17,9 @@ namespace fletnix
     public class MovieController : WalledGarden
     {
         private readonly FLETNIXContext _context;
-        private IRedisCache _cache;
+        private ICache _cache;
 
-        public MovieController(FLETNIXContext context, IRedisCache cache)
+        public MovieController(FLETNIXContext context, ICache cache)
         {
             _cache = cache;
             _context = context;    

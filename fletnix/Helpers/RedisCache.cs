@@ -1,10 +1,11 @@
 using System;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace fletnix.Helpers
 {
-    public class RedisCache : IRedisCache
+    public class RedisCache : ICache
     {
         private IDistributedCache _cache;
 
@@ -18,9 +19,9 @@ namespace fletnix.Helpers
             return _cache.Get(key) != null;
         }
 
-        public string Retrieve(string key)
+        public async Task<string> Retrieve(string key)
         {
-            return Encoding.UTF8.GetString(_cache.Get(key));
+            return Encoding.UTF8.GetString(await _cache.GetAsync(key));
         }
 
         public async void Add(string key, string value)

@@ -35,10 +35,10 @@
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">3</stringProp>
+          <stringProp name="LoopController.loops">1</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">50</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">2</stringProp>
+        <stringProp name="ThreadGroup.num_threads">200</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">5</stringProp>
         <longProp name="ThreadGroup.start_time">1495803219000</longProp>
         <longProp name="ThreadGroup.end_time">1495803219000</longProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
@@ -46,7 +46,7 @@
         <stringProp name="ThreadGroup.delay"></stringProp>
       </ThreadGroup>
       <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Homepage (not logged in)" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Homepage (not logged in)" enabled="false">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
@@ -138,7 +138,7 @@
           </CookieManager>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Watch movie" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Watch movie" enabled="false">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
@@ -211,7 +211,7 @@
           </CookieManager>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Show watchhistory" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Show watchhistory" enabled="false">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
@@ -392,6 +392,42 @@
           <stringProp name="filename"></stringProp>
         </ResultCollector>
         <hashTree/>
+        <ResultCollector guiclass="RespTimeGraphVisualizer" testclass="ResultCollector" testname="Response Time Graph" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
       </hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="AdminSystem" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
@@ -399,7 +435,7 @@
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <stringProp name="LoopController.loops">2</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">200</stringProp>
+        <stringProp name="ThreadGroup.num_threads">50</stringProp>
         <stringProp name="ThreadGroup.ramp_time">5</stringProp>
         <longProp name="ThreadGroup.start_time">1495898992000</longProp>
         <longProp name="ThreadGroup.end_time">1495898992000</longProp>
@@ -460,6 +496,25 @@
           <stringProp name="CookieManager.policy">standard</stringProp>
           <stringProp name="CookieManager.implementation">org.apache.jmeter.protocol.http.control.HC4CookieHandler</stringProp>
         </CookieManager>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[ADMIN] Sort on publication year" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${host}</stringProp>
+          <stringProp name="HTTPSampler.port">${port}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${protocol}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/movie?page=1&amp;sortOrder=year_desc</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
         <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[ADMIN] Request movie overview" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -823,6 +878,257 @@
         </ResultCollector>
         <hashTree/>
         <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Reports" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">50</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">5</stringProp>
+        <longProp name="ThreadGroup.start_time">1496327106000</longProp>
+        <longProp name="ThreadGroup.end_time">1496327106000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
+          <collectionProp name="CookieManager.cookies">
+            <elementProp name=".AspNetCore.Antiforgery.T-nwvj6-2fQ" elementType="Cookie" testname=".AspNetCore.Antiforgery.T-nwvj6-2fQ">
+              <stringProp name="Cookie.value">CfDJ8O3sqoPsy8hGrvSea_uC9sz2GIVR42k4nEM4uUhEfA61GYUbmiTe2P_b_FNouwAIBibqIgEgeu68eDtbTCg7ZI3soVs0ZOrS2FAVpPPzghu9IknrJXEr3ZOmZvye09VdxDqzOo1ASOz05ncPVyVmo8A</stringProp>
+              <stringProp name="Cookie.domain">localhost</stringProp>
+              <stringProp name="Cookie.path">/</stringProp>
+              <boolProp name="Cookie.secure">false</boolProp>
+              <longProp name="Cookie.expires">0</longProp>
+              <boolProp name="Cookie.path_specified">true</boolProp>
+              <boolProp name="Cookie.domain_specified">true</boolProp>
+            </elementProp>
+            <elementProp name=".AspNetCore.Antiforgery.uh1idR2xWPI" elementType="Cookie" testname=".AspNetCore.Antiforgery.uh1idR2xWPI">
+              <stringProp name="Cookie.value">CfDJ8O3sqoPsy8hGrvSea_uC9szaaU123Omfdg3h1OZL6G2kRobv3MMNvMLrB-qKppLW0UsQSZXhytbD_RFINIVEMAWhQeuZ8sSCIEn-mKpa-sVa37NeudlPRntOyXCCOr2H1f6seaycTC_YaoyOB7hT5A0</stringProp>
+              <stringProp name="Cookie.domain">localhost</stringProp>
+              <stringProp name="Cookie.path">/</stringProp>
+              <boolProp name="Cookie.secure">false</boolProp>
+              <longProp name="Cookie.expires">0</longProp>
+              <boolProp name="Cookie.path_specified">true</boolProp>
+              <boolProp name="Cookie.domain_specified">true</boolProp>
+            </elementProp>
+            <elementProp name=".AspNetCore.Identity.Application" elementType="Cookie" testname=".AspNetCore.Identity.Application">
+              <stringProp name="Cookie.value">CfDJ8O3sqoPsy8hGrvSea_uC9syFasytVTGr6AABVaTIQwzj8fk-mrK3Ea_MV0WIpIGgYjsUArhY3txvYasLmvpPAnRklkzh6KUprKrULim7TddvRcJrle_82pWm51bpzgiB8BjqfuGaM1rkf-vCt8YkghqaAu0eX58ZrAeBvDAFH65sZ7hHd8mlf7LxpBw7hmnAmX9nt-4K-UCl-5y1JxSdZw-7VWynWlPGCZ-iiBJnEpn7lCqHhlnyXrFrWRfYXFjFP7JF3oOA5sjgUF8tEbdFI6i8RuhmcANgOoWeuZHmazlUvezMWRBZbqk1ZHK45OoNK9kOh1ciT471uaqZ6Q_EzCcpTQT_tROZozxg__J1SB8eBjoyrN1cQoUV6D465zihxncQLmDqNOVH8NqZ_toZWsHeeIzaB77gEes2JaOF_2tVOarmwLCX_g0khyIIu8PDRtRPz4BlGBf0PcmPpfew9XuN22JDDUL9PKA9Vzcod-H_cwnNVbxGIObbgHfJTL6fBwpb7zyFgDG_SDlHvkaXIp4KVGBaIV9nvzSJBoA3XXaPex8YdAJGGU_yhBD20C6xK-iKK8TZfIAPn0tF-89pWwqGK6pnd2KqvMPwTcP398_TjOnB7U2xHidHYkutVGNVFR0uZVOLYKZoBV2ILISKB0U</stringProp>
+              <stringProp name="Cookie.domain">localhost</stringProp>
+              <stringProp name="Cookie.path">/</stringProp>
+              <boolProp name="Cookie.secure">false</boolProp>
+              <longProp name="Cookie.expires">0</longProp>
+              <boolProp name="Cookie.path_specified">true</boolProp>
+              <boolProp name="Cookie.domain_specified">true</boolProp>
+            </elementProp>
+            <elementProp name=".AspNetCore.cookie" elementType="Cookie" testname=".AspNetCore.cookie">
+              <stringProp name="Cookie.value">CfDJ8O3sqoPsy8hGrvSea_uC9sySTzme_bMatAOZ-iL48kJkOKT3TYOqyPchDE_CTtkArmkZdj2hdZOpuzlULARubeauh4wSLEWMAu7GiVoNAJDU1xZDettgm6nbn_UgJpioNBaEVzwMtL3qT_nA6Md4FCFUanXs7A6iiKgdOInvDUNM6vS92KuvGTSz7JaVUvT3UVwHJWHugPViU2BKGXnHpFJLbW_ivsin2WfM0L4waia9ykLtJgYOfsdhe2b2T1n9E7hpSz7h-4adRGsSyMCVj8-2puKr46Ljlnqs2irOmUrVqX5susJ6wxb76lgXC8Lu-g1cPcpY0U1jF_Y3RCNMvinR9-wNjWHNu2UapIO2hhqwd6qg7eYeNuuIoLpQgEYOXmoM5x7LhVzgUhr3Wu4ozOihKTKWRVlI-JnD9bfXrls7VeQfYmnFuaAGPWdePy1-yFZC8yK6Lz_r7d2CNL30hPAe9aE6lkwT8c9MrbR60CAudYfyq0XmILoYahe2lhN5ZcNlObPKePkDo1WCsbVxgwScQ9wAOFtUYBRvsJyP7g7xrfD8NBzIH8ZLIExdDKQe__Sy4DiTnM_fszt26vm4V_5xAkX2K6pJqbsbXyNb7R2kDjz41PRn2pytB8ncLJb26cJPrkdLjdxCMjiKLf6ww2k1gVOpXDlaT-sF9Pr6LkUS8ZcYhzascdBFOmUaqDYmkxj50lcuWakXScRlaICQMdfZp5eJe4VNMF4AVruCzNzPOpsU9JIzD2tE-vpA2vZ38Hl3w2JUNsKlDw2EO1B1oBumh02I8rUguqi8MLppiF5mJLD10b3jK2ib2WyS9XE3eNKoq4D-FaM26jsJ3J585DOxn2imr8kRSfV0Q53x8KsaY0O1FeujftkNZnejngr_TrXHWxEus9bR3fo7lnuk0qzF5UWNXjBL_GJRtpsoD-AGg-x623Yu3LKeD0Q9INtTmhAsuUWoJmwpQPCNAIWtDbX7XYOIfce9AhnUL4_9Hh-4F3hG9hJiIiFnQOZEqn0fvyyJZqOe1UItE8bKIN0YJa2gZoXuWMM188VfdokQo8YkTYmWQZ2Kp3k0HLkC83bNijihnBPliCZOE9EGdKN3-j2ImAeV4mS0-K3arhqt-DXGXnwnRb1Svpw1eVbbDlp_qeni9w7KhaMXvlCX8X44VlfznCz5I1182iLMSvgUaMg1Nc7U6Bu_eOtowPu9Cxa5CX-lEioqcrZI3-Zl0B0Y_lEchS4hcwCB75oQw39B7bUzuHBh7wOQHUBTDN0eHLAxWdd170P4M3l9kh4tpJH0h2nhDq06b0O2ySXitbn3ONmNd4q3kMwHQ9x6OvWWXWhSJn6KaCw6rn_knwchY5ZJfhQVovk0AApUVRIORbOYm0yLBvEIZatkUDyIVGjFfa-qedOWlCwsF5-yGfoBgK1mmAMP8R-PNliXVyd3A9hMQL-rjUizWb8TTA5EQl1gCGX8sGTJu1gS4hbQIEaWPtjMTMbM9mKs7Ryfu-A9YRF4x5k1DLRRGmL01-YOzdVFSUHb8KBvic_n7488DNZzFupI15aJQRN8dSi2R68BVWNU7mDttDrn1Q8qcskJx8FFG03htCDY5US2FnqvSBbz8-aQAhOgBSANn25M1FjvPgMAJTKfQjvvxsvTwRZLFvRo2D-S5zunylJtNxytwEYWr0UG6JAmSi2wV2mtp7eWcyJjVi9OQrxBb9iO_neTkMcdVpmjBDsIU5zUS4YRdpZ0WTsQGSi__JSft_7r_P2WNEKWsC8-8nhMOkHuKLGWBIuQ8e1ITC-O0avjdLhGIY-N-Zt4vFyWcF9LcLF6ZnGNNEpadaRxUnNe9FeXIiXGUD_RfJehr5HoD7SzQps_F2nnIgsIBCIUMxMdW9toa1tm8tu7cmLnsTEjzykEbvcP7dkIDTtEQREmko0Wo0r1TY7lFbkMqkf10DFFKDdmMCOvZ34nt8Q7H8d1f7gSDEzlv7kLpIFA-7JwB19vmGDjrdC1myhoNScmtG9xjf9eLKdaM3QY93KcXtu78QhYA94rIPR1FpKdkAowR6paUGzRDiXbJ3pbXWgupsZIXwLHRf_GKzU_oXXPa_ZbyQXWpZiFEWcvYNLv34QS5BH1WMDrMPaQj6DHthg0zZX9XkSjVJ2yEHQyhZ2m62corkqEUtHBCJxeOtZNzGjt6FVYUS2dH57qPYB_gW8QGYeuAGSrR26tO4zf3-Peni2zfiDon5fDIo-5WapS3h7kivSPiSfRwxGCZL5HzNZV9iCHA-bYafxHt1-jWHedVapW9RDZUASjDBfoMku9iVeAVg0NagRr1l5jcZMjQDdld0NL_xjstZ8gasmwdhfp1TmQIx79Eni6DYIFjG7yItojQcY9vavoVwIIgoaIdY-iAyeM-7dMmYiDgIzc0bzvxzQcU0YgaPeGd34s5eDbDS0pPvBvUyNYoM6L5eEYOouuuGdgVusN69giVXaln_BVBHoVBgBW4k1oxeSaPJVbwX4qz09xwbBUZP3CvMu_hNO1wym1g7l7ev9AjviXP-dhw0aDGPzSmtdvtuydDvofXfAGWC3ABm_wzXVH1WkTAjs</stringProp>
+              <stringProp name="Cookie.domain">localhost</stringProp>
+              <stringProp name="Cookie.path">/</stringProp>
+              <boolProp name="Cookie.secure">false</boolProp>
+              <longProp name="Cookie.expires">0</longProp>
+              <boolProp name="Cookie.path_specified">true</boolProp>
+              <boolProp name="Cookie.domain_specified">true</boolProp>
+            </elementProp>
+            <elementProp name="Identity.Application.session" elementType="Cookie" testname="Identity.Application.session">
+              <stringProp name="Cookie.value">02575329475d28da7bc38b77ed5f4dc7</stringProp>
+              <stringProp name="Cookie.domain">localhost</stringProp>
+              <stringProp name="Cookie.path">/</stringProp>
+              <boolProp name="Cookie.secure">false</boolProp>
+              <longProp name="Cookie.expires">0</longProp>
+              <boolProp name="Cookie.path_specified">true</boolProp>
+              <boolProp name="Cookie.domain_specified">true</boolProp>
+            </elementProp>
+          </collectionProp>
+          <boolProp name="CookieManager.clearEachIteration">false</boolProp>
+          <stringProp name="CookieManager.policy">standard</stringProp>
+          <stringProp name="CookieManager.implementation">org.apache.jmeter.protocol.http.control.HC4CookieHandler</stringProp>
+        </CookieManager>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[ADMIN] Show award report" enabled="false">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${host}</stringProp>
+          <stringProp name="HTTPSampler.port">${port}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${protocol}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/Report/AverageRating?type=highestAveragePriceIndex</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[ADMIN] Show rating report" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${host}</stringProp>
+          <stringProp name="HTTPSampler.port">${port}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${protocol}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/report/AwardReport?fromYear=1901&amp;tillYear=2018</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <ResultCollector guiclass="TableVisualizer" testclass="ResultCollector" testname="View Results in Table" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResultCollector guiclass="RespTimeGraphVisualizer" testclass="ResultCollector" testname="Response Time Graph" enabled="true">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
             <name>saveConfig</name>

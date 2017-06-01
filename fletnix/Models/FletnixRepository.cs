@@ -15,9 +15,9 @@ namespace fletnix.Models
     {
         private FLETNIXContext _context;
         private ILogger<FLETNIXContext> _logger;
-        private IRedisCache _cache;
+        private ICache _cache;
 
-        public FletnixRepository(FLETNIXContext context, ILogger<FLETNIXContext> logger, IRedisCache cache)
+        public FletnixRepository(FLETNIXContext context, ILogger<FLETNIXContext> logger, ICache cache)
         {
             _cache = cache;
             _context = context;
@@ -130,8 +130,8 @@ namespace fletnix.Models
                                     {
                                         Movie = g.Key.m,
                                         TimesViewed = g.Count()
-                                    }).AsNoTracking()
-                                .Take(nAmount).ToList();
+                                    }).Take(nAmount).AsNoTracking()
+                               .ToList();
                             //context.Database.CloseConnection();
                             return MostPopularMoviesOfLastNDays;
                         }

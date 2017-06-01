@@ -1,11 +1,12 @@
 using System;
+using System.Threading.Tasks;
 
 namespace fletnix.Helpers
 {
-    public interface IRedisCache
+    public interface ICache
     {
         bool Exists(string key);
-        string Retrieve(String key);
+        Task<string> Retrieve(string key);
         void Add(String key, String value);
         void Remove(String key);
     }

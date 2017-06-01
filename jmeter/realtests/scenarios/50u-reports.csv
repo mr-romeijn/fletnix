@@ -1,0 +1,4 @@
+Label,# Samples,Average,Min,Max,Std. Dev.,Error %,Throughput,Received KB/sec,Sent KB/sec,Avg. Bytes
+[ADMIN] Show award report,50,746,6,2331,"691,45","0,000%","9,51294","73,97","36,56","7962,0"
+[ADMIN] Show rating report,50,935,10,4460,"1390,58","0,000%","5,44544","115,98","20,90","21810,0"
+TOTAL,100,840,6,4460,"1102,19","0,000%","10,85423","157,79","41,69","14886,0"

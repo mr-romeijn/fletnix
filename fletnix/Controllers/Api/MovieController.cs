@@ -22,10 +22,10 @@ namespace fletnix.Controllers.Api
     {
         private readonly IFletnixRepository _repository;
         private FLETNIXContext _context;
-        private IRedisCache _cache;
+        private ICache _cache;
 
 
-        public MovieController(IFletnixRepository repository, FLETNIXContext context, IRedisCache cache)
+        public MovieController(IFletnixRepository repository, FLETNIXContext context, ICache cache)
         {
             _cache = cache;
             _context = context;

@@ -69,10 +69,10 @@ namespace fletnix
                 });
 
                 services.AddScoped<IMailService, DebugMailService>();
-                services.AddSingleton<IRedisCache, RedisCache>();
+                services.AddSingleton<ICache, RedisCache>();
             } else {
 				services.AddScoped<IMailService, DebugMailService>();
-                services.AddSingleton<IRedisCache, MemoryCache>();
+                services.AddSingleton<ICache, MemoryCache>();
                 // Implement real service
             }
             
