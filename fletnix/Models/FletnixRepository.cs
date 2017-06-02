@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using fletnix.Helpers;
 using fletnix.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using Remotion.Linq.Clauses;
 
@@ -216,88 +218,113 @@ namespace fletnix.Models
         
         public async Task<PaginatedList<AwardReportViewModel>> GetAwardReport(int? fromYear, int? tillYear, int pageSize = 15, int? page = 1)
         {
-            
-              var mAward = (from m in _context.Movie
-                where m.PublicationYear >= fromYear && m.PublicationYear <= tillYear
-                from ma in _context.MovieAward
-                    .Where(ma => m.MovieId == ma.MovieId).DefaultIfEmpty()
-                group m by new {m, ma}
-                into g
-                select new AwardReportViewModel
-                {
-                    Movie = g.Key.m,
-                    MovieAward = g.Key.ma
-                }).OrderByDescending(m=>m.Movie.PublicationYear).AsNoTracking();
+           
+            using (IDbContextTransaction transaction = _context.Database.BeginTransaction(
+                IsolationLevel.ReadUncommitted))
+            {
+                
+                    var mAward = (from m in _context.Movie
+                        where m.PublicationYear >= fromYear && m.PublicationYear <= tillYear
+                        from ma in _context.MovieAward
+                            .Where(ma => m.MovieId == ma.MovieId).DefaultIfEmpty()
+                        group m by new {m, ma}
+                        into g
+                        select new AwardReportViewModel
+                        {
+                            Movie = g.Key.m,
+                            MovieAward = g.Key.ma
+                        }).OrderByDescending(m => m.Movie.PublicationYear);
+                    var pagedData = await PaginatedList<AwardReportViewModel>.CreateAsync(mAward.AsNoTracking(), page ?? 1, pageSize);
+                    transaction.Commit();
+                    return pagedData;
+                
+            }
 
-            return await PaginatedList<AwardReportViewModel>.CreateAsync(mAward, page ?? 1, pageSize);  
+              
         }
 
         public List<PriceRatingIndexViewModel> HighestAverageRatingReport()
         {
-            var result = (from movie in _context.Movie
-                join customerFeedback in _context.MovieReview on movie.MovieId equals customerFeedback.MovieId
-                group customerFeedback by new {T1 = movie}
-                into g
-                orderby g.Average(t2 => t2.Rating) descending
-                select new PriceRatingIndexViewModel
-                {
-                    Movie = g.Key.T1,
-                    AverageRating = g.Average(t2 => t2.Rating),
-                    PrRating = g.Average(t2 => t2.Rating) / (double) g.Key.T1.Price
-                }).OrderByDescending(m => m.AverageRating).Take(10).ToList();
-
-            return result;
+            using (IDbContextTransaction transaction = _context.Database.BeginTransaction(
+                IsolationLevel.ReadUncommitted))
+            {
+                var result = (from movie in _context.Movie
+                    join customerFeedback in _context.MovieReview on movie.MovieId equals customerFeedback.MovieId
+                    group customerFeedback by new {T1 = movie}
+                    into g
+                    orderby g.Average(t2 => t2.Rating) descending
+                    select new PriceRatingIndexViewModel
+                    {
+                        Movie = g.Key.T1,
+                        AverageRating = g.Average(t2 => t2.Rating),
+                        PrRating = g.Average(t2 => t2.Rating) / (double) g.Key.T1.Price
+                    }).OrderByDescending(m => m.AverageRating).Take(10).ToList();
+                transaction.Commit();
+                return result;
+            }
         }
         
         public List<PriceRatingIndexViewModel> LowestAverageRatingReport()
         {
-            var result = (from movie in _context.Movie
-                join customerFeedback in _context.MovieReview on movie.MovieId equals customerFeedback.MovieId
-                group customerFeedback by new {T1 = movie}
-                into g
-                orderby g.Average(t2 => t2.Rating) descending
-                select new PriceRatingIndexViewModel
-                {
-                    Movie = g.Key.T1,
-                    AverageRating = g.Average(t2 => t2.Rating),
-                    PrRating = g.Average(t2 => t2.Rating) / (double) g.Key.T1.Price
-                }).OrderBy(m => m.AverageRating).Take(10).ToList();
-
-            return result;
+            using (IDbContextTransaction transaction = _context.Database.BeginTransaction(
+                IsolationLevel.ReadUncommitted))
+            {
+                var result = (from movie in _context.Movie
+                    join customerFeedback in _context.MovieReview on movie.MovieId equals customerFeedback.MovieId
+                    group customerFeedback by new {T1 = movie}
+                    into g
+                    orderby g.Average(t2 => t2.Rating) descending
+                    select new PriceRatingIndexViewModel
+                    {
+                        Movie = g.Key.T1,
+                        AverageRating = g.Average(t2 => t2.Rating),
+                        PrRating = g.Average(t2 => t2.Rating) / (double) g.Key.T1.Price
+                    }).OrderBy(m => m.AverageRating).Take(10).ToList();
+                transaction.Commit();
+                return result;
+            }
         }
         
         public List<PriceRatingIndexViewModel> HighestAveragePriceIndexRatingReport()
         {
-            var result = (from movie in _context.Movie
-                join customerFeedback in _context.MovieReview on movie.MovieId equals customerFeedback.MovieId
-                group customerFeedback by new {T1 = movie}
-                into g
-                orderby g.Average(t2 => t2.Rating) descending
-                select new PriceRatingIndexViewModel
-                {
-                    Movie = g.Key.T1,
-                    AverageRating = g.Average(t2 => t2.Rating),
-                    PrRating = g.Average(t2 => t2.Rating) / (double) g.Key.T1.Price
-                }).OrderByDescending(m => m.PrRating).Take(10).ToList();
-
-            return result;
+            using (IDbContextTransaction transaction = _context.Database.BeginTransaction(
+                IsolationLevel.ReadUncommitted))
+            {
+                var result = (from movie in _context.Movie
+                    join customerFeedback in _context.MovieReview on movie.MovieId equals customerFeedback.MovieId
+                    group customerFeedback by new {T1 = movie}
+                    into g
+                    orderby g.Average(t2 => t2.Rating) descending
+                    select new PriceRatingIndexViewModel
+                    {
+                        Movie = g.Key.T1,
+                        AverageRating = g.Average(t2 => t2.Rating),
+                        PrRating = g.Average(t2 => t2.Rating) / (double) g.Key.T1.Price
+                    }).OrderByDescending(m => m.PrRating).Take(10).ToList();
+                    transaction.Commit();
+                return result;
+            }
         }
         
         public List<PriceRatingIndexViewModel> LowestAveragePriceIndexRatingReport()
         {
-            var result = (from movie in _context.Movie
-                join customerFeedback in _context.MovieReview on movie.MovieId equals customerFeedback.MovieId
-                group customerFeedback by new {T1 = movie}
-                into g
-                orderby g.Average(t2 => t2.Rating) descending
-                select new PriceRatingIndexViewModel
-                {
-                    Movie = g.Key.T1,
-                    AverageRating = g.Average(t2 => t2.Rating),
-                    PrRating = g.Average(t2 => t2.Rating) / (double) g.Key.T1.Price
-                }).OrderBy(m => m.PrRating).Take(10).ToList();
-
-            return result;
+            using (IDbContextTransaction transaction = _context.Database.BeginTransaction(
+                IsolationLevel.ReadUncommitted))
+            {
+                var result = (from movie in _context.Movie
+                    join customerFeedback in _context.MovieReview on movie.MovieId equals customerFeedback.MovieId
+                    group customerFeedback by new {T1 = movie}
+                    into g
+                    orderby g.Average(t2 => t2.Rating) descending
+                    select new PriceRatingIndexViewModel
+                    {
+                        Movie = g.Key.T1,
+                        AverageRating = g.Average(t2 => t2.Rating),
+                        PrRating = g.Average(t2 => t2.Rating) / (double) g.Key.T1.Price
+                    }).OrderBy(m => m.PrRating).Take(10).ToList();
+                transaction.Commit();
+                return result;
+            }
         }
 
         public Movie GetMovieById(int? id)

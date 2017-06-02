@@ -30816,3 +30816,159 @@ $19
 FletnixLatestMovies
 $13
 1496385486533
+*3
+$9
+PEXPIREAT
+$19
+FletnixLatestMovies
+$13
+1496385600812
+*3
+$9
+PEXPIREAT
+$19
+FletnixLatestMovies
+$13
+1496385600814
+*2
+$3
+DEL
+$19
+FletnixLatestMovies
+*2
+$3
+DEL
+$19
+FletnixWatchHistory
+*3
+$6
+SCRIPT
+$4
+LOAD
+$49
+return redis.call('HMGET', KEYS[1], unpack(ARGV))
+*3
+$6
+SCRIPT
+$4
+LOAD
+$49
+return redis.call('HMGET', KEYS[1], unpack(ARGV))
+*3
+$6
+SCRIPT
+$4
+LOAD
+$247
+
+                redis.call('HMSET', KEYS[1], 'absexp', ARGV[1], 'sldexp', ARGV[2], 'data', ARGV[4])
+                if ARGV[3] ~= '-1' then
+                  redis.call('EXPIRE', KEYS[1], ARGV[3])
+                end
+                return 1
+*8
+$4
+EVAL
+$247
+
+                redis.call('HMSET', KEYS[1], 'absexp', ARGV[1], 'sldexp', ARGV[2], 'data', ARGV[4])
+                if ARGV[3] ~= '-1' then
+                  redis.call('EXPIRE', KEYS[1], ARGV[3])
+                end
+                return 1
+$1
+1
+$19
+FletnixLatestMovies
+$2
+-1
+$12
+432000000000
+$5
+43200
+$23505
+[{"Movie":{"MovieId":3896198,"Title":"Guardians of the Galaxy Vol. 2","Duration":136,"Description":"The Guardians must fight to keep their newfound family together as they unravel the mystery of Peter Quill's true parentage.","PublicationYear":2017,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":"http://www.imdb.com/title/tt3896198/?ref_=nv_sr_1","MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":2771200,"Title":"Beauty and the Beast","Duration":129,"Description":"An adaptation of the fairy tale about a monstrous-looking prince and a young woman who fall in love.","PublicationYear":2017,"CoverImage":null,"PreviousPart":null,"Price":3.00,"Url":"http://www.imdb.com/title/tt2771200/?ref_=nv_sr_1","MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":2316204,"Title":"Alien: Covenant","Duration":122,"Description":"The crew of a colony ship, bound for a remote planet, discover an uncharted paradise with a threat beyond their imagination, and must attempt a harrowing escape.","PublicationYear":2017,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":"http://www.imdb.com/title/tt2316204/?ref_=nv_sr_1","MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":1790809,"Title":"Pirates of the Caribbean: Dead Men Tell No Tales","Duration":129,"Description":"Captain Jack Sparrow searches for the trident of Poseidon.","PublicationYear":2017,"CoverImage":null,"PreviousPart":null,"Price":4.00,"Url":"http://www.imdb.com/title/tt1790809/?ref_=nv_sr_1","MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":3783958,"Title":"La La Land ","Duration":133,"Description":"A jazz pianist falls for an aspiring actress in Los Angeles.","PublicationYear":2016,"CoverImage":null,"PreviousPart":null,"Price":3.00,"Url":"http://www.imdb.com/title/tt3783958/?ref_=nv_sr_1","MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":999112,"Title":"Moana","Duration":107,"Description":"In Ancient Polynesia, when a terrible curse incurred by the Demigod Maui reaches an impetuous Chieftain's daughter's island, she answers the Ocean's call to seek out the Demigod to set things right.","PublicationYear":2016,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":"http://www.imdb.com/title/tt3521164/?ref_=fn_al_tt_1","MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":2911666,"Title":"John Wick","Duration":104,"Description":"An ex-hitman comes out of retirement to track down the gangsters that took everything from him.","PublicationYear":2014,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":"http://www.imdb.com/title/tt2911666/?ref_=nv_sr_2","MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":2562232,"Title":"Birdman","Duration":119,"Description":"Illustrated upon the progress of his latest Broadway play, a former popular actor's struggle to cope with his current life as a wasted actor is shown.","PublicationYear":2014,"CoverImage":null,"PreviousPart":null,"Price":3.00,"Url":"http://www.imdb.com/title/tt2562232/?ref_=fn_al_tt_1","MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":2015381,"Title":"Guardians of the Galaxy","Duration":121,"Description":"A group of intergalactic criminals are forced to work together to stop a fanatical warrior from taking control of the universe.","PublicationYear":2014,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":"http://www.imdb.com/title/tt2015381/?ref_=nv_sr_2","MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":139653,"Title":"Harry Potter and the Half-Blood Prince","Duration":106,"Description":"Description of Harry Potter and the Half-Blood Prince","PublicationYear":2008,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":359289,"Title":"War of the Red Cliff, The","Duration":106,"Description":"Description of War of the Red Cliff, The","PublicationYear":2007,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":347931,"Title":"Untitled Star Trek Prequel","Duration":106,"Description":"Description of Untitled Star Trek Prequel","PublicationYear":2007,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":339929,"Title":"Tripoli","Duration":106,"Description":"Description of Tripoli","PublicationYear":2007,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":311040,"Title":"Spider-Man 3","Duration":106,"Description":"Description of Spider-Man 3","PublicationYear":2007,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":272424,"Title":"Rapunzel Unbraided","Duration":106,"Description":"Description of Rapunzel Unbraided","PublicationYear":2007,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":139654,"Title":"Harry Potter and the Order of the Phoenix","Duration":106,"Description":"Description of Harry Potter and the Order of the Phoenix","PublicationYear":2007,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":92850,"Title":"DragonBall Z","Duration":106,"Description":"Description of DragonBall Z","PublicationYear":2007,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":409052,"Title":"Turin 2006: XX Olympic Winter Games\"","Duration":106,"Description":"Description of Turin 2006: XX Olympic Winter Games\"","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":400649,"Title":"Pacific War, The\"","Duration":106,"Description":"Description of Pacific War, The\"","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":374889,"Title":"Zhmurki","Duration":106,"Description":"Description of Zhmurki","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":369459,"Title":"X-Men 3","Duration":106,"Description":"Description of X-Men 3","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":365538,"Title":"Wild, The","Duration":106,"Description":"Description of Wild, The","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":364844,"Title":"Widow's Broom","Duration":106,"Description":"Description of Widow's Broom","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":359570,"Title":"Warriors, The","Duration":106,"Description":"Description of Warriors, The","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":359530,"Title":"Warrior","Duration":106,"Description":"Description of Warrior","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":351705,"Title":"Vengeance","Duration":106,"Description":"Description of Vengeance","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":349989,"Title":"Valley of Flowers","Duration":106,"Description":"Description of Valley of Flowers","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":347971,"Title":"Untouchables: Capone Rising, The","Duration":106,"Description":"Description of Untouchables: Capone Rising, The","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":347939,"Title":"Untitled Transformers Film","Duration":106,"Description":"Description of Untitled Transformers Film","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":347934,"Title":"Untitled Sylvain Chomet 3-D Project","Duration":106,"Description":"Description of Untitled Sylvain Chomet 3-D Project","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":347932,"Title":"Untitled Steve Carell Project","Duration":106,"Description":"Description of Untitled Steve Carell Project","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":347930,"Title":"Untitled Stanford Prison Experiment Project","Duration":106,"Description":"Description of Untitled Stanford Prison Experiment Project","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":347927,"Title":"Untitled Sammy Davis Jr. Project","Duration":106,"Description":"Description of Untitled Sammy Davis Jr. Project","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":347917,"Title":"Untitled Nick Cannon/Lindsay Lohan Project","Duration":106,"Description":"Description of Untitled Nick Cannon/Lindsay Lohan Project","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":347912,"Title":"Untitled Morgan Freeman WWII Project","Duration":106,"Description":"Description of Untitled Morgan Freeman WWII Project","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":347906,"Title":"Untitled Marlene Dietrich Project","Duration":106,"Description":"Description of Untitled Marlene Dietrich Project","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":347901,"Title":"Untitled Jim Sheridan/Ikiru Project","Duration":106,"Description":"Description of Untitled Jim Sheridan/Ikiru Project","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":347893,"Title":"Untitled Gary Ross Project","Duration":106,"Description":"Description of Untitled Gary Ross Project","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":347887,"Title":"Untitled Evangelion Project","Duration":106,"Description":"Description of Untitled Evangelion Project","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":347886,"Title":"Untitled Ernest Hemingway Project","Duration":106,"Description":"Description of Untitled Ernest Hemingway Project","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":347885,"Title":"Untitled Eddie Murphy Project","Duration":106,"Description":"Description of Untitled Eddie Murphy Project","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":347872,"Title":"Untitled Andrew Klavan Project","Duration":106,"Description":"Description of Untitled Andrew Klavan Project","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":347870,"Title":"Untitled Alexander the Great Project","Duration":106,"Description":"Description of Untitled Alexander the Great Project","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":342819,"Title":"Two Faced","Duration":106,"Description":"Description of Two Faced","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":341045,"Title":"Tryptych","Duration":106,"Description":"Description of Tryptych","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":340365,"Title":"Trophy Wife","Duration":106,"Description":"Description of Trophy Wife","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":336549,"Title":"Toto","Duration":106,"Description":"Description of Toto","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":336028,"Title":"Torch","Duration":106,"Description":"Description of Torch","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":334056,"Title":"Tlatelolco: Mexico 68","Duration":106,"Description":"Description of Tlatelolco: Mexico 68","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null},{"Movie":{"MovieId":332479,"Title":"Tideland","Duration":106,"Description":"Description of Tideland","PublicationYear":2006,"CoverImage":null,"PreviousPart":null,"Price":2.50,"Url":null,"MovieAward":[],"MovieCast":[],"MovieDirector":[],"MovieGenre":[],"Watchhistory":[],"PreviousPartNavigation":null,"InversePreviousPartNavigation":null},"TimesViewed":0,"WatchDate":"0001-01-01T00:00:00","Customer":null,"Review":null}]
+*3
+$9
+PEXPIREAT
+$19
+FletnixLatestMovies
+$13
+1496437416353
+*3
+$9
+PEXPIREAT
+$19
+FletnixLatestMovies
+$13
+1496437416360
+*3
+$6
+SCRIPT
+$4
+LOAD
+$49
+return redis.call('HMGET', KEYS[1], unpack(ARGV))
+*3
+$6
+SCRIPT
+$4
+LOAD
+$49
+return redis.call('HMGET', KEYS[1], unpack(ARGV))
+*3
+$9
+PEXPIREAT
+$19
+FletnixLatestMovies
+$13
+1496438147548
+*3
+$9
+PEXPIREAT
+$19
+FletnixLatestMovies
+$13
+1496438147558
+*3
+$9
+PEXPIREAT
+$19
+FletnixLatestMovies
+$13
+1496438155488
+*3
+$9
+PEXPIREAT
+$19
+FletnixLatestMovies
+$13
+1496438155491
+*3
+$9
+PEXPIREAT
+$19
+FletnixLatestMovies
+$13
+1496441317849
+*3
+$9
+PEXPIREAT
+$19
+FletnixLatestMovies
+$13
+1496441317862
+*3
+$9
+PEXPIREAT
+$19
+FletnixLatestMovies
+$13
+1496441320846
+*3
+$9
+PEXPIREAT
+$19
+FletnixLatestMovies
+$13
+1496441320850

@@ -54,7 +54,7 @@ namespace fletnix.Controllers
             {
                 ViewData["header"] += " (Page " + page + ")";
             }
-            var pagedResult = _repository.GetAwardReport(fromyear, tillyear, 25, page).Result;
+            var pagedResult = await _repository.GetAwardReport(fromyear, tillyear, 25, page);
             var map = new Dictionary<int?, Dictionary<string, AwardReportViewModel>>();
             foreach (var ma in pagedResult)
             {
