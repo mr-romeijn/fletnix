@@ -34,6 +34,10 @@
 
 @using fletnix.Helpers
 @using fletnix.ViewModels
+
+
+
+
 @if (bigdisplay != null)
 {
     <div class="container-fluid" id="mainbackdropcontainer" style="height: 55vh; width: 100%; position: relative; background-color: black; background-position: right 20px top -100px; background-size: cover; background-repeat: no-repeat; background-image: url('/images/no-backdrop.jpg')">
@@ -149,31 +153,7 @@
                 });
                 </Text>
             }
+            
         });
-
-        function getPoster(id, element, title, cb) {
-           
-            $.get('https://api.themoviedb.org/3/search/movie?api_key=8f3879e8c91096e1e468cf6c539dc1e7&query=' +
-                encodeURI(title),
-                (res) => {
-                    if (res.results[0]) {
-                        if (res.results[0].backdrop_path) {
-                            //poster_path
-                            if (cb) {
-                                cb(res.results[0].backdrop_path);
-                            } else {
-                                element.attr('src', 'https://image.tmdb.org/t/p/w500/' + res.results[0].backdrop_path);
-                            }
-
-                        }
-                    } else {
-                        if (cb) {
-                            cb('/images/no-backdrop.jpg');
-                        } else {
-                            element.attr('src', '/images/no-backdrop.jpg');
-                        }
-                    }
-                });
-        }
     </script>
 }

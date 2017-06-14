@@ -35,7 +35,7 @@ namespace fletnix.Models
         public IEnumerable<Movie> SearchMoviesByTitle(string title)
         {
             return _context.Movie.Where(m => (m.Title.ToLower().Contains(title.ToLower())))
-                .OrderByDescending(m => m.PublicationYear).AsNoTracking();
+                .Take(25).OrderByDescending(m => m.PublicationYear).AsNoTracking();
         }
 
         public IEnumerable<Person> SearchPersonsByName(string name)
@@ -122,7 +122,7 @@ namespace fletnix.Models
                     {
                         using (var context = FLETNIXContext.ContextFactory())
                         {
-                            var MostPopularMoviesOfLastNDays = (from w in context.Watchhistory
+                            /*var MostPopularMoviesOfLastNDays = (from w in context.Watchhistory
                                     where w.WatchDate >= Convert.ToDateTime(DateTime.Now).AddDays(-nDays)
                                     join m in context.Movie on w.MovieId equals m.MovieId
                                     group m by new {m}
@@ -135,6 +135,18 @@ namespace fletnix.Models
                                     }).Take(nAmount).AsNoTracking()
                                .ToList();
                             //context.Database.CloseConnection();
+                            return MostPopularMoviesOfLastNDays;*/
+                            
+                            var MostPopularMoviesOfLastNDays = (context.Watchhistory.Join(context.Movie, w => w.MovieId, m => m.MovieId, (w, m) => new { w, m })
+                                .Where(t => t.w.WatchDate >= Convert.ToDateTime(DateTime.Now).AddDays(-nDays))
+                                .GroupBy(t => new { t.m }, t => t.m)
+                                .OrderByDescending(g => g.Count())
+                                .Select(g => new PopularMoviesViewModel
+                                {
+                                    Movie = g.Key.m,
+                                    TimesViewed = g.Count()
+                                })).Take(10).ToList();
+
                             return MostPopularMoviesOfLastNDays;
                         }
                     } else

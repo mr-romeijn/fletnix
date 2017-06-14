@@ -21,6 +21,7 @@
     <div class="row">
         <div class="col-md-9">
             <form asp-action="Create">
+                @Html.AntiForgeryToken()
                 <div class="form-horizontal" style="padding: 25px; text-align: left;">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
@@ -58,19 +59,19 @@
                             <span asp-validation-for="PublicationYear" class="text-danger"></span>
                         </div>
                     </div>
-                   
-                   
+
+
                     <div class="form-group">
                         <label asp-for="PreviousPart" class="col-md-2 control-label"></label>
                         <div class="col-md-10">
                             <select asp-for="PreviousPart" class="form-control" style="width: 40%;" id="previousPart">
-                               
+
                             </select>
                             <span asp-validation-for="PreviousPart" class="text-danger"></span>
                         </div>
                     </div>
-                    
-                    
+
+
                     <div class="form-group">
                         <label asp-for="Price" class="col-md-2 control-label"></label>
                         <div class="col-md-10">
@@ -87,7 +88,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-md-offset-2 col-md-10">
-                            <input type="submit" value="Create" class="btn btn-default fletnix-btn fletnix-red-background" style="color: white;" />
+                            <input type="submit" value="Create" class="btn btn-default fletnix-btn fletnix-red-background" style="color: white;"/>
                         </div>
                     </div>
                 </div>

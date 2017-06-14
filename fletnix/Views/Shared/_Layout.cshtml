@@ -42,6 +42,7 @@
           <text>style="background-color: black; overflow-x: hidden;"</text>
       }>
 
+<span id="AntiForgery"> @Html.AntiForgeryToken() </span>
 <nav class="navbar navbar-inverse navbar-fixed-top" style="background-color: @ViewData["navbg"]; padding-right: 20px;">
 
     <div class="navbar-header">
@@ -68,12 +69,12 @@
 
         @if (User.Identity.IsAuthenticated)
         {
-            <li style="margin-top: -7px; width: 400px; padding-right: 25px;"><input style="border: 1px solid #141414; color: #CCCCCC; background-color: black; margin-top: 10px; width: 100%;" class="form-control" type="text" placeholder="Search..."></li>
+            <li style="margin-top: -7px; width: 400px; padding-right: 25px;"><input id="searchMovies" style="border: 1px solid #141414; color: #CCCCCC; background-color: black; margin-top: 10px; width: 100%;" class="form-control" type="text" placeholder="Search..."></li>
             <li style="margin-top: -7px;"><a style="color: white;" asp-controller="Home" asp-action="Index">Movies</a></li>
             <li style="margin-top: -7px;"><a style="color: white;" asp-controller="watchhistory" asp-action="Index">Watch history</a></li>
-           
-                 
-  
+
+
+
             <li>
                 <div style="margin-top: -7px; margin-left: -25px;">
 
@@ -101,6 +102,27 @@
 
 @RenderSection("NavSupplement", required: false)
 
+<div id="searchResult" style="position: fixed; top: 60px; z-index: 9997; background-color: black; opacity: .9; display: none; width: 100vw; height: 100vh"></div>
+<div id="searchResultListing" style="position: fixed; top: 120px; overflow-y: scroll; padding-left: 50px; z-index: 9998; width: 100vw; display: none; height: 100vh">
+
+</div>
+
+<a class="movieSearchLink" href="" style="display: none;">
+    <div class="row" style="border-bottom: 1px solid #CCCCCC; padding-bottom: 15px; padding-top: 15px;">
+        <div class="col-md-1">
+            <div style="background-color: white; padding: 4px;">
+                <img src="~/images/alien-covenant-2017-cover.png" width="100%"/>
+            </div>
+        </div>
+        <div class="col-md-10">
+            <h2 style="color: white;" class="movieTitleSearch">Alien Covenant (2017)</h2>
+            <p  style="color: white; "class="movieDescripSearch">Lorem ipsum</p>
+        </div>
+        <div class="col-md-1">
+            <h3 style="color: white;"><span class="movieVoteAvg"></span><span> / 10</span></h3>
+        </div>
+    </div>
+</a>
 
 @RenderBody()
 <footer>
@@ -133,5 +155,102 @@
 </environment>
 
 @RenderSection("Scripts", required: false)
+
+<script>
+    $(document).ready(function(){
+    var timeoutID = null;
+
+    function findMovie(str) {
+              
+        $.ajax({
+            url: "/api/movies/search/"+str,
+            type: "GET",
+            beforeSend: (xhr) => {
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.setRequestHeader('RequestVerificationToken', $("#AntiForgery input").val());
+            },
+            dataType: 'json',
+            success: function(res) {
+                console.log("AMOUNT", res.length);
+                console.log(res);
+                $('#searchResultListing').empty();
+                        
+                for(var i = 0; i <res.length; i++) {
+                    var e = res[i];
+                    var movie = $(".movieSearchLink").clone();
+                    getPoster(null,
+                        null,
+                        e.title,
+                        function(s, b, data) {
+                            if (b.vote_average != undefined) {
+                                data.movie.find('.movieVoteAvg').text(b.vote_average);
+                            } else {
+                                data.movie.find('.movieVoteAvg').empty();
+                            }
+                            data.movie.find('img').attr('src', 'https://image.tmdb.org/t/p/w500/' + s);
+                            data.movie.find('.movieTitleSearch').text(data.e.title + ' (' + data.e.publicationYear + ')');
+                            data.movie.find('.movieDescripSearch').text(data.e.description);
+                           
+                            data.movie.css('display', 'block');
+                            data.movie.attr('href', '/Dashboard/Movie/'+data.e.movieId);
+
+                            $('#searchResultListing').append(data.movie);
+                        },
+                        true,{movie:movie, e:e});
+
+                };
+                        
+                $('#searchResult').fadeIn('fast', function() {
+                    $('#searchResultListing').fadeIn('fast');
+                });
+            }
+        });
+    }
+
+    $('#searchMovies').keyup(function(e) {
+        clearTimeout(timeoutID);
+        timeoutID = setTimeout(findMovie.bind(undefined, e.target.value), 500);
+    });
+            
+    $(document).keyup(function(e) {
+        if (e.keyCode == 27) { // escape key maps to keycode `27`
+            $('#searchResultListing').fadeOut('fast', function() {
+                $('#searchResult').fadeOut('fast');
+            });
+        }
+    });
+            
+    });
+
+    function getPoster(id, element, title, cb, poster, data) {
+        if (poster == undefined) poster = false;
+        var path = 'backdrop_path';
+        if (poster == true) {
+            path = 'poster_path';
+        }
+        $.get('https://api.themoviedb.org/3/search/movie?api_key=8f3879e8c91096e1e468cf6c539dc1e7&query=' +
+            encodeURI(title),
+            (res) => {
+                if (res.results[0]) {
+                    if (res.results[0][path]) {
+                        //poster_path
+                        if (cb) {
+                            cb(res.results[0][path], res.results[0], data);
+                        } else {
+                            element.attr('src', 'https://image.tmdb.org/t/p/w500/' + res.results[0][path]);
+                        }
+
+                    }
+                } else {
+                    if (cb) {
+                        cb('/images/no-backdrop.jpg');
+                    } else {
+                        element.attr('src', '/images/no-backdrop.jpg');
+                    }
+                }
+            });
+    }
+</script>
+
 </body>
 </html>

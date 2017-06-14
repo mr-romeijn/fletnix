@@ -20,7 +20,10 @@ $(document).ready(function() {
         ({
             type: "PATCH",
             url: "/api/movie/genres",
-            beforeSend: (xhr) => { xhr.setRequestHeader('Content-Type', 'application/json') },
+            beforeSend: (xhr) => {
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.setRequestHeader('RequestVerificationToken', $("#AntiForgery input").val());
+            },
             dataType: 'json',
             async: true,
             data: JSON.stringify({genres:$(this).val(),movieId:$('#castMovie').val()}),
@@ -59,7 +62,10 @@ function addAward(notfMsg, method, dataObj, cb) {
     ({
         type: method,
         url: "/api/movie/award",
-        beforeSend: (xhr) => { xhr.setRequestHeader('Content-Type', 'application/json') },
+        beforeSend: (xhr) => {
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('RequestVerificationToken', $("#AntiForgery input").val());
+        },
         dataType: 'json',
         async: true,
         data: JSON.stringify(dataObj),
@@ -93,7 +99,10 @@ function addDirector() {
     ({
         type: "POST",
         url: "/api/movie/director",
-        beforeSend: (xhr) => { xhr.setRequestHeader('Content-Type', 'application/json') },
+        beforeSend: (xhr) => {
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('RequestVerificationToken', $("#AntiForgery input").val());
+        },
         dataType: 'json',
         async: true,
         data: JSON.stringify({ personId: person, movieId: movie}),
@@ -110,7 +119,10 @@ function removeDirector(name, person, movie) {
         ({
             type: "DELETE",
             url: "/api/movie/director",
-            beforeSend: (xhr) => { xhr.setRequestHeader('Content-Type', 'application/json') },
+            beforeSend: (xhr) => {
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.setRequestHeader('RequestVerificationToken', $("#AntiForgery input").val());
+            },
             dataType: 'json',
             async: true,
             data: JSON.stringify({ personId: person, movieId: movie }),
@@ -173,7 +185,10 @@ $('#submitAddCast').click(function() {
     ({
         type: method,
         url: "/api/moviecast",
-        beforeSend: (xhr) => { xhr.setRequestHeader('Content-Type', 'application/json') },
+        beforeSend: (xhr) => {
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('RequestVerificationToken', $("#AntiForgery input").val());
+        },
         dataType: 'json',
         async: true,
         data: JSON.stringify({ personId: person, movieId: movie, role: role }),
@@ -283,7 +298,10 @@ function deleteCastMember(personId, movieId, name) {
         $.ajax({
             type: 'DELETE',
             url: "/api/moviecast",
-            beforeSend: (xhr) => { xhr.setRequestHeader('Content-Type', 'application/json') },
+            beforeSend: (xhr) => {
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.setRequestHeader('RequestVerificationToken', $("#AntiForgery input").val());
+            },
             dataType: 'json',
             async: true,
             data: JSON.stringify({ personId: personId, movieId: movieId }),

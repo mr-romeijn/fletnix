@@ -88,6 +88,14 @@ namespace IdentityServer
 
             InitializeDbTestData(app);
 
+			app.Use(async (context, next) =>
+		    {
+			  context.Response.Headers.Add("X-Frame-Options", "SAMEORIGIN");
+			  context.Response.Headers.Add("X-XSS-Protection", "1; mode=block");
+			  context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
+			  await next();
+		    });
+
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 

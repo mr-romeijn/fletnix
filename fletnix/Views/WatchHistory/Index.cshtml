@@ -142,7 +142,10 @@
                 ({
                     type: apiMethod,
                     url: "/api/movies/" + currentlyLeavingFeedbackFor + "/feedback",
-                    beforeSend: (xhr) => { xhr.setRequestHeader('Content-Type', 'application/json') },
+                    beforeSend: (xhr) => {
+                        xhr.setRequestHeader('Content-Type', 'application/json') 
+                        xhr.setRequestHeader('RequestVerificationToken', $("#AntiForgery input").val());
+                    },
                     dataType: 'json',
                     async: true,
                     data: JSON.stringify({

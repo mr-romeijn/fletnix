@@ -7,17 +7,13 @@ using AutoMapper;
 using fletnix.Helpers;
 using fletnix.Models;
 using fletnix.ViewModels;
-using IdentityServer4.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Token = fletnix.Helpers.Token;
 
 namespace fletnix.Controllers.Api
 {
 
-    [Route("/api/movies")]
+    [Route("/api/movies"), ValidateAntiForgeryToken]
     public class MovieController : Controller
     {
         private readonly IFletnixRepository _repository;
@@ -33,13 +29,12 @@ namespace fletnix.Controllers.Api
             //_logger = logger;
         }
 
-        [HttpPost]
-        [Authorize(Policy = "CustomerOnly")]
-        [Route("/api/movies/{id}/feedback")]
+        [HttpPost, Authorize(Policy = "CustomerOnly"), Route("/api/movies/{id}/feedback")]
         public async Task<IActionResult> LeaveFeedback([FromBody] MovieReviewViewModel review)
         {
             var hasSeen = _context.Watchhistory.Where(r=>r.CustomerMailAddress == User.Identity.Name).FirstOrDefault(r => r.MovieId == review.MovieId);
-            if (!ModelState.IsValid && hasSeen != null) return BadRequest(ModelState);
+            
+            if (!ModelState.IsValid && hasSeen == null) return BadRequest();
             
             var newReview = Mapper.Map<MovieReview>(review);
             newReview.CustomerMailAddress = User.Identity.Name;
@@ -60,9 +55,7 @@ namespace fletnix.Controllers.Api
             return BadRequest("Failed to save changes to the database");
         }
         
-        [HttpPatch]
-        [Authorize(Policy = "CustomerOnly")]
-        [Route("/api/movies/{id}/feedback")]
+        [HttpPatch, Authorize(Policy = "CustomerOnly"), Route("/api/movies/{id}/feedback")]
         public async Task<IActionResult> UpdateFeedback([FromBody] MovieReviewViewModel review)
         {
             var hasSeen = _context.Watchhistory.Where(r=>r.CustomerMailAddress == User.Identity.Name).FirstOrDefault(r => r.MovieId == review.MovieId);
@@ -85,9 +78,7 @@ namespace fletnix.Controllers.Api
         }
         
         
-        [HttpDelete]
-        [Authorize(Policy = "CustomerOnly")]
-        [Route("/api/movies/{id}/feedback")]
+        [HttpDelete, Authorize(Policy = "CustomerOnly"), Route("/api/movies/{id}/feedback")]
         public async Task<IActionResult> DeleteFeedback([FromBody] MovieReviewViewModel review)
         {
             var hasSeen = _context.Watchhistory.Where(r=>r.CustomerMailAddress == User.Identity.Name).FirstOrDefault(r => r.MovieId == review.MovieId);
@@ -118,8 +109,8 @@ namespace fletnix.Controllers.Api
         {
             var hasSeen = _context.Watchhistory.Where(r=>r.CustomerMailAddress == User.Identity.Name).FirstOrDefault(r => r.MovieId == id);
             
-            if (!ModelState.IsValid && hasSeen != null || hasSeen.CustomerMailAddress == User.Identity.Name ) return BadRequest(ModelState);
-           
+            if (!ModelState.IsValid || hasSeen != null) return BadRequest(ModelState);
+            
                 _repository.AddToWatchHistory(new Watchhistory()
                 {
                     CustomerMailAddress = User.Identity.Name,
@@ -132,7 +123,6 @@ namespace fletnix.Controllers.Api
                 {
                     return Json($"/api/movies/{id}/watch");
                 }
-           
 
             return BadRequest("Failed to save changes to the database");
         }

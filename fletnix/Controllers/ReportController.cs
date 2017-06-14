@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using fletnix.Models;
 using fletnix.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace fletnix.Controllers
 {
-    public class ReportController : WalledGarden
+    public class ReportController : Controller
     {
         private IFletnixRepository _repository;
 
@@ -16,11 +17,13 @@ namespace fletnix.Controllers
             _repository = repository;
         }
 
+        [Authorize(Policy = "Management")]
         public async Task<IActionResult> Index()
         {
             return View();
         }
 
+        [Authorize(Policy = "FinancialOnly")]
         public async Task<IActionResult> AverageRating(string type)
         {
             List<PriceRatingIndexViewModel> report = null;
@@ -46,6 +49,8 @@ namespace fletnix.Controllers
             return View(report);
         } 
 
+        
+        [Authorize(Policy = "CeoOnly")]
         public async Task<IActionResult> AwardReport(int? fromyear, int? tillyear, int? page)
         {
             ViewData["header"] = "Viewing all movies with awards";

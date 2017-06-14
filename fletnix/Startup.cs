@@ -17,6 +17,7 @@ using fletnix.ViewModels;
 using IdentityModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Http;
 
 namespace fletnix
 {
@@ -42,6 +43,14 @@ namespace fletnix
         public void ConfigureServices(IServiceCollection services)
         {
 
+            if (_env.IsProduction())
+            {
+                services.Configure<MvcOptions>(options =>
+                {
+                   options.Filters.Add(new RequireHttpsAttribute());
+                });
+            }
+
             services.AddSingleton(Configuration);
             //services.AddTransient<IdentitySeedData>();
             services.AddDbContext<FLETNIXContext>();
@@ -56,9 +65,15 @@ namespace fletnix
 
                 options.AddPolicy("FinancialOnly", policy =>
                     policy.RequireClaim(ClaimTypes.Role, "financial","admin"));
+                
+                options.AddPolicy("Management", policy =>
+                    policy.RequireClaim(ClaimTypes.Role, "ceo","financial","admin"));
+                
+                options.AddPolicy("CeoOnly", policy =>
+                    policy.RequireClaim(ClaimTypes.Role, "ceo","admin"));
             });
-
-           
+            
+            
             if (_env.IsDevelopment())
             {
               
@@ -93,16 +108,28 @@ namespace fletnix
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
 
+            app.Use(async (context, next) =>
+            {
+                context.Response.Headers.Add("X-Frame-Options", "SAMEORIGIN");
+                context.Response.Headers.Add("X-XSS-Protection", "1; mode=block");
+                context.Response.Headers.Add("X-Content-Type-Options","nosniff");
+                await next();
+            });
+            
             //app.UseIdentity();
             //app.UseIdentityServer();
 
             app.UseSession();
             
             app.UseCookieAuthentication(new CookieAuthenticationOptions {
-                AuthenticationScheme = "cookie"
+                AuthenticationScheme = "cookie",
+                CookieHttpOnly = true,
+				CookieSecure = _env.IsDevelopment()
+				? CookieSecurePolicy.SameAsRequest
+				: CookieSecurePolicy.Always
             });
-
-
+            
+       
             /*app.UseOpenIdConnectAuthentication(new OpenIdConnectOptions {
                 ClientId = "fletnix",
                 RequireHttpsMetadata = false,
@@ -117,7 +144,7 @@ namespace fletnix
                 AuthenticationScheme = "oidc",
                 SignInScheme = "cookie",
                 Authority = Configuration["AuthServer"],
-                RequireHttpsMetadata = _env.IsDevelopment() ? false : true,
+                RequireHttpsMetadata = !_env.IsDevelopment(),
                 ClientId = "fletnix",
                 //ResponseType = "code id_token",
                 Scope = { "openid", "profile","role"},
