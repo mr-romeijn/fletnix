@@ -42,10 +42,11 @@
 
 @section scripts {
 
-<script>
-    for (i = new Date().getFullYear()+1; i > 1920; i--)
-    {
-        $('.yearSelector').append($('<option />').val(i).html(i));
-    }
-</script>
+    <script>
+        $('.yearSelector').append($('<option />'));
+        for (i = new Date().getFullYear()+1; i > 1920; i--)
+        {
+            $('.yearSelector').append($('<option />').val(i).html(i));
+        }
+    </script>
 }

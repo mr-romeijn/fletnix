@@ -5,12 +5,10 @@ namespace fletnix.ViewModels
 {
     public class MovieReviewViewModel
     {
-        [Required]
-        [StringLength(500, MinimumLength = 10)]
+        [Required, StringLength(500, MinimumLength = 10)]
         public string Review;
         
-        [Required]
-        [Range(1,10)]
+        [Required, Range(1,10)]
         public int Rating;
 
         [Required]

@@ -35,6 +35,8 @@ namespace fletnix.Controllers.Api
             var hasSeen = _context.Watchhistory.Where(r=>r.CustomerMailAddress == User.Identity.Name).FirstOrDefault(r => r.MovieId == review.MovieId);
             
             if (!ModelState.IsValid && hasSeen == null) return BadRequest();
+            if (review.Review.Length < 10 || review.Review.Length > 500) return BadRequest("The length of your review is too long or too short (min 10 & max 500 characters)");
+            if (review.Rating < 1 || review.Rating > 10) return BadRequest("Rating must be between 1 and 10");
             
             var newReview = Mapper.Map<MovieReview>(review);
             newReview.CustomerMailAddress = User.Identity.Name;
@@ -59,7 +61,10 @@ namespace fletnix.Controllers.Api
         public async Task<IActionResult> UpdateFeedback([FromBody] MovieReviewViewModel review)
         {
             var hasSeen = _context.Watchhistory.Where(r=>r.CustomerMailAddress == User.Identity.Name).FirstOrDefault(r => r.MovieId == review.MovieId);
-            if (!ModelState.IsValid && hasSeen != null) return BadRequest(ModelState);
+            if (!ModelState.IsValid && hasSeen == null) return BadRequest(ModelState);
+            if (review.Review.Length < 10 || review.Review.Length > 500) return BadRequest("The length of your review is too long or too short (min 10 & max 500 characters");
+            if (review.Rating < 1 || review.Rating > 10) return BadRequest("Rating must be between 1 and 10");
+            
             var newReview = Mapper.Map<MovieReview>(review);
             newReview.CustomerMailAddress = User.Identity.Name;
             try{
@@ -82,7 +87,7 @@ namespace fletnix.Controllers.Api
         public async Task<IActionResult> DeleteFeedback([FromBody] MovieReviewViewModel review)
         {
             var hasSeen = _context.Watchhistory.Where(r=>r.CustomerMailAddress == User.Identity.Name).FirstOrDefault(r => r.MovieId == review.MovieId);
-            if (!ModelState.IsValid && hasSeen != null) return BadRequest(ModelState);
+            if (!ModelState.IsValid && hasSeen == null) return BadRequest(ModelState);
             var newReview = Mapper.Map<MovieReview>(review);
             newReview.CustomerMailAddress = User.Identity.Name;
             try

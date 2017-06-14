@@ -230,6 +230,9 @@ namespace fletnix.Models
         
         public async Task<PaginatedList<AwardReportViewModel>> GetAwardReport(int? fromYear, int? tillYear, int pageSize = 15, int? page = 1)
         {
+
+            if (fromYear == null) fromYear = 1900;
+            if (tillYear == null) tillYear = DateTime.Now.Year;
            
             using (IDbContextTransaction transaction = _context.Database.BeginTransaction(
                 IsolationLevel.ReadUncommitted))

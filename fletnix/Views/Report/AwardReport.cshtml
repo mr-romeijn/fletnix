@@ -111,13 +111,24 @@
 @section scripts {
 
     <script>
+        $('.yearSelectorFrom').append($('<option ' + isSelectedTill + ' />'));
+        $('.yearSelectorTill').append($('<option ' + isSelectedTill + ' />'));
         for (i = new Date().getFullYear()+1; i > 1920; i--) {
             var isSelectedFrom = '';
-            if (@ViewData["from"] == i) isSelectedFrom = 'selected'; 
+            var compare1 = @ViewData["from"];
+            if(compare1 != null) if (compare1 == i) isSelectedFrom = 'selected'; 
             $('.yearSelectorFrom').append($('<option '+isSelectedFrom+' />').val(i).html(i));
             
+            
             var isSelectedTill = '';
-            if (@ViewData["till"] == i) isSelectedTill = 'selected'; 
+            @if (ViewData["till"] != null)
+            {
+                <Text>
+                    var compare2 = @ViewData["till"];
+                    if(compare2 != null) if (compare2  == i) isSelectedTill = 'selected'; 
+                </Text>
+            }
+           
             $('.yearSelectorTill').append($('<option '+isSelectedTill+' />').val(i).html(i));
         }
     </script>

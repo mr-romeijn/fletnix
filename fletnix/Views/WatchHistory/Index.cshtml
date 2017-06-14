@@ -88,13 +88,13 @@
         $(document).ready(function() {
 
             $(".movie").each(function(index) {
-                getPoster($(this).data('id'), $('.movie-poster-' + $(this).data('id')), $(this).data('title'));
+                getPosterLocal($(this).data('id'), $('.movie-poster-' + $(this).data('id')), $(this).data('title'));
             });
 
             var currentlyLeavingFeedbackFor = 0;
             var apiMethod = "post";
             $('.feedback-box').click(function() {
-                getPoster(null, $('#feedbackposterimage'), $(this).data('title'), true);
+                getPosterLocal(null, $('#feedbackposterimage'), $(this).data('title'), true);
                 $('#mtitlefeedback').text($(this).data('title') + ' (' + $(this).data('year') + ')');
                 currentlyLeavingFeedbackFor = $(this).data('id');
 
@@ -184,12 +184,14 @@
                                     },
                                     2000);
                             });
+                    }, error : function(res) {
+                        alert(res.responseText);
                     }
                 });
             }
         });
 
-        function getPoster(id, element, title, poster) {
+        function getPosterLocal(id, element, title, poster) {
             if (poster == undefined) poster = false;
             $.get('https://api.themoviedb.org/3/search/movie?api_key=8f3879e8c91096e1e468cf6c539dc1e7&query=' +
                 encodeURI(title),
