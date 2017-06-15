@@ -37,6 +37,12 @@ namespace fletnix.Controllers
             return View();
         }
 
+        [Route("/Account/AccessDenied")]
+        public IActionResult AccessDenied(string returnUrl)
+        {
+            ViewData["return"] = returnUrl;
+            return View("Denied");
+        }
 
         public IActionResult Login()
         {

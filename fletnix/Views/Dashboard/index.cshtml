@@ -1,6 +1,6 @@
 @{
     ViewData["Title"] = "Home Page";
-    if (Token.User(User.Claims).Role.Equals("admin"))
+    if (Token.User(User.Claims).Role.Equals("admin") || Token.User(User.Claims).Role.Equals("financial") || Token.User(User.Claims).Role.Equals("ceo"))
     {
         Layout = "_AdminLayout";
     }

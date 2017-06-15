@@ -1,3 +1,4 @@
+@using fletnix.Helpers
 @model object
 
 @{
@@ -7,35 +8,42 @@
 
 <div class="container-fluid" style="padding-top: 45px; padding-left: 40px; background-color: white; padding-bottom: 45px;">
     <div class="row">
-        <div class="col-md-6">
-            <div class="row">
-                <h2>Award report</h2>
-                <form method="get" action="/admin/report/AwardReport">
-                    <div class="col-md-3" style="padding-left: 0px;">
-                        <label>From</label>
-                        <select class="form-control yearSelector" name="fromYear"></select>
-                    </div>
-                    <div class="col-md-3">  
-                        <label>Till</label>
-                        <select class="yearSelector form-control" name="tillYear"></select>
-                    </div>
-                    <div class="col-md-3">
-                        <button type="submit" class="fletnix-btn fletnix-red-background" style="margin-top: 15px; border: 0px;  color: white; padding: 10px; font-size: 15px;">Generate</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="row">
-                <h2>Average rating report</h2>
-                <div class="col-md-12" style="padding-left: 0px;">
-                    <a asp-action="AverageRating" asp-controller="Report" asp-route-type="highestAverage">Highest average rating</a><br><br>
-                    <a asp-action="AverageRating" asp-controller="Report" asp-route-type="lowestAverage">Lowest average rating</a><br><br>
-                    <a asp-action="AverageRating" asp-controller="Report" asp-route-type="highestAveragePriceIndex">Highest average prince index rating</a><br><br>
-                    <a asp-action="AverageRating" asp-controller="Report" asp-route-type="lowestAveragePriceIndex">lowest average price index rating</a><br><br>
+        @if (Token.User(User.Claims).Role.Equals("ceo") || Token.User(User.Claims).Role.Equals("admin"))
+        {
+            <div class="col-md-6">
+                <div class="row">
+                    <h2>Award report</h2>
+                    <form method="get" action="/admin/report/AwardReport">
+                        <div class="col-md-3" style="padding-left: 0px;">
+                            <label>From</label>
+                            <select class="form-control yearSelector" name="fromYear"></select>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Till</label>
+                            <select class="yearSelector form-control" name="tillYear"></select>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="fletnix-btn fletnix-red-background" style="margin-top: 15px; border: 0px; color: white; padding: 10px; font-size: 15px;">Generate</button>
+                        </div>
+                    </form>
                 </div>
             </div>
-        </div>
+        }
+        
+        @if (Token.User(User.Claims).Role.Equals("financial") || Token.User(User.Claims).Role.Equals("admin"))
+        {
+            <div class="col-md-6">
+                <div class="row">
+                    <h2>Average rating report</h2>
+                    <div class="col-md-12" style="padding-left: 0px;">
+                        <a asp-action="AverageRating" asp-controller="Report" asp-route-type="highestAverage">Highest average rating</a><br><br>
+                        <a asp-action="AverageRating" asp-controller="Report" asp-route-type="lowestAverage">Lowest average rating</a><br><br>
+                        <a asp-action="AverageRating" asp-controller="Report" asp-route-type="highestAveragePriceIndex">Highest average prince index rating</a><br><br>
+                        <a asp-action="AverageRating" asp-controller="Report" asp-route-type="lowestAveragePriceIndex">lowest average price index rating</a><br><br>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 </div>
 

@@ -20,11 +20,11 @@
             });*/
 
             $(".movie").each(function(index) {
-                getPoster($(this).data('id'), $('#movie-poster-' + $(this).data('id')), $(this).data('title'));
+                getPosterList($(this).data('id'), $('#movie-poster-' + $(this).data('id')), $(this).data('title'));
             });
         });
 
-        function getPoster(id, element, title) {
+        function getPosterList(id, element, title) {
             $.get('https://api.themoviedb.org/3/search/movie?api_key=8f3879e8c91096e1e468cf6c539dc1e7&query=' +
                 encodeURI(title),
                 (res) => {

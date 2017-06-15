@@ -10,6 +10,7 @@ using IdentityServer.Models;
  using IdentityServer4.EntityFramework.Mappers;
  using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -93,6 +94,7 @@ namespace IdentityServer
 			  context.Response.Headers.Add("X-Frame-Options", "SAMEORIGIN");
 			  context.Response.Headers.Add("X-XSS-Protection", "1; mode=block");
 			  context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
+              context.Response.Headers.Add("Cache-Control", "private");
 			  await next();
 		    });
 
@@ -113,7 +115,10 @@ namespace IdentityServer
            {
                AuthenticationScheme = "idsrv",
                AutomaticAuthenticate = false,
-               AutomaticChallenge = false
+               AutomaticChallenge = false,
+			   CookieSecure = env.IsDevelopment()
+				? CookieSecurePolicy.SameAsRequest
+				: CookieSecurePolicy.Always
            });
 
             app.UseIdentity();

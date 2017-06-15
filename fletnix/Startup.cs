@@ -61,10 +61,11 @@ namespace fletnix
                     policy.RequireClaim(ClaimTypes.Role, "admin"));
 
                 options.AddPolicy("CustomerOnly", policy =>
-                    policy.RequireClaim(ClaimTypes.Role, "customer","admin"));
+                    policy.RequireClaim(ClaimTypes.Role, "customer", "admin", "financial", "ceo"));
 
                 options.AddPolicy("FinancialOnly", policy =>
                     policy.RequireClaim(ClaimTypes.Role, "financial","admin"));
+                
                 
                 options.AddPolicy("Management", policy =>
                     policy.RequireClaim(ClaimTypes.Role, "ceo","financial","admin"));
@@ -90,6 +91,11 @@ namespace fletnix
                 services.AddSingleton<ICache, MemoryCache>();
                 // Implement real service
             }
+
+            services.AddAntiforgery(options =>
+            {
+                options.RequireSsl = !_env.IsDevelopment();
+            });
             
             services.AddSession();
 
@@ -113,6 +119,7 @@ namespace fletnix
                 context.Response.Headers.Add("X-Frame-Options", "SAMEORIGIN");
                 context.Response.Headers.Add("X-XSS-Protection", "1; mode=block");
                 context.Response.Headers.Add("X-Content-Type-Options","nosniff");
+                context.Response.Headers.Add("Cache-Control", "private");
                 await next();
             });
             
